@@ -1,0 +1,218 @@
+import 'dart:core';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/utils/utils.dart';
+
+class SideMenuDrawer extends StatefulWidget {
+  @override
+  State createState() => _SideMenuState();
+}
+
+class _SideMenuState extends State<SideMenuDrawer> {
+  final List sideMenuList = [
+    {'title': 'Dashboard', 'route': '/dashboard'},
+    {'title': 'Accounts', 'route': '/accounts'},
+    {'title': 'Contacts', 'route': '/contacts'},
+    {'title': 'Leads', 'route': '/leads'},
+    {'title': 'Opportunities', 'route': '/opportunities'},
+    {'title': 'Cases', 'route': '/cases'},
+    {'title': 'Documents', 'route': '/documents'},
+    {'title': 'Tasks', 'route': '/tasks'},
+    {'title': 'Invoices', 'route': '/invoices'},
+    {'title': 'Events', 'route': '/events'},
+    {'title': 'Teams', 'route': '/teams'},
+  ];
+
+  String _selectedModule = 'Dashboard';
+  String _profilePicUrl =
+      "https://starsunfolded.com/wp-content/uploads/2017/09/Virat-Kohli-French-cut-with-trimmed-scruff-beard-style.jpg";
+  // String _profilePicUrl = "";
+
+  @override
+  void initState() {
+    setState(() {
+      _selectedModule = currentModuleName;
+    });
+    super.initState();
+  }
+
+  Widget _buildMenuItems(BuildContext context) {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: sideMenuList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                  right: _selectedModule == sideMenuList[index]['title']
+                      ? BorderSide(
+                          color: Theme.of(context).primaryColor, width: 5.0)
+                      : BorderSide(color: Colors.white),
+                  bottom: BorderSide(
+                      color: Theme.of(context).dividerColor, width: 2.0))),
+          child: ListTile(
+            // leading: sideMenuList[index]['leading'],
+            title: Text(
+              sideMenuList[index]['title'],
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                  fontFamily: 'Roboto',
+                  fontSize: 15.0),
+            ),
+            onTap: () {
+              currentModuleName = sideMenuList[index]['title'];
+              setState(() {
+                _selectedModule = sideMenuList[index]['title'];
+              });
+              Navigator.pushNamedAndRemoveUntil(
+                  context, sideMenuList[index]['route'], (route) => false);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.7,
+      child: Drawer(
+        child: ListView(
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  alignment: FractionalOffset(0.0, 0.0),
+                  color: Theme.of(context).primaryColor,
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/profile", (route) => false);
+                        },
+                        child: Container(
+                          child: accountBloc.userProfile != null &&
+                                  accountBloc.userProfile.profileUrl != null &&
+                                  accountBloc.userProfile.profileUrl != ""
+                              ? CircleAvatar(
+                                  radius: MediaQuery.of(context).size.width / 9,
+                                  backgroundImage: NetworkImage(
+                                      accountBloc.userProfile.profileUrl),
+                                  backgroundColor: Colors.white,
+                                )
+                              : accountBloc.userProfile != null &&
+                                      accountBloc.userProfile.firstName != ""
+                                  ? CircleAvatar(
+                                      radius:
+                                          MediaQuery.of(context).size.width / 9,
+                                      child: Text(
+                                        accountBloc.userProfile.firstName[0],
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      backgroundColor: Colors.white,
+                                    )
+                                  : CircleAvatar(
+                                      radius:
+                                          MediaQuery.of(context).size.width / 9,
+                                      child: Icon(
+                                        Icons.person,
+                                        size:
+                                            MediaQuery.of(context).size.width /
+                                                8,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                    ),
+                        ),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            // Container(
+                            //   child: Text(
+                            //     "bottlecrm",
+                            //     style: TextStyle(
+                            //         color: Colors.white,
+                            //         fontSize:
+                            //             MediaQuery.of(context).size.width / 15,
+                            //         fontWeight: FontWeight.bold),
+                            //   ),
+                            // ),
+                            // Container(
+                            //   child: IconButton(
+                            //     onPressed: () {
+                            //       setState(() {
+                            //         _showDropDown = true;
+                            //       });
+                            //     },
+                            //     icon: Icon(Icons.arrow_drop_down_sharp,
+                            //         color: Colors.white,
+                            //         size:
+                            //             MediaQuery.of(context).size.width / 15),
+                            //   ),
+                            // )
+                            Container(
+                              child: DropdownButtonHideUnderline(
+                                child: new DropdownButton<String>(
+                                  icon: Icon(
+                                    Icons.arrow_drop_down_sharp,
+                                    color: Colors.white,
+                                  ),
+                                  hint: Text(
+                                    "bottlecrm",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize:
+                                            MediaQuery.of(context).size.width /
+                                                15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  items: <String>['Sales', 'Marketing']
+                                      .map((String value) {
+                                    return new DropdownMenuItem<String>(
+                                      value: value,
+                                      child: new Text(
+                                        value,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (_) {},
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )),
+            ),
+            Container(
+                height: MediaQuery.of(context).size.height * 0.72,
+                child: _buildMenuItems(context))
+          ],
+        ),
+      ),
+    );
+  }
+}

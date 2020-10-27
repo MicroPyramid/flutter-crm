@@ -1,0 +1,29 @@
+name: flutter_crm
+description: A new Flutter project.
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.0
+  connectivity: ^0.4.9+5
+  flushbar: ^1.10.4
+  http: ^0.12.2
+  shared_preferences: ^0.5.12+2
+  fluttertoast: ^7.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
