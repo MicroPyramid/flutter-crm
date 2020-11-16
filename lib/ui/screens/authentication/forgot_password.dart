@@ -1,4 +1,6 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crm/bloc/auth_bloc.dart';
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword();
@@ -10,6 +12,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final GlobalKey<FormState> _forgotPasswordFormKey = GlobalKey<FormState>();
   String _email;
   bool _isLoading = false;
+  String _errorMessage;
 
   @override
   void initState() {
@@ -24,57 +27,47 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     setState(() {
       _isLoading = true;
     });
-    Navigator.pushNamed(context, '/forgot_password_text');
-    // await PietrackService().login({
-    //   'email': 'jagadeesh.s@micropyramid.com',
-    //   'password': '1122'
-    // }).then((Response value) {
-    //   var res = json.decode(value.body);
-    //   print(res);
-    //   if (!res['error']) {
-    //     NetworkService().token = res['token'];
-    //     PietrackService().getCompanies({}).then((Response value) {
-    //       var res = json.decode(value.body);
-    //       companies.clear();
-    //       for (var company in res['data']) {
-    //         Company _company = Company.fromJson(company);
-    //         companies.add(_company);
-    //       }
-    //       print(res);
-    //       if (res['data'].length > 1) {
-    //         Navigator.of(context).pushReplacementNamed('/companies_list');
-    //       } else {
-    //         NetworkService().companyId = res['data'][0]['id'].toString();
-    //         selectedCompany = companies[0];
-    //         openProjects.clear();
-    //         closedProjects.clear();
-    //         PietrackService().getProjects({}).then((Response value) {
-    //           var res = json.decode(value.body);
-    //           print(res);
-    //           for (var project in res['data']) {
-    //             Project _project = Project.fromJson(project);
-    //             openProjects.add(_project);
-    //           }
-    //           for (var project in res['inactive']) {
-    //             Project _project = Project.fromJson(project);
-    //             closedProjects.add(_project);
-    //           }
-    //           Navigator.of(context).pushReplacementNamed('/projects');
-    //         });
-    //       }
-    //     });
-    //   } else {
-    //     String _errorMessage = res['errors']['email'] != null
-    //         ? res['errors']['email'][0]
-    //         : res['errors']['__all__'] != null
-    //             ? res['errors']['__all__'][0]
-    //             : 'Invalid credentials';
-    //     showErrorMessage(context, _errorMessage);
-    //   }
-    // });
+    Map result = await authBloc.forgotPassword({'email': _email});
+    if (result['error'] == false) {
+      setState(() {
+        _errorMessage = null;
+      });
+      Navigator.pushReplacementNamed(context, '/forgot_password_text');
+    } else if (result['error'] == true) {
+      setState(() {
+        _errorMessage = result['errors']['non_field_errors'][0];
+      });
+    } else {
+      setState(() {
+        _errorMessage = null;
+      });
+      showErrorMessage(context, 'Something went wrong');
+    }
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void showErrorMessage(BuildContext context, String errorContent) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text(
+          'TRY AGAIN',
+          style: TextStyle(
+              color: Theme.of(context).accentColor,
+              fontWeight: FontWeight.w500),
+        ),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          _submitForm();
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
   }
 
   @override
@@ -126,6 +119,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
                                 if (value.isEmpty) {
+                                  setState(() {
+                                    _errorMessage = null;
+                                  });
                                   return 'This field is required.';
                                 }
                                 return null;
@@ -135,25 +131,46 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               },
                             ),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            margin: EdgeInsets.symmetric(vertical: 10.0),
-                            child: RaisedButton(
-                              color: Theme.of(context).buttonColor,
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                if (!_isLoading) {
-                                  _submitForm();
-                                }
-                              },
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
+                          _errorMessage != null
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 10.0),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  child: Text(
+                                    _errorMessage,
+                                    style: TextStyle(
+                                        color: Colors.red[700], fontSize: 12.0),
+                                  ),
+                                )
+                              : Container(),
+                          !_isLoading
+                              ? Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  margin: EdgeInsets.symmetric(vertical: 10.0),
+                                  child: RaisedButton(
+                                    color: Theme.of(context).buttonColor,
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      if (!_isLoading) {
+                                        _submitForm();
+                                      }
+                                    },
+                                    child: Text(
+                                      'Submit',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  margin: EdgeInsets.only(top: 10.0),
+                                  child: CircularProgressIndicator(
+                                      valueColor:
+                                          new AlwaysStoppedAnimation<Color>(
+                                              Theme.of(context).buttonColor)),
+                                ),
                           Container(
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: Row(

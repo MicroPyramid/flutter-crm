@@ -18,6 +18,11 @@ dependencies:
   http: ^0.12.2
   shared_preferences: ^0.5.12+2
   fluttertoast: ^7.1.1
+  dropdown_search: ^0.4.6
+  smart_select: ^4.3.2
+  file_picker: ^2.0.12
+  textfield_tags: ^1.0.3
+  json_table: ^1.4.0 
 
 dev_dependencies:
   flutter_test:
@@ -26,4 +31,7 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+   - assets/data/tempdata.json
 

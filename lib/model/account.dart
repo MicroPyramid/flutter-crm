@@ -1,74 +1,114 @@
+import 'package:flutter_crm/model/company.dart';
+import 'package:flutter_crm/model/contact.dart';
+import 'package:flutter_crm/model/lead.dart';
+import 'package:flutter_crm/model/profile.dart';
+import 'package:flutter_crm/model/team.dart';
+
 class Account {
-  String id;
-  String companyId;
+  int id;
+  String name;
   String email;
-  String userName;
-  String firstName;
-  String lastName;
-  String profileUrl;
-  String role;
+  String phone;
+  String industry;
+  String billingAddressLine;
+  String billingStreet;
+  String billingCity;
+  String billingState;
+  String billingPostcode;
+  String billingCountry;
+  String website;
+  String description;
+  Profile createdBy;
+  String createdOn;
   bool isActive;
-  bool isAdmin;
-  bool isStaff;
-  bool hasSalesAccess;
-  bool hasMarketingAccess;
-  String dateOfJoin;
-  String appName;
+  List<Map> tags;
+  String status;
+  Lead lead;
+  String contactName;
+  List<Contact> contacts;
+  Profile assignedTo;
+  List<Team> teams;
+  Company company;
 
   Account(
       {this.id,
-      this.companyId,
+      this.name,
       this.email,
-      this.userName,
-      this.firstName,
-      this.lastName,
-      this.profileUrl,
-      this.role,
-      this.appName,
-      this.dateOfJoin,
-      this.hasMarketingAccess,
-      this.hasSalesAccess,
+      this.phone,
+      this.industry,
+      this.billingAddressLine,
+      this.billingStreet,
+      this.billingCity,
+      this.billingState,
+      this.billingPostcode,
+      this.billingCountry,
+      this.website,
+      this.description,
+      this.createdBy,
+      this.assignedTo,
+      this.createdOn,
       this.isActive,
-      this.isAdmin,
-      this.isStaff});
+      this.tags,
+      this.status,
+      this.lead,
+      this.contactName,
+      this.contacts,
+      this.teams,
+      this.company});
 
   Account.fromJson(Map account) {
-    this.id = account['id'].toString();
-    this.userName = account['username'];
-    this.appName = account['get_app_name'];
-    this.companyId = account['company'].toString();
-    this.role = account['role'] != null ? account['role'] : "";
-    this.profileUrl =
-        account['profile_pic'] != null ? account['profile_pic'] : "";
-    this.dateOfJoin =
-        account['date_joined'] != null ? account['date_joined'] : "";
-    this.email = account['email'] != null ? account['email'] : "";
-    this.firstName = account['first_name'] != null ? account['first_name'] : "";
-    this.hasMarketingAccess = account['has_marketing_access'];
-    this.hasSalesAccess = account['has_sales_access'];
+    this.id = account['id'];
+    this.name = account['name'];
+    this.email = account['email'];
+    this.phone = account['phone'];
+    this.industry = account['industry'];
+    this.billingAddressLine = account['billing_address_line'];
+    this.billingStreet = account['billing_street'];
+    this.billingCity = account['billing_city'];
+    this.billingState = account['billing_state'];
+    this.billingPostcode = account['billing_postcode'];
+    this.billingCountry = account['billing_country'];
+    this.website = account['website'];
+    this.description = account['description'];
+    this.createdBy = account['created_by'];
+    this.assignedTo = account['assigned_to'];
+    this.createdOn = account['created_on'];
     this.isActive = account['is_active'];
-    this.isAdmin = account['is_admin'];
-    this.isStaff = account['is_staff'];
-    this.lastName = account['last_name'] != null ? account['last_name'] : "";
+    this.tags = account['tags'];
+    this.status = account['status'];
+    this.lead = account['lead'];
+    this.contactName = account['contact_name'];
+    this.contacts = account['contacts'];
+    this.teams = account['teams'];
+    this.company = account['company'];
   }
 
   toJson() {
     return {
       'id': id,
-      'username': userName,
-      'get_app_name': appName,
-      'company': companyId,
-      'role': role,
-      'profile_pic': profileUrl,
-      'date_joined': dateOfJoin,
+      'name': name,
       'email': email,
-      'first_name': firstName,
-      'last_name': lastName,
-      'has_marketing_access': hasMarketingAccess,
-      'has_sales_access': hasSalesAccess,
+      'phone': phone,
+      'industry': industry,
+      'billing_address_line': billingAddressLine,
+      'billing_street': billingStreet,
+      'billing_city': billingCity,
+      'billing_state': billingState,
+      'billing_postcode': billingPostcode,
+      'billing_country': billingCountry,
+      'website': website,
+      'description': description,
+      'created_by': createdBy,
+      'assigned_to': assignedTo,
+      'created_on': createdOn,
       'is_active': isActive,
-      'is_admin': isAdmin,
-      'is_staff': isStaff
+      'tags': tags,
+      'status': status,
+      'lead': lead,
+      'contact_name': contactName,
+      'contacts': contacts,
+      'teams': teams,
+      'company': company
     };
   }
 }

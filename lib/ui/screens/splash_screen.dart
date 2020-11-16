@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,8 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
         connectivityResult == ConnectivityResult.wifi) {
       if (preferences.getString('authToken') != null &&
           preferences.getString('authToken') != "") {
-        await accountBloc.getProfileDetails();
-        Navigator.pushReplacementNamed(context, '/dashboard');
+        await authBloc.getProfileDetails();
+        Navigator.pushReplacementNamed(context, '/sales_dashboard');
       } else {
         Navigator.pushReplacementNamed(context, '/sub_domain');
       }

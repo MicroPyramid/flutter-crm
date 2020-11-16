@@ -1,6 +1,6 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/auth_bloc.dart';
 
 class UserRegister extends StatefulWidget {
   UserRegister();
@@ -33,7 +33,7 @@ class _UserRegisterState extends State<UserRegister> {
     setState(() {
       _isLoading = true;
     });
-    Map result = await accountBloc.register(_formData);
+    Map result = await authBloc.register(_formData);
     if (result['status'] == 'success') {
       setState(() {
         _errorMessage = null;
@@ -132,11 +132,11 @@ class _UserRegisterState extends State<UserRegister> {
                                       fillColor: Colors.white,
                                       filled: true,
                                       hintText: 'Sub-domain'),
-                                  keyboardType: TextInputType.emailAddress,
+                                  keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       setState(() {
-                                        _errors['sub_domain'] = null;
+                                        _errors = {};
                                         _errorMessage = null;
                                       });
                                       return 'This field is required.';
@@ -186,11 +186,11 @@ class _UserRegisterState extends State<UserRegister> {
                                       fillColor: Colors.white,
                                       filled: true,
                                       hintText: 'username'),
-                                  keyboardType: TextInputType.emailAddress,
+                                  keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       setState(() {
-                                        _errors['username'] = null;
+                                        _errors = {};
                                         _errorMessage = null;
                                       });
                                       return 'This field is required.';
@@ -244,7 +244,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       setState(() {
-                                        _errors['email'] = null;
+                                        _errors = {};
                                         _errorMessage = null;
                                       });
                                       return 'This field is required.';
@@ -299,7 +299,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       setState(() {
-                                        _errors['password'] = null;
+                                        _errors = {};
                                         _errorMessage = null;
                                       });
                                       return 'This field is required.';

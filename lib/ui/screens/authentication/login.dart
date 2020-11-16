@@ -1,6 +1,6 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/auth_bloc.dart';
 
 class UserLogin extends StatefulWidget {
   UserLogin();
@@ -27,14 +27,14 @@ class _UserLoginState extends State<UserLogin> {
     setState(() {
       _isLoading = true;
     });
-    Map result = await accountBloc.login(_loginFormData);
+    Map result = await authBloc.login(_loginFormData);
     if (result['status'] == 'success') {
       setState(() {
         _errorMessage = null;
       });
-      await accountBloc.getProfileDetails();
+      await authBloc.getProfileDetails();
       Navigator.pushNamedAndRemoveUntil(
-          context, '/dashboard', (route) => false);
+          context, '/sales_dashboard', (route) => false);
     } else if (result['status'] == 'failure') {
       setState(() {
         _errorMessage = result['message'];

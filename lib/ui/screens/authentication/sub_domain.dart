@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/services/crm_services.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:http/http.dart';
@@ -32,8 +32,7 @@ class _SubDomainState extends State<SubDomain> {
     setState(() {
       _isLoading = true;
     });
-    Map result =
-        await accountBloc.validateDomain({'sub_domain': _subDomainName});
+    Map result = await authBloc.validateDomain({'sub_domain': _subDomainName});
     if (result['status'] == 'success') {
       setState(() {
         _errorMessage = null;
@@ -173,26 +172,26 @@ class _SubDomainState extends State<SubDomain> {
                                 ],
                               ),
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    child: Text('Forgot Password '),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, '/forgot_password');
-                                    },
-                                    child: Text(
-                                      'Click Here?',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   width: MediaQuery.of(context).size.width * 0.8,
+                            //   child: Row(
+                            //     children: [
+                            //       Container(
+                            //         child: Text('Forgot Password '),
+                            //       ),
+                            //       GestureDetector(
+                            //         onTap: () {
+                            //           Navigator.pushNamed(
+                            //               context, '/forgot_password');
+                            //         },
+                            //         child: Text(
+                            //           'Click Here?',
+                            //           style: TextStyle(color: Colors.blue),
+                            //         ),
+                            //       )
+                            //     ],
+                            //   ),
+                            // ),
                             !_isLoading
                                 ? Container(
                                     width:

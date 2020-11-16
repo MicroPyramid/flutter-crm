@@ -21,10 +21,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     {'title': 'Settings', 'route': '/accounts', 'icon': Icon(Icons.settings)},
     {
       'title': 'Change Password',
-      'route': '/contacts',
+      'route': '/change_password',
       'icon': Icon(Icons.vpn_key)
     },
-    {'title': 'Profile', 'route': '/leads', 'icon': Icon(Icons.account_circle)},
+    {
+      'title': 'Profile',
+      'route': '/profile_details',
+      'icon': Icon(Icons.account_circle)
+    },
     {'title': 'Logout', 'route': '/opportunities', 'icon': Icon(Icons.logout)},
   ];
 
@@ -58,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (_profileList[index]['title'] == "Logout") {
                 showAlertDialog(context);
               } else {
-                // Navigator.pushNamed(context, _profileList[index]['route']);
+                Navigator.pushNamed(context, _profileList[index]['route']);
               }
             },
           ),
