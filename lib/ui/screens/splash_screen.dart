@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
+import 'package:flutter_crm/utils/utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -60,6 +62,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -83,16 +87,18 @@ class _SplashScreenState extends State<SplashScreen> {
                       Container(
                         margin: EdgeInsets.only(bottom: 30.0),
                         child: Text(
-                          'bottlecrm',
-                          style: TextStyle(
-                              color: Color.fromRGBO(51, 51, 51, 1),
-                              fontWeight: FontWeight.w500,
-                              fontSize: MediaQuery.of(context).size.width / 10),
+                          'Bottle CRM',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Color.fromRGBO(5, 24, 62, 1),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width / 13)),
                         ),
                       ),
                       CircularProgressIndicator(
                           valueColor: new AlwaysStoppedAnimation<Color>(
-                              Color.fromRGBO(51, 51, 51, 1))),
+                              Color.fromRGBO(5, 24, 62, 1))),
                     ],
                   ),
                 ),

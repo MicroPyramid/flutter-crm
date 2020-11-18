@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
       title: 'bottlecrm',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromRGBO(247, 247, 249, 1),
-          buttonColor: Color.fromRGBO(254, 194, 42, 1),
+          scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
+          buttonColor: Color.fromRGBO(252, 163, 37, 1),
           primarySwatch: Colors.blue,
           primaryColor: Color.fromRGBO(29, 132, 150, 1),
           dividerColor: Color.fromRGBO(232, 243, 245, 1)),

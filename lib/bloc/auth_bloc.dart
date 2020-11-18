@@ -31,7 +31,7 @@ class AuthBloc {
     await CrmService().validateSubdomain(data).then((response) {
       var res = (json.decode(response.body));
       print(res);
-      if (res['status'] == "success") {
+      if (res['error'] == false) {
         _currentDomainName = data['sub_domain'];
         result = res;
       } else {

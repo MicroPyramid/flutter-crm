@@ -4,6 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 String selectedSidebarName = "Dashboard";
 String currentSidebarModuleName = "Sales";
+var screenWidth;
+var screenHeight;
 
 DateTime currentBackPressTime;
 Future<bool> onWillPop() {
