@@ -1,8 +1,12 @@
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter_crm/ui/widgets/login_footerBtnWidget.dart';
+import 'package:flutter_crm/ui/widgets/login_headerTextWidget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
+
+import 'login.dart';
 
 class SubDomain extends StatefulWidget {
   SubDomain();
@@ -34,7 +38,10 @@ class _SubDomainState extends State<SubDomain> {
       setState(() {
         _errorMessage = null;
       });
-      Navigator.pushNamed(context, '/user_login');
+      Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) => UserLogin(_subDomainName),
+      ));
     } else if (result['error'] == true) {
       setState(() {
         _errorMessage = result['message'];
@@ -76,20 +83,6 @@ class _SubDomainState extends State<SubDomain> {
     return OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(15)),
       borderSide: BorderSide(width: 1, color: Colors.grey),
-    );
-  }
-
-  Widget headerTextWidget() {
-    return Container(
-      margin: EdgeInsets.only(top: screenHeight * 0.1),
-      child: Text(
-        'Bottle CRM',
-        style: GoogleFonts.robotoSlab(
-            textStyle: TextStyle(
-                color: Color.fromRGBO(5, 24, 62, 1),
-                fontWeight: FontWeight.w500,
-                fontSize: screenWidth / 13)),
-      ),
     );
   }
 
@@ -214,50 +207,6 @@ class _SubDomainState extends State<SubDomain> {
     );
   }
 
-  Widget footerButton() {
-    return Container(
-      margin: EdgeInsets.only(bottom: screenHeight * 0.04),
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 10.0),
-            child: Text(
-              "Don't Have An Account?",
-              style: GoogleFonts.robotoSlab(
-                  textStyle: TextStyle(
-                      color: Color.fromRGBO(5, 24, 62, 1),
-                      fontWeight: FontWeight.w500,
-                      fontSize: screenWidth / 25)),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-              Navigator.pushNamed(context, '/user_register');
-            },
-            child: Container(
-              alignment: Alignment.center,
-              height: screenHeight * 0.06,
-              width: screenWidth * 0.9,
-              decoration: BoxDecoration(
-                color: Theme.of(context).buttonColor,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-              child: Text(
-                'Register Here',
-                style: GoogleFonts.robotoSlab(
-                    textStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: screenWidth / 22)),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -271,9 +220,9 @@ class _SubDomainState extends State<SubDomain> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                headerTextWidget(),
+                HeaderTextWidget(),
                 subDomainBodyWidget(),
-                footerButton()
+                FooterBtnWidget("Don't have an Account ?", "Register Here", "/user_register")
               ],
             ),
           ),

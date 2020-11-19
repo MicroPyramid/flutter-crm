@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/sub_domain': (BuildContext context) => SubDomain(),
         '/user_register': (BuildContext context) => UserRegister(),
-        '/user_login': (BuildContext context) => UserLogin(),
+        '/user_login': (BuildContext context) => UserLogin(''),
         '/forgot_password': (BuildContext context) => ForgotPassword(),
         '/forgot_password_text': (BuildContext context) => ForgotPasswordText(),
         '/sales_dashboard': (BuildContext context) => Dashboard(),

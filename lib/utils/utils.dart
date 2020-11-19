@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 String selectedSidebarName = "Dashboard";
 String currentSidebarModuleName = "Sales";
+var currPageRoute;
 var screenWidth;
 var screenHeight;
 

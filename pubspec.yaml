@@ -35,5 +35,5 @@ flutter:
 
   assets:
    - assets/data/tempdata.json
-   - assets/images/google-logo.png
+   - assets/images/
 

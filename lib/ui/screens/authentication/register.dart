@@ -1,6 +1,8 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
+import 'package:flutter_crm/ui/widgets/login_footerBtnWidget.dart';
+import 'package:flutter_crm/ui/widgets/login_headerTextWidget.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -83,20 +85,6 @@ class _UserRegisterState extends State<UserRegister> {
       ),
       duration: Duration(seconds: 10),
     )..show(context);
-  }
-
-  Widget headerTextWidget() {
-    return Container(
-      margin: EdgeInsets.only(top: screenHeight * 0.1),
-      child: Text(
-        'Bottle CRM',
-        style: GoogleFonts.robotoSlab(
-            textStyle: TextStyle(
-                color: Color.fromRGBO(5, 24, 62, 1),
-                fontWeight: FontWeight.w500,
-                fontSize: screenWidth / 13)),
-      ),
-    );
   }
 
   OutlineInputBorder boxBorder() {
@@ -471,7 +459,12 @@ class _UserRegisterState extends State<UserRegister> {
             key: _registerFormKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [headerTextWidget(), textFields(), footerButton()],
+              children: [
+                HeaderTextWidget(),
+                textFields(),
+                FooterBtnWidget('Existing User?', 'Login Here', '/sub_domain')
+                // footerButton()
+              ],
             ),
           ),
         ),
