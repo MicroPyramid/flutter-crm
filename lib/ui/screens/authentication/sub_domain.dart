@@ -75,7 +75,7 @@ class _SubDomainState extends State<SubDomain> {
   OutlineInputBorder boxBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(15)),
-      borderSide: BorderSide(width: 0, color: Color.fromRGBO(221, 221, 221, 1)),
+      borderSide: BorderSide(width: 1, color: Colors.grey),
     );
   }
 
@@ -93,7 +93,7 @@ class _SubDomainState extends State<SubDomain> {
     );
   }
 
-  Widget subDomainWidget() {
+  Widget subDomainBodyWidget() {
     return Container(
       child: Column(
         children: [
@@ -140,6 +140,7 @@ class _SubDomainState extends State<SubDomain> {
                         fillColor: Colors.white,
                         filled: true,
                         hintText: 'Enter Subdomain',
+                        errorStyle: GoogleFonts.robotoSlab(),
                         hintStyle: GoogleFonts.robotoSlab(
                             textStyle: TextStyle(fontSize: 14.0))),
                     keyboardType: TextInputType.emailAddress,
@@ -192,7 +193,9 @@ class _SubDomainState extends State<SubDomain> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     _errorMessage,
-                    style: TextStyle(color: Colors.red[700], fontSize: 12.0),
+                    style: GoogleFonts.robotoSlab(
+                        textStyle:
+                            TextStyle(color: Colors.red[700], fontSize: 12.0)),
                   ),
                 )
               : Container(),
@@ -267,7 +270,11 @@ class _SubDomainState extends State<SubDomain> {
             key: _subDomainFormKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [headerTextWidget(), subDomainWidget(), footerButton()],
+              children: [
+                headerTextWidget(),
+                subDomainBodyWidget(),
+                footerButton()
+              ],
             ),
           ),
         ),

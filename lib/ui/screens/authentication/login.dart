@@ -28,14 +28,14 @@ class _UserLoginState extends State<UserLogin> {
       _isLoading = true;
     });
     Map result = await authBloc.login(_loginFormData);
-    if (result['status'] == 'success') {
+    if (result['error'] == false) {
       setState(() {
         _errorMessage = null;
       });
       await authBloc.getProfileDetails();
       Navigator.pushNamedAndRemoveUntil(
           context, '/sales_dashboard', (route) => false);
-    } else if (result['status'] == 'failure') {
+    } else if (result['error'] == true) {
       setState(() {
         _errorMessage = result['message'];
       });
