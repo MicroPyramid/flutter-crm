@@ -91,7 +91,7 @@ class _SubDomainState extends State<SubDomain> {
               style: GoogleFonts.robotoSlab(
                   textStyle: TextStyle(
                       color: Theme.of(context).secondaryHeaderColor,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       fontSize: screenWidth / 22)),
             ),
           ),
@@ -103,13 +103,13 @@ class _SubDomainState extends State<SubDomain> {
                       textStyle: TextStyle(
                           color: Theme.of(context).secondaryHeaderColor,
                           fontWeight: FontWeight.w500,
-                          fontSize: screenWidth / 20))),
+                          fontSize: screenWidth / 22))),
               Text('Login Your Account',
                   style: GoogleFonts.robotoSlab(
                       textStyle: TextStyle(
                           color: Theme.of(context).secondaryHeaderColor,
                           fontWeight: FontWeight.w500,
-                          fontSize: screenWidth / 20)))
+                          fontSize: screenWidth / 22)))
             ],
           )),
           Container(

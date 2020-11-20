@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
 import 'package:flutter_crm/ui/widgets/footer_button.dart';
 import 'package:flutter_crm/utils/utils.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -20,7 +17,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   String _email;
   bool _isLoading = false;
   String _errorMessage;
-  bool _isBtnEnabled = true;
+  String _successMessage = "";
 
   @override
   void initState() {
@@ -39,8 +36,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     if (result['error'] == false) {
       setState(() {
         _errorMessage = null;
+        _successMessage = result['message'];
       });
-      // Navigator.pushReplacementNamed(context, '/forgot_password_text');
     } else if (result['error'] == true) {
       setState(() {
         _errorMessage = result['errors']['non_field_errors'][0];
@@ -79,143 +76,151 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   Widget forgotPasswordWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 15.0),
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: Text('Forgot Password',
-              style: GoogleFonts.robotoSlab(
-                  textStyle: TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: screenWidth / 20))),
-        ),
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: Text('Please enter your email address below following which a reset-password email will be sent to you.',
-              style: GoogleFonts.robotoSlab(
-                  textStyle: TextStyle(
-                    color: Theme.of(context).secondaryHeaderColor,
-                    // fontWeight: FontWeight.w700,
-                  ))),
-        ),
-        Container(
-          child: Form(
-              key: _forgotPasswordFormKey,
-
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.65,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            enabledBorder: boxBorder(),
-                            focusedBorder: boxBorder(),
-                            filled: true,
-                            hintText: 'Enter Email Address'),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            setState(() {
-                              _errorMessage = null;
-                              _isBtnEnabled= !_isBtnEnabled;
-                            });
-                            return 'This field is required.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _email = value;
-                        },
-                      ),
-                    ),
-                    _errorMessage != null
-                        ? Container(
-                      margin: EdgeInsets.only(top: 10.0),
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: Text(
-                        _errorMessage,
-                        style: TextStyle(
-                            color: Colors.red[700], fontSize: 12.0),
-                      ),
-                    )
-                        : Container(),
-                    SizedBox(width: 10,),
-                    !_isLoading
-                        ? Container(
-                      height: screenHeight * 0.06,
-                      width: screenWidth * 0.15,
-                      margin: EdgeInsets.symmetric(vertical: 10.0),
-                      child: RaisedButton(
-                          color: Color.fromRGBO(73, 163, 69, 1),
-                          disabledColor: Colors.green.shade200,
-                          shape: boxBorder(),
-                          onPressed: _isBtnEnabled?() {
-                            FocusScope.of(context).unfocus();
-                            if (!_isLoading) {
-                              _submitForm();
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: 10.0, horizontal: screenWidth * 0.05),
+            child: Text('Forgot Password',
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        color: Theme.of(context).secondaryHeaderColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: screenWidth / 20))),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.05, vertical: 15.0),
+            child: Text(
+                'Please enter your email address below and we will send you information to change your password.',
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        color: Theme.of(context).secondaryHeaderColor,
+                        fontSize: screenWidth / 27))),
+          ),
+          Container(
+            child: Form(
+                key: _forgotPasswordFormKey,
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        child: TextFormField(
+                          enabled: _successMessage == "" ? true : false,
+                          decoration: InputDecoration(
+                              enabledBorder: boxBorder(),
+                              disabledBorder: boxBorder(),
+                              focusedErrorBorder: boxBorder(),
+                              focusedBorder: boxBorder(),
+                              errorBorder: boxBorder(),
+                              fillColor: _successMessage == ""
+                                  ? Colors.white
+                                  : Colors.grey[300],
+                              filled: true,
+                              errorStyle: GoogleFonts.robotoSlab(),
+                              hintStyle: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(fontSize: 14.0)),
+                              hintText: 'Enter Email Address'),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value.isEmpty) {
                               setState(() {
-                                _isBtnEnabled= !_isBtnEnabled;
-                                Fluttertoast.showToast(
-                                  toastLength: Toast.LENGTH_LONG,
-                                    msg: 'Password-reset Email has been sent.',);
-                                Timer(const Duration(seconds: 2), () {
-                                  setState(() {
-                                    Navigator.pushReplacementNamed(context, '/sub_domain');
-                                  });
-                                });
+                                _errorMessage = null;
                               });
+                              return 'This field is required.';
                             }
-                          }:null,
-                          child: Icon(
-                            Icons.arrow_right_alt_outlined,
-                            size: 30,
-                            color: Colors.white,)
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _email = value;
+                          },
+                        ),
                       ),
-                    )
-                        : Container(
-                      margin: EdgeInsets.only(top: 10.0),
-                      child: CircularProgressIndicator(
-                          valueColor:
-                          new AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).buttonColor)),
-                    ),
-
-                  ],
-                ),
-
-              )),
-        ),
-      ],
+                      !_isLoading && _successMessage == ""
+                          ? GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                                _submitForm();
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10.0),
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(73, 163, 69, 1),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                width: screenWidth * 0.15,
+                                height: 55.0,
+                                child: Icon(Icons.arrow_forward,
+                                    color: Colors.white),
+                              ),
+                            )
+                          : _isLoading
+                              ? Container(
+                                  margin: EdgeInsets.only(left: 10.0),
+                                  width: screenWidth * 0.12,
+                                  height: 40.0,
+                                  child: CircularProgressIndicator(
+                                      valueColor:
+                                          new AlwaysStoppedAnimation<Color>(
+                                              Color.fromRGBO(73, 163, 69, 1))),
+                                )
+                              : Container()
+                    ],
+                  ),
+                )),
+          ),
+          _successMessage != ""
+              ? Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: screenWidth * 0.1),
+                  child: Text(_successMessage,
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Colors.green[700],
+                              fontWeight: FontWeight.w600,
+                              fontSize: screenWidth / 24))),
+                )
+              : Container(),
+          _errorMessage != null
+              ? Container(
+                  margin: EdgeInsets.only(top: 10.0, left: screenWidth * 0.06),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _errorMessage,
+                    style: GoogleFonts.robotoSlab(
+                        textStyle:
+                            TextStyle(color: Colors.red[700], fontSize: 12.0)),
+                  ),
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Container(
-            width: screenWidth,
-            child: Column(
+      body: SingleChildScrollView(
+        child: Container(
+          height: screenHeight,
+          child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children : [
+              children: [
                 HeaderTextWidget(),
                 forgotPasswordWidget(),
                 FooterBtnWidget(
                   labelText: "",
                   buttonLabelText: "Back to Login",
                   routeName: "/user_login",
-                )]),
-          )
-          // FooterBtnWidget()
-        ],
+                )
+              ]),
+        ),
       ),
     );
   }

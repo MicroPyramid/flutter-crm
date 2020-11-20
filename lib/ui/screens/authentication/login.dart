@@ -106,7 +106,7 @@ class _UserLoginState extends State<UserLogin> {
                                 textStyle: TextStyle(
                                     color:
                                         Theme.of(context).secondaryHeaderColor,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                     fontSize: screenWidth / 20)),
                           ),
                         ),
@@ -144,7 +144,8 @@ class _UserLoginState extends State<UserLogin> {
                                 'Your Subdomain',
                                 style: GoogleFonts.robotoSlab(
                                     textStyle: TextStyle(
-                                        color: Colors.black,
+                                        color: Theme.of(context)
+                                            .secondaryHeaderColor,
                                         fontWeight: FontWeight.w500,
                                         fontSize: screenWidth / 30)),
                               )

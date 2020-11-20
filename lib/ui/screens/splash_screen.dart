@@ -91,7 +91,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
                                   color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   fontSize:
                                       MediaQuery.of(context).size.width / 13)),
                         ),

@@ -12,7 +12,7 @@ class HeaderTextWidget extends StatelessWidget {
         style: GoogleFonts.robotoSlab(
             textStyle: TextStyle(
                 color: Theme.of(context).secondaryHeaderColor,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: screenWidth / 13)),
       ),
     );

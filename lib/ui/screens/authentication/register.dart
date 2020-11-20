@@ -108,8 +108,8 @@ class _UserRegisterState extends State<UserRegister> {
               style: GoogleFonts.robotoSlab(
                   textStyle: TextStyle(
                       color: Theme.of(context).secondaryHeaderColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: screenWidth / 22)),
+                      fontWeight: FontWeight.w600,
+                      fontSize: screenWidth / 20)),
             ),
           ),
           Container(
