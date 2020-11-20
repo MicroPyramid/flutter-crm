@@ -1,27 +1,23 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/login_headerTextWidget.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:flutter_crm/bloc/auth_bloc.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
 import 'package:flutter_crm/utils/utils.dart';
-import 'package:flutter_crm/ui/widgets/login_footerBtnWidget.dart';
-import 'dart:math' as math;
+import 'package:flutter_crm/ui/widgets/footer_button.dart';
 
 class UserLogin extends StatefulWidget {
-  var subDomainName;
-
-  UserLogin(this.subDomainName);
+  UserLogin();
   @override
-  State createState() => _UserLoginState(subDomainName);
+  State createState() => _UserLoginState();
 }
 
 class _UserLoginState extends State<UserLogin> {
-  _UserLoginState(this._subDomainName);
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   Map _loginFormData = {"email": "", "password": ""};
   bool _isLoading = false;
   String _errorMessage;
-  String _subDomainName;
 
   @override
   void initState() {
@@ -84,19 +80,19 @@ class _UserLoginState extends State<UserLogin> {
   OutlineInputBorder boxBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(15)),
-      borderSide: BorderSide(width: 0, color: Color.fromRGBO(221, 221, 221, 1)),
+      borderSide: BorderSide(width: 1, color: Colors.grey),
     );
   }
 
-  Widget loginWidget(){
+  Widget loginWidget() {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
       child: Form(
           key: _loginFormKey,
           child: Container(
             child: Column(
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                     child: Column(
@@ -104,64 +100,91 @@ class _UserLoginState extends State<UserLogin> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                          child: Text('Login',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 20)),),
+                          child: Text(
+                            'Login',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 20)),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                           child: Row(
                             children: [
-                              SizedBox(
-                                width: screenWidth*0.13,
-                                height: screenHeight*0.03,
-                                child: FlatButton(
-                                    child: Transform.rotate(
-                                        angle: 180*math.pi/180,
-                                        child: Icon(Icons.arrow_right_alt, color: Colors.white)),
-                                    shape: boxBorder(),
+                              GestureDetector(
+                                onTap: () {
+                                  FocusScope.of(context).unfocus();
+                                  if (!_isLoading)
+                                    Navigator.pushReplacementNamed(
+                                        context, '/sub_domain');
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: screenHeight * 0.03,
+                                  width: screenWidth * 0.1,
+                                  decoration: BoxDecoration(
                                     color: Colors.black,
-                                    onPressed: (){
-                                      Navigator.popAndPushNamed(context, '/sub_domain');
-                                      print('PRESSED!, going to subDomain Page.');
-                                    }),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                  ),
+                                  child: Icon(
+                                    Icons.keyboard_backspace_sharp,
+                                    color: Colors.white,
+                                    size: screenWidth / 20,
+                                  ),
+                                ),
                               ),
-                              SizedBox(width: 10,),
-                              Text('Your Sub-domain :',
-                              style: GoogleFonts.robotoSlab(
-                                  textStyle: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: screenWidth / 35)),)
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Your Subdomain',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: screenWidth / 30)),
+                              )
                             ],
                           ),
                         ),
-                        Text("$_subDomainName.bottlecrm.com",
+                        Text(
+                          "${authBloc.subDomainName}",
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 27)),)
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: screenWidth / 25)),
+                        )
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
                   child: TextFormField(
                     decoration: InputDecoration(
                         enabledBorder: boxBorder(),
+                        focusedErrorBorder: boxBorder(),
                         focusedBorder: boxBorder(),
+                        errorBorder: boxBorder(),
                         fillColor: Colors.white,
                         filled: true,
+                        errorStyle: GoogleFonts.robotoSlab(),
+                        hintStyle: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(fontSize: 14.0)),
                         hintText: 'Enter Email Address'),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value.isEmpty) {
+                        setState(() {
+                          _errorMessage = null;
+                        });
                         return 'This field is required.';
                       }
                       return null;
@@ -173,14 +196,18 @@ class _UserLoginState extends State<UserLogin> {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 10.0),
-                  width: MediaQuery.of(context).size.width * 0.8,
                   child: TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
                         enabledBorder: boxBorder(),
+                        focusedErrorBorder: boxBorder(),
                         focusedBorder: boxBorder(),
+                        errorBorder: boxBorder(),
                         fillColor: Colors.white,
                         filled: true,
+                        errorStyle: GoogleFonts.robotoSlab(),
+                        hintStyle: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(fontSize: 14.0)),
                         hintText: 'Enter Password'),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -199,127 +226,87 @@ class _UserLoginState extends State<UserLogin> {
                 ),
                 _errorMessage != null
                     ? Container(
-                  margin: EdgeInsets.only(top: 10.0),
-                  width: MediaQuery.of(context).size.width *
-                      0.8,
-                  child: Text(
-                    _errorMessage,
-                    style: TextStyle(
-                        color: Colors.red[700],
-                        fontSize: 12.0),
-                  ),
-                )
-                    : Container(),
-                // Container(
-                //   margin: EdgeInsets.symmetric(vertical: 10.0),
-                //   width: MediaQuery.of(context).size.width * 0.8,
-                //   child: Row(
-                //     children: [
-                //       Container(
-                //         child: Text('New Here? '),
-                //       ),
-                //       GestureDetector(
-                //         onTap: () {
-                //           Navigator.pushNamed(
-                //               context, '/user_register');
-                //         },
-                //         child: Text(
-                //           'Register',
-                //           style: TextStyle(color: Colors.blue),
-                //         ),
-                //       )
-                //     ],
-                //   ),
-                // ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, '/forgot_password');
-                        },
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(left: 10.0),
                         child: Text(
-                          "Forgot Password?",
+                          _errorMessage,
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
-                                  color: Color.fromRGBO(5, 24, 62, 1),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 30)),
+                                  color: Colors.red[700], fontSize: 12.0)),
                         ),
                       )
-                    ],
+                    : Container(),
+                Container(
+                  margin: EdgeInsets.only(top: 10.0),
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/forgot_password');
+                    },
+                    child: Text(
+                      "Forgot Password?",
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
                   ),
                 ),
                 !_isLoading
                     ? Container(
-                  width: MediaQuery.of(context).size.width *
-                      0.8,
-                  height: MediaQuery.of(context).size.height *
-                      0.06,
-                  margin: EdgeInsets.only(top: 15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      RaisedButton.icon(
-                        shape: boxBorder(),
-                        color: Colors.green[500],
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          if (!_isLoading) {
-                            _submitForm();
-                          }
-                        },
-                        label: Text(
-                          '  Login  ',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800)),
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        margin: EdgeInsets.only(top: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                                _submitForm();
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: screenHeight * 0.06,
+                                width: screenWidth * 0.35,
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(73, 163, 69, 1),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      'Login',
+                                      style: GoogleFonts.robotoSlab(
+                                          textStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: screenWidth / 24)),
+                                    ),
+                                    Icon(Icons.arrow_forward,
+                                        color: Colors.white)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        icon: Icon(Icons.arrow_forward, color: Colors.white,),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: Text('OR'),
-                      // ),
-                      // RaisedButton.icon(
-                      //     color: Colors.white,
-                      //     shape: boxBorder(),
-                      //     onPressed: (){},
-                      //     icon: ImageIcon(
-                      //       AssetImage('assets/images/google_logo.png'),
-                      //       color: Colors.red,
-                      //     ),
-                      //     label: Text(
-                      //         'Google Login',
-                      //         style: GoogleFonts.robotoSlab(
-                      //             textStyle: TextStyle(
-                      //                 color: Colors.red,
-                      //                 fontWeight: FontWeight.w800,))
-                      //     )
-                      // ),
-                    ],
-                  ),
-                )
+                      )
                     : Container(
-                  margin: EdgeInsets.only(top: 10.0),
-                  child: CircularProgressIndicator(
-                      valueColor:
-                      new AlwaysStoppedAnimation<Color>(
-                          Theme.of(context)
-                              .buttonColor)),
-                ),
-
+                        margin: EdgeInsets.only(top: 10.0),
+                        child: CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(
+                                Color.fromRGBO(73, 163, 69, 1))),
+                      ),
               ],
             ),
           )),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -335,7 +322,11 @@ class _UserLoginState extends State<UserLogin> {
                 children: [
                   HeaderTextWidget(),
                   loginWidget(),
-                  FooterBtnWidget("Don't have an Account ?", "Register Here", '/user_register'),
+                  FooterBtnWidget(
+                    labelText: "Don't have an Account?",
+                    buttonLabelText: "Register Here",
+                    routeName: "/user_register",
+                  )
                 ],
               ),
             ),
@@ -345,4 +336,3 @@ class _UserLoginState extends State<UserLogin> {
     );
   }
 }
-

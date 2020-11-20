@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           'Bottle CRM',
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
-                                  color: Color.fromRGBO(5, 24, 62, 1),
+                                  color: Theme.of(context).secondaryHeaderColor,
                                   fontWeight: FontWeight.w500,
                                   fontSize:
                                       MediaQuery.of(context).size.width / 13)),
@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                       CircularProgressIndicator(
                           valueColor: new AlwaysStoppedAnimation<Color>(
-                              Color.fromRGBO(5, 24, 62, 1))),
+                              Theme.of(context).secondaryHeaderColor)),
                     ],
                   ),
                 ),

@@ -1,8 +1,8 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/login_footerBtnWidget.dart';
-import 'package:flutter_crm/ui/widgets/login_headerTextWidget.dart';
+import 'package:flutter_crm/ui/widgets/footer_button.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -107,7 +107,7 @@ class _UserRegisterState extends State<UserRegister> {
               'Register',
               style: GoogleFonts.robotoSlab(
                   textStyle: TextStyle(
-                      color: Color.fromRGBO(5, 24, 62, 1),
+                      color: Theme.of(context).secondaryHeaderColor,
                       fontWeight: FontWeight.w500,
                       fontSize: screenWidth / 22)),
             ),
@@ -409,7 +409,7 @@ class _UserRegisterState extends State<UserRegister> {
                 "Existing User?",
                 style: GoogleFonts.robotoSlab(
                     textStyle: TextStyle(
-                        color: Color.fromRGBO(5, 24, 62, 1),
+                        color: Theme.of(context).secondaryHeaderColor,
                         fontWeight: FontWeight.w500,
                         fontSize: screenWidth / 25)),
               ),
@@ -462,325 +462,17 @@ class _UserRegisterState extends State<UserRegister> {
               children: [
                 HeaderTextWidget(),
                 textFields(),
-                FooterBtnWidget('Existing User?', 'Login Here', '/sub_domain')
+                FooterBtnWidget(
+                  labelText: "Existing User?",
+                  buttonLabelText: "Login Here",
+                  routeName: "/sub_domain",
+                )
                 // footerButton()
               ],
             ),
           ),
         ),
       ),
-      // body: Stack(
-      //   fit: StackFit.expand,
-      //   children: <Widget>[
-      //     SingleChildScrollView(
-      //       child: Container(
-      //         height: MediaQuery.of(context).size.height,
-      //         child: Column(
-      //           mainAxisAlignment: MainAxisAlignment.center,
-      //           children: [
-      //             Container(
-      //               margin: EdgeInsets.symmetric(vertical: 15.0),
-      //               child: Text('bottlecrm',
-      //                   style: TextStyle(
-      //                       color: Color.fromRGBO(51, 51, 51, 1),
-      //                       fontWeight: FontWeight.w500,
-      //                       fontSize: MediaQuery.of(context).size.width / 15)),
-      //             ),
-      //             Container(
-      //               child: Form(
-      //                   key: _registerFormKey,
-      //                   child: Container(
-      //                     child: Column(
-      //                       children: [
-      //                         Container(
-      //                           width: MediaQuery.of(context).size.width * 0.8,
-      //                           child: TextFormField(
-      //                             decoration: InputDecoration(
-      //                                 enabledBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 focusedBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 fillColor: Colors.white,
-      //                                 filled: true,
-      //                                 hintText: 'Sub-domain'),
-      //                             keyboardType: TextInputType.text,
-      //                             validator: (value) {
-      //                               if (value.isEmpty) {
-      //                                 setState(() {
-      //                                   _errors = {};
-      //                                   _errorMessage = null;
-      //                                 });
-      //                                 return 'This field is required.';
-      //                               }
-      //                               return null;
-      //                             },
-      //                             onSaved: (value) {
-      //                               _formData['sub_domain'] = value;
-      //                             },
-      //                           ),
-      //                         ),
-      //                         _errors != null && _errors['sub_domain'] != null
-      //                             ? Container(
-      //                                 margin:
-      //                                     EdgeInsets.symmetric(vertical: 5.0),
-      //                                 width: MediaQuery.of(context).size.width *
-      //                                     0.8,
-      //                                 child: Text(
-      //                                   _errors['sub_domain'],
-      //                                   style: TextStyle(
-      //                                       color: Colors.red[700],
-      //                                       fontSize: 12.0),
-      //                                 ),
-      //                               )
-      //                             : Container(),
-      //                         Container(
-      //                           margin: EdgeInsets.only(top: 10.0),
-      //                           width: MediaQuery.of(context).size.width * 0.8,
-      //                           child: TextFormField(
-      //                             decoration: InputDecoration(
-      //                                 enabledBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 focusedBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 fillColor: Colors.white,
-      //                                 filled: true,
-      //                                 hintText: 'username'),
-      //                             keyboardType: TextInputType.text,
-      //                             validator: (value) {
-      //                               if (value.isEmpty) {
-      //                                 setState(() {
-      //                                   _errors = {};
-      //                                   _errorMessage = null;
-      //                                 });
-      //                                 return 'This field is required.';
-      //                               }
-      //                               return null;
-      //                             },
-      //                             onSaved: (value) {
-      //                               _formData['username'] = value;
-      //                             },
-      //                           ),
-      //                         ),
-      //                         _errors != null && _errors['username'] != null
-      //                             ? Container(
-      //                                 margin:
-      //                                     EdgeInsets.symmetric(vertical: 5.0),
-      //                                 width: MediaQuery.of(context).size.width *
-      //                                     0.8,
-      //                                 child: Text(
-      //                                   _errors['username'],
-      //                                   style: TextStyle(
-      //                                       color: Colors.red[700],
-      //                                       fontSize: 12.0),
-      //                                 ),
-      //                               )
-      //                             : Container(),
-      //                         Container(
-      //                           margin: EdgeInsets.only(top: 10.0),
-      //                           width: MediaQuery.of(context).size.width * 0.8,
-      //                           child: TextFormField(
-      //                             decoration: InputDecoration(
-      //                                 enabledBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 focusedBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 fillColor: Colors.white,
-      //                                 filled: true,
-      //                                 hintText: 'email'),
-      //                             keyboardType: TextInputType.emailAddress,
-      //                             validator: (value) {
-      //                               if (value.isEmpty) {
-      //                                 setState(() {
-      //                                   _errors = {};
-      //                                   _errorMessage = null;
-      //                                 });
-      //                                 return 'This field is required.';
-      //                               }
-      //                               return null;
-      //                             },
-      //                             onSaved: (value) {
-      //                               _formData['email'] = value;
-      //                             },
-      //                           ),
-      //                         ),
-      //                         _errors != null && _errors['email'] != null
-      //                             ? Container(
-      //                                 margin:
-      //                                     EdgeInsets.symmetric(vertical: 5.0),
-      //                                 width: MediaQuery.of(context).size.width *
-      //                                     0.8,
-      //                                 child: Text(
-      //                                   _errors['email'],
-      //                                   style: TextStyle(
-      //                                       color: Colors.red[700],
-      //                                       fontSize: 12.0),
-      //                                 ),
-      //                               )
-      //                             : Container(),
-      //                         Container(
-      //                           margin: EdgeInsets.only(top: 10.0),
-      //                           width: MediaQuery.of(context).size.width * 0.8,
-      //                           child: TextFormField(
-      //                             obscureText: true,
-      //                             decoration: InputDecoration(
-      //                                 enabledBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 focusedBorder: OutlineInputBorder(
-      //                                   borderRadius: BorderRadius.all(
-      //                                       Radius.circular(4)),
-      //                                   borderSide: BorderSide(
-      //                                       width: 1,
-      //                                       color: Color.fromRGBO(
-      //                                           221, 221, 221, 1)),
-      //                                 ),
-      //                                 fillColor: Colors.white,
-      //                                 filled: true,
-      //                                 hintText: 'password'),
-      //                             keyboardType: TextInputType.emailAddress,
-      //                             validator: (value) {
-      //                               if (value.isEmpty) {
-      //                                 setState(() {
-      //                                   _errors = {};
-      //                                   _errorMessage = null;
-      //                                 });
-      //                                 return 'This field is required.';
-      //                               }
-      //                               return null;
-      //                             },
-      //                             onSaved: (value) {
-      //                               _formData['password'] = value;
-      //                             },
-      //                           ),
-      //                         ),
-      //                         _errors != null && _errors['password'] != null
-      //                             ? Container(
-      //                                 margin:
-      //                                     EdgeInsets.symmetric(vertical: 5.0),
-      //                                 width: MediaQuery.of(context).size.width *
-      //                                     0.8,
-      //                                 child: Text(
-      //                                   _errors['password'],
-      //                                   style: TextStyle(
-      //                                       color: Colors.red[700],
-      //                                       fontSize: 12.0),
-      //                                 ),
-      //                               )
-      //                             : Container(),
-      //                         _errorMessage != null
-      //                             ? Container(
-      //                                 margin: EdgeInsets.only(top: 10.0),
-      //                                 width: MediaQuery.of(context).size.width *
-      //                                     0.8,
-      //                                 child: Text(
-      //                                   _errorMessage,
-      //                                   style: TextStyle(
-      //                                       color: Colors.red[700],
-      //                                       fontSize: 12.0),
-      //                                 ),
-      //                               )
-      //                             : Container(),
-      //                         Container(
-      //                           margin: EdgeInsets.symmetric(vertical: 10.0),
-      //                           width: MediaQuery.of(context).size.width * 0.8,
-      //                           child: Row(
-      //                             children: [
-      //                               Container(
-      //                                 child: Text('Have an account? '),
-      //                               ),
-      //                               GestureDetector(
-      //                                 onTap: () {
-      //                                   Navigator.pushReplacementNamed(
-      //                                       context, '/sub_domain');
-      //                                 },
-      //                                 child: Text(
-      //                                   'Login here',
-      //                                   style: TextStyle(color: Colors.blue),
-      //                                 ),
-      //                               )
-      //                             ],
-      //                           ),
-      //                         ),
-      //                         !_isLoading
-      //                             ? Container(
-      //                                 width: MediaQuery.of(context).size.width *
-      //                                     0.8,
-      //                                 margin: EdgeInsets.only(top: 10.0),
-      //                                 child: RaisedButton(
-      //                                   color: Theme.of(context).buttonColor,
-      //                                   onPressed: () {
-      //                                     FocusScope.of(context).unfocus();
-      //                                     if (!_isLoading) {
-      //                                       _submitForm();
-      //                                     }
-      //                                   },
-      //                                   child: Text(
-      //                                     'Register',
-      //                                     style: TextStyle(
-      //                                         color: Colors.white,
-      //                                         fontWeight: FontWeight.w500),
-      //                                   ),
-      //                                 ),
-      //                               )
-      //                             : Container(
-      //                                 margin: EdgeInsets.only(top: 10.0),
-      //                                 child: CircularProgressIndicator(
-      //                                     valueColor:
-      //                                         new AlwaysStoppedAnimation<Color>(
-      //                                             Theme.of(context)
-      //                                                 .buttonColor)),
-      //                               )
-      //                       ],
-      //                     ),
-      //                   )),
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //     )
-      //   ],
-      // ),
     );
   }
 }

@@ -1,12 +1,10 @@
 import 'package:flushbar/flushbar.dart';
-import 'package:flutter_crm/ui/widgets/login_footerBtnWidget.dart';
-import 'package:flutter_crm/ui/widgets/login_headerTextWidget.dart';
+import 'package:flutter_crm/ui/widgets/footer_button.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
-
-import 'login.dart';
 
 class SubDomain extends StatefulWidget {
   SubDomain();
@@ -38,10 +36,7 @@ class _SubDomainState extends State<SubDomain> {
       setState(() {
         _errorMessage = null;
       });
-      Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(
-        builder: (BuildContext context) => UserLogin(_subDomainName),
-      ));
+      Navigator.pushNamed(context, '/user_login');
     } else if (result['error'] == true) {
       setState(() {
         _errorMessage = result['message'];
@@ -95,7 +90,7 @@ class _SubDomainState extends State<SubDomain> {
               'Welcome!',
               style: GoogleFonts.robotoSlab(
                   textStyle: TextStyle(
-                      color: Color.fromRGBO(5, 24, 62, 1),
+                      color: Theme.of(context).secondaryHeaderColor,
                       fontWeight: FontWeight.w500,
                       fontSize: screenWidth / 22)),
             ),
@@ -106,13 +101,13 @@ class _SubDomainState extends State<SubDomain> {
               Text('Enter Sub-Domain Here to',
                   style: GoogleFonts.robotoSlab(
                       textStyle: TextStyle(
-                          color: Color.fromRGBO(5, 24, 62, 1),
+                          color: Theme.of(context).secondaryHeaderColor,
                           fontWeight: FontWeight.w500,
                           fontSize: screenWidth / 20))),
               Text('Login Your Account',
                   style: GoogleFonts.robotoSlab(
                       textStyle: TextStyle(
-                          color: Color.fromRGBO(5, 24, 62, 1),
+                          color: Theme.of(context).secondaryHeaderColor,
                           fontWeight: FontWeight.w500,
                           fontSize: screenWidth / 20)))
             ],
@@ -198,7 +193,7 @@ class _SubDomainState extends State<SubDomain> {
                 "Forgot Sub-Domain",
                 style: GoogleFonts.robotoSlab(
                     textStyle: TextStyle(
-                        color: Color.fromRGBO(5, 24, 62, 1),
+                        color: Theme.of(context).secondaryHeaderColor,
                         fontWeight: FontWeight.w500,
                         fontSize: screenWidth / 23)),
               ))
@@ -222,7 +217,11 @@ class _SubDomainState extends State<SubDomain> {
               children: [
                 HeaderTextWidget(),
                 subDomainBodyWidget(),
-                FooterBtnWidget("Don't have an Account ?", "Register Here", "/user_register")
+                FooterBtnWidget(
+                  labelText: "Don't Have An Account?",
+                  buttonLabelText: "Register Here",
+                  routeName: "/user_register",
+                )
               ],
             ),
           ),
