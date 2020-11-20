@@ -258,7 +258,7 @@ class _UserLoginState extends State<UserLogin> {
                         height: MediaQuery.of(context).size.height * 0.06,
                         margin: EdgeInsets.only(top: 15.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             GestureDetector(
@@ -269,7 +269,7 @@ class _UserLoginState extends State<UserLogin> {
                               child: Container(
                                 alignment: Alignment.center,
                                 height: screenHeight * 0.06,
-                                width: screenWidth * 0.35,
+                                width: screenWidth * 0.4,
                                 decoration: BoxDecoration(
                                   color: Color.fromRGBO(73, 163, 69, 1),
                                   borderRadius:

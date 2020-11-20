@@ -47,7 +47,6 @@ class MyApp extends StatelessWidget {
         '/user_register': (BuildContext context) => UserRegister(),
         '/user_login': (BuildContext context) => UserLogin(),
         '/forgot_password': (BuildContext context) => ForgotPassword(),
-        '/forgot_password_text': (BuildContext context) => ForgotPasswordText(),
         '/sales_dashboard': (BuildContext context) => Dashboard(),
         '/accounts': (BuildContext context) => AccountsScreen(),
         '/cases': (BuildContext context) => CasesScreen(),

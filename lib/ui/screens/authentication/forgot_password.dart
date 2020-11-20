@@ -1,6 +1,13 @@
+import 'dart:async';
+
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
+import 'package:flutter_crm/ui/widgets/footer_button.dart';
+import 'package:flutter_crm/utils/utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword();
@@ -13,6 +20,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   String _email;
   bool _isLoading = false;
   String _errorMessage;
+  bool _isBtnEnabled = true;
 
   @override
   void initState() {
@@ -32,7 +40,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       setState(() {
         _errorMessage = null;
       });
-      Navigator.pushReplacementNamed(context, '/forgot_password_text');
+      // Navigator.pushReplacementNamed(context, '/forgot_password_text');
     } else if (result['error'] == true) {
       setState(() {
         _errorMessage = result['errors']['non_field_errors'][0];
@@ -70,200 +78,145 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     )..show(context);
   }
 
+  Widget forgotPasswordWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 15.0),
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Text('Forgot Password',
+              style: GoogleFonts.robotoSlab(
+                  textStyle: TextStyle(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenWidth / 20))),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Text('Please enter your email address below following which a reset-password email will be sent to you.',
+              style: GoogleFonts.robotoSlab(
+                  textStyle: TextStyle(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    // fontWeight: FontWeight.w700,
+                  ))),
+        ),
+        Container(
+          child: Form(
+              key: _forgotPasswordFormKey,
+
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.65,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            enabledBorder: boxBorder(),
+                            focusedBorder: boxBorder(),
+                            filled: true,
+                            hintText: 'Enter Email Address'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            setState(() {
+                              _errorMessage = null;
+                              _isBtnEnabled= !_isBtnEnabled;
+                            });
+                            return 'This field is required.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _email = value;
+                        },
+                      ),
+                    ),
+                    _errorMessage != null
+                        ? Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Text(
+                        _errorMessage,
+                        style: TextStyle(
+                            color: Colors.red[700], fontSize: 12.0),
+                      ),
+                    )
+                        : Container(),
+                    SizedBox(width: 10,),
+                    !_isLoading
+                        ? Container(
+                      height: screenHeight * 0.06,
+                      width: screenWidth * 0.15,
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      child: RaisedButton(
+                          color: Color.fromRGBO(73, 163, 69, 1),
+                          disabledColor: Colors.green.shade200,
+                          shape: boxBorder(),
+                          onPressed: _isBtnEnabled?() {
+                            FocusScope.of(context).unfocus();
+                            if (!_isLoading) {
+                              _submitForm();
+                              setState(() {
+                                _isBtnEnabled= !_isBtnEnabled;
+                                Fluttertoast.showToast(
+                                  toastLength: Toast.LENGTH_LONG,
+                                    msg: 'Password-reset Email has been sent.',);
+                                Timer(const Duration(seconds: 2), () {
+                                  setState(() {
+                                    Navigator.pushReplacementNamed(context, '/sub_domain');
+                                  });
+                                });
+                              });
+                            }
+                          }:null,
+                          child: Icon(
+                            Icons.arrow_right_alt_outlined,
+                            size: 30,
+                            color: Colors.white,)
+                      ),
+                    )
+                        : Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: CircularProgressIndicator(
+                          valueColor:
+                          new AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).buttonColor)),
+                    ),
+
+                  ],
+                ),
+
+              )),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 15.0),
-                child: Text('Forgot Password',
-                    style: TextStyle(
-                        color: Color.fromRGBO(51, 51, 51, 1),
-                        fontWeight: FontWeight.w500,
-                        fontSize: MediaQuery.of(context).size.width / 18)),
-              ),
-              Container(
-                child: Form(
-                    key: _forgotPasswordFormKey,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: 'Email'),
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  setState(() {
-                                    _errorMessage = null;
-                                  });
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _email = value;
-                              },
-                            ),
-                          ),
-                          _errorMessage != null
-                              ? Container(
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  child: Text(
-                                    _errorMessage,
-                                    style: TextStyle(
-                                        color: Colors.red[700], fontSize: 12.0),
-                                  ),
-                                )
-                              : Container(),
-                          !_isLoading
-                              ? Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
-                                  margin: EdgeInsets.symmetric(vertical: 10.0),
-                                  child: RaisedButton(
-                                    color: Theme.of(context).buttonColor,
-                                    onPressed: () {
-                                      FocusScope.of(context).unfocus();
-                                      if (!_isLoading) {
-                                        _submitForm();
-                                      }
-                                    },
-                                    child: Text(
-                                      'Submit',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  child: CircularProgressIndicator(
-                                      valueColor:
-                                          new AlwaysStoppedAnimation<Color>(
-                                              Theme.of(context).buttonColor)),
-                                ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            child: Row(
-                              children: [
-                                Container(
-                                  child: Text('Already Have An Account? '),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/sub_domain');
-                                  },
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )),
-              ),
-            ],
+          Container(
+            width: screenWidth,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children : [
+                HeaderTextWidget(),
+                forgotPasswordWidget(),
+                FooterBtnWidget(
+                  labelText: "",
+                  buttonLabelText: "Back to Login",
+                  routeName: "/user_login",
+                )]),
           )
+          // FooterBtnWidget()
         ],
       ),
     );
-  }
-}
-
-class ForgotPasswordText extends StatefulWidget {
-  ForgotPasswordText();
-  @override
-  State createState() => _ForgotPasswordTextState();
-}
-
-class _ForgotPasswordTextState extends State<ForgotPasswordText> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-      child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.2,
-          ),
-          Container(
-            child: Text('Django CRM',
-                style: TextStyle(
-                    color: Color.fromRGBO(51, 51, 51, 1),
-                    fontWeight: FontWeight.w500,
-                    fontSize: MediaQuery.of(context).size.width / 15)),
-          ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: Text(
-              "We've emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly.",
-              style:
-                  TextStyle(fontSize: MediaQuery.of(context).size.width / 22),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Text(
-              "If you don't receive an email, please make sure you've entered the address you registered with, and check your spam folder.",
-              style:
-                  TextStyle(fontSize: MediaQuery.of(context).size.width / 22),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/sub_domain');
-              },
-              child: Text(
-                'Login',
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: MediaQuery.of(context).size.width / 20,
-                    fontWeight: FontWeight.w500),
-              ),
-            ),
-          )
-        ],
-      ),
-    ));
   }
 }

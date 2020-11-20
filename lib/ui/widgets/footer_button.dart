@@ -3,7 +3,9 @@ import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FooterBtnWidget extends StatelessWidget {
+
   final String labelText;
+  @required
   final String buttonLabelText;
   final String routeName;
   FooterBtnWidget({this.labelText, this.buttonLabelText, this.routeName});
