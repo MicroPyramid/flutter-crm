@@ -15,41 +15,66 @@ class SideMenuDrawer extends StatefulWidget {
 }
 
 class _SideMenuState extends State<SideMenuDrawer> {
-  final List salesSideMenuList = [
-    {'title': 'Dashboard', 'route': '/sales_dashboard'},
-    {'title': 'Accounts', 'route': '/accounts'},
-    {'title': 'Contacts', 'route': '/sales_contacts'},
-    {'title': 'Leads', 'route': '/leads'},
-    {'title': 'Opportunities', 'route': '/opportunities'},
-    {'title': 'Cases', 'route': '/cases'},
-    {'title': 'Documents', 'route': '/documents'},
-    {'title': 'Tasks', 'route': '/tasks'},
-    {'title': 'Invoices', 'route': '/invoices'},
-    {'title': 'Events', 'route': '/events'},
-    {'title': 'Teams', 'route': '/teams'},
+  final List _sideMenuList = [
+    {
+      'title': 'Dashboard',
+      'route': '/sales_dashboard',
+      'icon': 'assets/images/dashboard_icon.svg'
+    },
+    {
+      'title': 'Accounts',
+      'route': '/accounts',
+      'icon': 'assets/images/accounts_icon.svg'
+    },
+    {
+      'title': 'Contacts',
+      'route': '/sales_contacts',
+      'icon': 'assets/images/contacts_icon.svg'
+    },
+    {
+      'title': 'Leads',
+      'route': '/leads',
+      'icon': 'assets/images/leads_icon.svg'
+    },
+    {
+      'title': 'Opportunities',
+      'route': '/opportunities',
+      'icon': 'assets/images/opportunities_icon.svg'
+    },
+    {
+      'title': 'Cases',
+      'route': '/cases',
+      'icon': 'assets/images/cases_icon.svg'
+    },
+    {
+      'title': 'Documents',
+      'route': '/documents',
+      'icon': 'assets/images/documents_icon.svg'
+    },
+    {
+      'title': 'Tasks',
+      'route': '/tasks',
+      'icon': 'assets/images/tasks_icon.svg'
+    },
+    {
+      'title': 'Invoices',
+      'route': '/invoices',
+      'icon': 'assets/images/invoices_icon.svg'
+    },
+    {
+      'title': 'Events',
+      'route': '/events',
+      'icon': 'assets/images/events_icon.svg'
+    },
+    {
+      'title': 'Teams',
+      'route': '/teams',
+      'icon': 'assets/images/teams_icon.svg'
+    },
   ];
-
-  final List marketingSideMenuList = [
-    {'title': 'Dashboard', 'route': '/marketing_dashboard'},
-    {'title': 'Contacts', 'route': '/marketing_contacts'},
-    {'title': 'Email templates', 'route': '/email_templates'},
-    {'title': 'Campaigns', 'route': '/marketing_campaigns'},
-  ];
-
-  String _selectedSidebarItem = 'Dashboard';
-  String _currentModule = 'Sales';
-  String _profilePicUrl =
-      "https://starsunfolded.com/wp-content/uploads/2017/09/Virat-Kohli-French-cut-with-trimmed-scruff-beard-style.jpg";
-  // String _profilePicUrl = "";
-  bool _isExpanded = false;
-
 
   @override
   void initState() {
-    setState(() {
-      _selectedSidebarItem = selectedSidebarName;
-      _currentModule = currentSidebarModuleName;
-    });
     super.initState();
   }
 
@@ -57,218 +82,135 @@ class _SideMenuState extends State<SideMenuDrawer> {
     showDialog(
         context: context,
         child: CupertinoAlertDialog(
-          title: Text("Log out?"),
-          content: Text("Are you sure you want to log out?"),
+          title: Text(
+            "Logout?",
+            style: GoogleFonts.robotoSlab(
+                color: Theme.of(context).secondaryHeaderColor),
+          ),
+          content: Text(
+            "Are you sure you want to logout?",
+            style: GoogleFonts.robotoSlab(fontSize: 15.0),
+          ),
           actions: <Widget>[
             CupertinoDialogAction(
                 isDefaultAction: true,
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("Cancel")),
+                child: Text(
+                  "Cancel",
+                  style: GoogleFonts.robotoSlab(),
+                )),
             CupertinoDialogAction(
                 textStyle: TextStyle(color: Colors.red),
                 isDefaultAction: true,
                 onPressed: () async {
                   Navigator.pop(context);
                   SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
+                      await SharedPreferences.getInstance();
                   prefs.remove('authToken');
                   prefs.remove('subdomain');
                   Navigator.pushReplacementNamed(context, "/sub_domain");
                 },
-                child: Text("Log out")),
+                child: Text(
+                  "Logout",
+                  style: GoogleFonts.robotoSlab(),
+                )),
           ],
         ));
   }
 
   Widget _buildMenuItems(BuildContext context) {
-    List _sidebarList =
-        _currentModule == 'Sales' ? salesSideMenuList : marketingSideMenuList;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: _sidebarList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              // decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     border: Border(
-              //         right: _selectedSidebarItem == _sidebarList[index]['title']
-              //             ? BorderSide(
-              //                 color: Theme.of(context).primaryColor, width: 5.0)
-              //             : BorderSide(color: Colors.white),
-              //         bottom: BorderSide(
-              //             color: Theme.of(context).dividerColor, width: 2.0))),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    // leading: sideMenuList[index]['leading'],
-                    trailing: _currentModule == "Marketing" &&
-                            _sidebarList[index]['title'] == "Contacts"
-                        ? !_isExpanded
-                            ? Container(
-                                child: Icon(Icons.arrow_drop_down,
-                                    color: Theme.of(context).primaryColor),
-                              )
-                            : Container(
-                                child: Icon(Icons.arrow_drop_up,
-                                    color: Theme.of(context).primaryColor),
-                              )
-                        : Container(
-                            child: Icon(Icons.arrow_drop_down, color: Colors.white),
-                          ),
-                    title: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset('assets/images/${_sidebarList[index]['title']}_icon.svg',
-                            // width: screenWidth*0.1,
-                            ),
-                          SizedBox(width: 15,),
-                          Text(
-                            _sidebarList[index]['title'],
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto',
-                                fontSize: 12.0),
-                          ),
-                        ],
+        Container(
+          height: screenHeight * 0.70,
+          child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: _sideMenuList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, _sideMenuList[index]['route'], (route) => false);
+                },
+                child: Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.fromLTRB(screenWidth / 12, 10, 20, 10),
+                        child: SvgPicture.asset(
+                          _sideMenuList[index]['icon'],
+                          width: screenWidth / 20,
+                        ),
                       ),
-                    ),
-                    onTap: () {
-                      if (_currentModule == "Marketing" &&
-                          _sidebarList[index]['title'] == "Contacts") {
-                        setState(() {
-                          _isExpanded = !_isExpanded;
-                        });
-                      } else {
-                        selectedSidebarName = _sidebarList[index]['title'];
-                        setState(() {
-                          _selectedSidebarItem = _sidebarList[index]['title'];
-                        });
-                        Navigator.pushNamedAndRemoveUntil(context,
-                            _sidebarList[index]['route'], (route) => false);
-                      }
-                    },
+                      Container(
+                        child: Text(
+                          _sideMenuList[index]['title'],
+                          style: GoogleFonts.robotoSlab(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: screenWidth / 25),
+                        ),
+                      )
+                    ],
                   ),
-                  _currentModule == "Marketing" &&
-                          _sidebarList[index]['title'] == "Contacts" &&
-                          _isExpanded
-                      ? Container(
-                          margin: EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: Theme.of(context).dividerColor,
-                                            width: 2.0))),
-                                child: ListTile(
-                                  title: Text(
-                                    "Contacts List",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 14.0),
-                                  ),
-                                  onTap: () {
-                                    selectedSidebarName =
-                                        _sidebarList[index]['title'];
-                                    setState(() {
-                                      _selectedSidebarItem =
-                                          _sidebarList[index]['title'];
-                                    });
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        '/marketing_contacts', (route) => false);
-                                  },
-                                ),
-                              ),
-                              ListTile(
-                                title: Text(
-                                  "Contacts",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 14.0),
-                                ),
-                                onTap: () {
-                                  selectedSidebarName =
-                                      _sidebarList[index]['title'];
-                                  setState(() {
-                                    _selectedSidebarItem =
-                                        _sidebarList[index]['title'];
-                                  });
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      '/marketing_contacts', (route) => false);
-                                },
-                              )
-                            ],
-                          ),
-                        )
-                      : Container()
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, "/profile", (route) => false);
+          },
           child: Container(
-            margin: EdgeInsets.fromLTRB(15, 15, 0, 0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, "/profile", (route) => false);
-              },
-              child: Row(
-                children: [
-                  SvgPicture.asset('assets/images/Profile Settings_icon.svg', color: Colors.blue, width: screenWidth*0.07,),
-                  SizedBox(width: 15,),
-                  Text(
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(screenWidth / 12, 10, 20, 10),
+                  child: SvgPicture.asset(
+                    'assets/images/profile_settings_icon.svg',
+                    width: screenWidth / 20,
+                  ),
+                ),
+                Container(
+                  child: Text(
                     'Profile Settings',
                     style: GoogleFonts.robotoSlab(
-                        textStyle: TextStyle(
-                          color: Colors.blue,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15))
+                        color: Color.fromRGBO(44, 113, 255, 1),
+                        fontSize: screenWidth / 24),
                   ),
-
-                ],
-              ),
+                )
+              ],
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+        GestureDetector(
+          onTap: () {
+            showAlertDialog(context);
+          },
           child: Container(
-            margin: EdgeInsets.fromLTRB(15, 15, 0, 0),
-            child: GestureDetector(
-              onTap: (){
-                showAlertDialog(context);
-              },
-
-              child: Row(
-                children: [
-                  SvgPicture.asset('assets/images/Logout_icon.svg', color: Colors.red, width: screenWidth*0.07,),
-                  SizedBox(width: 15,),
-                  Text(
-                      'Logout',
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15))
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(screenWidth / 12, 10, 20, 10),
+                  child: SvgPicture.asset(
+                    'assets/images/logout_icon.svg',
+                    width: screenWidth / 20,
                   ),
-
-                ],
-              ),
+                ),
+                Container(
+                  child: Text(
+                    'Logout',
+                    style: GoogleFonts.robotoSlab(
+                        color: Colors.red, fontSize: screenWidth / 24),
+                  ),
+                )
+              ],
             ),
           ),
         )
@@ -279,170 +221,45 @@ class _SideMenuState extends State<SideMenuDrawer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: MediaQuery.of(context).size.width * 0.75,
       child: Drawer(
         child: ListView(
           children: <Widget>[
             Container(
-                height: MediaQuery.of(context).size.height * 0.1,
-                alignment: FractionalOffset(0.0, 0.0),
-                // color: Theme.of(context).primaryColor,
-                padding:
-                    EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        // Navigator.pushNamedAndRemoveUntil(
-                        //     context, "/profile", (route) => false);
-                      },
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                            child: Container(
-                              child: authBloc.userProfile != null &&
-                                      authBloc.userProfile.profileUrl != null &&
-                                      authBloc.userProfile.profileUrl != ""
-                                  ? CircleAvatar(
-                                      radius: MediaQuery.of(context).size.width / 15,
-                                      backgroundImage: NetworkImage(
-                                          authBloc.userProfile.profileUrl),
-                                      backgroundColor: Colors.white,
-                                    )
-                                  : authBloc.userProfile != null &&
-                                          authBloc.userProfile.firstName != ""
-                                      ? CircleAvatar(
-                                          radius:
-                                              MediaQuery.of(context).size.width / 15,
-                                          child: Text(
-                                            authBloc.userProfile.firstName[0],
-                                            style: TextStyle(
-                                                color:
-                                                    Theme.of(context).primaryColor,
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          backgroundColor: Colors.white,
-                                        )
-                                      : CircleAvatar(
-                                          radius:
-                                              MediaQuery.of(context).size.width / 15,
-                                          child: Icon(
-                                            Icons.person,
-                                            size:
-                                                MediaQuery.of(context).size.width /
-                                                    8,
-                                            color: Theme.of(context).primaryColor,
-                                          ),
-                                          backgroundColor: Colors.white,
-                                        ),
-                            ),
-                          ),
-                          SizedBox(width: 15,),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("${authBloc.userProfile.firstName}",
-                              style: GoogleFonts.robotoSlab(
-                                  textStyle: TextStyle(
-                                      // color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20)),),
-                              Text("${authBloc.userProfile.email}",
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(
-                                      // color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12)),)
-                            ],
-                          )
-                        ],
+              margin: EdgeInsets.only(bottom: 10.0),
+              child: ListTile(
+                leading: authBloc.userProfile.profileUrl != null &&
+                        authBloc.userProfile.profileUrl != ""
+                    ? CircleAvatar(
+                        radius: screenWidth / 15,
+                        backgroundImage:
+                            NetworkImage(authBloc.userProfile.profileUrl),
+                        backgroundColor: Colors.white,
+                      )
+                    : CircleAvatar(
+                        radius: screenWidth / 15,
+                        child: Icon(
+                          Icons.person,
+                          size: screenWidth / 10,
+                          color: Colors.white,
+                        ),
+                        backgroundColor: Theme.of(context).secondaryHeaderColor,
                       ),
-                    ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   crossAxisAlignment: CrossAxisAlignment.center,
-                    //   children: <Widget>[
-                    //     // Container(
-                    //     //   child: Text(
-                    //     //     "bottlecrm",
-                    //     //     style: TextStyle(
-                    //     //         color: Colors.white,
-                    //     //         fontSize:
-                    //     //             MediaQuery.of(context).size.width / 15,
-                    //     //         fontWeight: FontWeight.bold),
-                    //     //   ),
-                    //     // ),
-                    //     // Container(
-                    //     //   child: IconButton(
-                    //     //     onPressed: () {
-                    //     //       setState(() {
-                    //     //         _showDropDown = true;
-                    //     //       });
-                    //     //     },
-                    //     //     icon: Icon(Icons.arrow_drop_down_sharp,
-                    //     //         color: Colors.white,
-                    //     //         size:
-                    //     //             MediaQuery.of(context).size.width / 15),
-                    //     //   ),
-                    //     // )
-                    //     // Container(
-                    //     //   child: DropdownButtonHideUnderline(
-                    //     //     child: new DropdownButton<String>(
-                    //     //       icon: Icon(
-                    //     //         Icons.arrow_drop_down_sharp,
-                    //     //         color: Colors.white,
-                    //     //       ),
-                    //     //       hint: Text(
-                    //     //         "bottlecrm",
-                    //     //         style: TextStyle(
-                    //     //             color: Colors.white,
-                    //     //             fontSize:
-                    //     //                 MediaQuery.of(context).size.width /
-                    //     //                     15,
-                    //     //             fontWeight: FontWeight.bold),
-                    //     //       ),
-                    //     //       items: <String>['Sales', 'Marketing']
-                    //     //           .map((String value) {
-                    //     //         return new DropdownMenuItem<String>(
-                    //     //           value: value,
-                    //     //           child: new Text(
-                    //     //             value,
-                    //     //             style: TextStyle(
-                    //     //                 fontWeight: FontWeight.w500),
-                    //     //           ),
-                    //     //         );
-                    //     //       }).toList(),
-                    //     //       onChanged: (String value) {
-                    //     //         setState(() {
-                    //     //           _currentModule = value;
-                    //     //           _selectedSidebarItem = "Dashboard";
-                    //     //         });
-                    //     //         selectedSidebarName = "Dashboard";
-                    //     //         currentSidebarModuleName = value;
-                    //     //         if (_currentModule == "Sales") {
-                    //     //           Navigator.pushReplacementNamed(
-                    //     //               context, '/sales_dashboard');
-                    //     //         } else {
-                    //     //           Navigator.pushReplacementNamed(
-                    //     //               context, '/marketing_dashboard');
-                    //     //         }
-                    //     //       },
-                    //     //     ),
-                    //     //   ),
-                    //     // )
-                    //   ],
-                    // )
-                  ],
-                )),
-            Container(
-                height: MediaQuery.of(context).size.height * 0.85,
-                child: _buildMenuItems(context))
+                title: Text(authBloc.userProfile.firstName,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.robotoSlab(
+                        textStyle: TextStyle(
+                            color: Theme.of(context).secondaryHeaderColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: screenWidth / 18))),
+                subtitle: Text(authBloc.userProfile.email,
+                    style: GoogleFonts.robotoSlab(
+                        textStyle: TextStyle(
+                            color: Theme.of(context).secondaryHeaderColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: screenWidth / 28))),
+              ),
+            ),
+            Container(child: _buildMenuItems(context))
           ],
         ),
       ),

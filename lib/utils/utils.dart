@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-String selectedSidebarName = "Dashboard";
-String currentSidebarModuleName = "Sales";
 var screenWidth;
 var screenHeight;
 
