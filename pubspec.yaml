@@ -24,6 +24,7 @@ dependencies:
   textfield_tags: ^1.0.3
   json_table: ^1.4.0 
   google_fonts: ^1.1.1
+  flutter_svg:
 
 dev_dependencies:
   flutter_test:
