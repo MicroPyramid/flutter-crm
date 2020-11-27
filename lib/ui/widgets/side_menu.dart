@@ -259,7 +259,10 @@ class _SideMenuState extends State<SideMenuDrawer> {
                             fontSize: screenWidth / 28))),
               ),
             ),
-            Container(child: _buildMenuItems(context))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Container(child: _buildMenuItems(context)),
+            )
           ],
         ),
       ),
