@@ -2,8 +2,9 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/ui/widgets/footer_button.dart';
-import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_logo.dart';
 import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UserRegister extends StatefulWidget {
@@ -87,12 +88,12 @@ class _UserRegisterState extends State<UserRegister> {
     )..show(context);
   }
 
-  OutlineInputBorder boxBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(15)),
-      borderSide: BorderSide(width: 1, color: Colors.grey),
-    );
-  }
+  // OutlineInputBorder boxBorder() {
+  //   return OutlineInputBorder(
+  //     // borderRadius: BorderRadius.all(Radius.circular(15)),
+  //     borderSide: BorderSide(width: 1, color: Colors.grey),
+  //   );
+  // }
 
   Widget textFields() {
     return Container(
@@ -102,13 +103,13 @@ class _UserRegisterState extends State<UserRegister> {
         children: [
           Container(
             alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(bottom: 10.0),
+            margin: EdgeInsets.only(bottom: 15.0),
             child: Text(
               'Register',
               style: GoogleFonts.robotoSlab(
                   textStyle: TextStyle(
                       color: Theme.of(context).secondaryHeaderColor,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       fontSize: screenWidth / 20)),
             ),
           ),
@@ -116,6 +117,7 @@ class _UserRegisterState extends State<UserRegister> {
             margin: EdgeInsets.only(bottom: 10.0),
             child: TextFormField(
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(12.0),
                   enabledBorder: boxBorder(),
                   focusedErrorBorder: boxBorder(),
                   focusedBorder: boxBorder(),
@@ -158,6 +160,7 @@ class _UserRegisterState extends State<UserRegister> {
             margin: EdgeInsets.only(bottom: 10.0),
             child: TextFormField(
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(12.0),
                   enabledBorder: boxBorder(),
                   focusedErrorBorder: boxBorder(),
                   focusedBorder: boxBorder(),
@@ -200,6 +203,7 @@ class _UserRegisterState extends State<UserRegister> {
             margin: EdgeInsets.only(bottom: 10.0),
             child: TextFormField(
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(12.0),
                   enabledBorder: boxBorder(),
                   focusedErrorBorder: boxBorder(),
                   focusedBorder: boxBorder(),
@@ -252,6 +256,7 @@ class _UserRegisterState extends State<UserRegister> {
             child: TextFormField(
               obscureText: true,
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(12.0),
                   enabledBorder: boxBorder(),
                   focusedErrorBorder: boxBorder(),
                   focusedBorder: boxBorder(),
@@ -317,11 +322,12 @@ class _UserRegisterState extends State<UserRegister> {
                           alignment: Alignment.center,
                           height: screenHeight * 0.06,
                           width: screenWidth * 0.4,
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(73, 163, 69, 1),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                          ),
+                          color: submitButtonColor,
+                          // decoration: BoxDecoration(
+                          //   color: Color.fromRGBO(73, 163, 69, 1),
+                          //   borderRadius:
+                          //       BorderRadius.all(Radius.circular(10.0)),
+                          // ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -330,10 +336,11 @@ class _UserRegisterState extends State<UserRegister> {
                                 style: GoogleFonts.robotoSlab(
                                     textStyle: TextStyle(
                                         color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: screenWidth / 24)),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: screenWidth / 22)),
                               ),
-                              Icon(Icons.arrow_forward, color: Colors.white)
+                              SvgPicture.asset(
+                                  'assets/images/arrow_forward.svg')
                             ],
                           ),
                         ),
@@ -360,15 +367,15 @@ class _UserRegisterState extends State<UserRegister> {
                       //     width: screenWidth * 0.4,
                       //     decoration: BoxDecoration(
                       //       color: Colors.white,
-                      //       borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      //       borderRadius:
+                      //           BorderRadius.all(Radius.circular(10.0)),
                       //     ),
                       //     child: Row(
                       //       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       //       children: [
-                      //         Image.asset(
-                      //           'assets/images/google-logo.png',
-                      //           color: Colors.red,
-                      //           width: screenWidth / 15,
+                      //         SvgPicture.asset(
+                      //           'assets/images/logo_google.svg',
+                      //           width: screenWidth / 16,
                       //         ),
                       //         Text(
                       //           'Google SignUp',
@@ -390,7 +397,7 @@ class _UserRegisterState extends State<UserRegister> {
                     width: 40.0,
                     child: CircularProgressIndicator(
                         valueColor: new AlwaysStoppedAnimation<Color>(
-                            Color.fromRGBO(73, 163, 69, 1))),
+                            submitButtonColor)),
                   ),
           )
         ],

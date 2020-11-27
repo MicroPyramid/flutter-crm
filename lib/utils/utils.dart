@@ -5,10 +5,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 var screenWidth;
 var screenHeight;
+Color submitButtonColor = Color.fromRGBO(75, 153, 90, 1);
 
 OutlineInputBorder boxBorder() {
   return OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(15)),
+    // borderRadius: BorderRadius.all(Radius.circular(15)),
     borderSide: BorderSide(width: 1, color: Colors.grey),
   );
 }

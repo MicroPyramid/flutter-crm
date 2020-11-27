@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
-          buttonColor: Color.fromRGBO(252, 163, 37, 1),
+          buttonColor: Color.fromRGBO(223, 83, 42, 1),
           primarySwatch: Colors.blue,
           primaryColor: Color.fromRGBO(29, 132, 150, 1),
           secondaryHeaderColor: Color.fromRGBO(5, 24, 62, 1),

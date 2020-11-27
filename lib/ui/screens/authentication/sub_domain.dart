@@ -1,6 +1,7 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_crm/ui/widgets/footer_button.dart';
-import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_logo.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
@@ -74,24 +75,25 @@ class _SubDomainState extends State<SubDomain> {
     )..show(context);
   }
 
-  OutlineInputBorder boxBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(15)),
-      borderSide: BorderSide(width: 1, color: Colors.grey),
-    );
-  }
+  // OutlineInputBorder boxBorder() {
+  //   return OutlineInputBorder(
+  //     // borderRadius: BorderRadius.all(Radius.circular(15)),
+  //     borderSide: BorderSide(width: 1, color: Colors.grey),
+  //   );
+  // }
 
   Widget subDomainBodyWidget() {
     return Container(
       child: Column(
         children: [
           Container(
+            margin: EdgeInsets.only(bottom: 10.0),
             child: Text(
               'Welcome!',
               style: GoogleFonts.robotoSlab(
                   textStyle: TextStyle(
                       color: Theme.of(context).secondaryHeaderColor,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       fontSize: screenWidth / 22)),
             ),
           ),
@@ -103,13 +105,13 @@ class _SubDomainState extends State<SubDomain> {
                       textStyle: TextStyle(
                           color: Theme.of(context).secondaryHeaderColor,
                           fontWeight: FontWeight.w500,
-                          fontSize: screenWidth / 22))),
+                          fontSize: screenWidth / 18))),
               Text('Login Your Account',
                   style: GoogleFonts.robotoSlab(
                       textStyle: TextStyle(
                           color: Theme.of(context).secondaryHeaderColor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: screenWidth / 22)))
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenWidth / 18)))
             ],
           )),
           Container(
@@ -121,6 +123,7 @@ class _SubDomainState extends State<SubDomain> {
                   width: screenWidth * 0.75,
                   child: TextFormField(
                     decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(12.0),
                         enabledBorder: boxBorder(),
                         focusedErrorBorder: boxBorder(),
                         focusedBorder: boxBorder(),
@@ -153,16 +156,18 @@ class _SubDomainState extends State<SubDomain> {
                           _submitForm();
                         },
                         child: Container(
-                          margin: EdgeInsets.only(left: 10.0),
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(73, 163, 69, 1),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                          ),
-                          width: screenWidth * 0.15,
-                          height: 55.0,
-                          child: Icon(Icons.arrow_forward, color: Colors.white),
-                        ),
+                            padding: EdgeInsets.all(17.0),
+                            margin: EdgeInsets.only(left: 10.0),
+                            // decoration: BoxDecoration(
+                            //   color: Color.fromRGBO(73, 163, 69, 1),
+                            //   borderRadius:
+                            //       BorderRadius.all(Radius.circular(10.0)),
+                            // ),
+                            color: submitButtonColor,
+                            width: screenWidth * 0.15,
+                            height: 48.0,
+                            child: SvgPicture.asset(
+                                'assets/images/arrow_forward.svg')),
                       )
                     : Container(
                         margin: EdgeInsets.only(left: 10.0),
@@ -170,7 +175,7 @@ class _SubDomainState extends State<SubDomain> {
                         height: 40.0,
                         child: CircularProgressIndicator(
                             valueColor: new AlwaysStoppedAnimation<Color>(
-                                Color.fromRGBO(73, 163, 69, 1))),
+                                submitButtonColor)),
                       )
               ],
             ),
@@ -187,16 +192,16 @@ class _SubDomainState extends State<SubDomain> {
                   ),
                 )
               : Container(),
-          Container(
-              margin: EdgeInsets.only(top: 10.0),
-              child: Text(
-                "Forgot Sub-Domain",
-                style: GoogleFonts.robotoSlab(
-                    textStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: screenWidth / 23)),
-              ))
+          // Container(
+          //     margin: EdgeInsets.only(top: 10.0),
+          //     child: Text(
+          //       "Forgot Sub-Domain",
+          //       style: GoogleFonts.robotoSlab(
+          //           textStyle: TextStyle(
+          //               color: Theme.of(context).secondaryHeaderColor,
+          //               fontWeight: FontWeight.w500,
+          //               fontSize: screenWidth / 23)),
+          //     ))
         ],
       ),
     );
@@ -219,7 +224,7 @@ class _SubDomainState extends State<SubDomain> {
                 subDomainBodyWidget(),
                 FooterBtnWidget(
                   labelText: "Don't Have An Account?",
-                  buttonLabelText: "Register Here",
+                  buttonLabelText: "Register",
                   routeName: "/user_register",
                 )
               ],

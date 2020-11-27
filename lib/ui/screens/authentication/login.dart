@@ -1,9 +1,10 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_logo.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_crm/ui/widgets/footer_button.dart';
 
@@ -77,12 +78,12 @@ class _UserLoginState extends State<UserLogin> {
     )..show(context);
   }
 
-  OutlineInputBorder boxBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(15)),
-      borderSide: BorderSide(width: 1, color: Colors.grey),
-    );
-  }
+  // OutlineInputBorder boxBorder() {
+  //   return OutlineInputBorder(
+  //     // borderRadius: BorderRadius.all(Radius.circular(15)),
+  //     borderSide: BorderSide(width: 1, color: Colors.grey),
+  //   );
+  // }
 
   Widget loginWidget() {
     return Container(
@@ -106,7 +107,7 @@ class _UserLoginState extends State<UserLogin> {
                                 textStyle: TextStyle(
                                     color:
                                         Theme.of(context).secondaryHeaderColor,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     fontSize: screenWidth / 20)),
                           ),
                         ),
@@ -122,19 +123,18 @@ class _UserLoginState extends State<UserLogin> {
                                         context, '/sub_domain');
                                 },
                                 child: Container(
+                                  padding: EdgeInsets.all(6.0),
                                   alignment: Alignment.center,
-                                  height: screenHeight * 0.03,
+                                  height: screenHeight * 0.035,
                                   width: screenWidth * 0.1,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10.0)),
-                                  ),
-                                  child: Icon(
-                                    Icons.keyboard_backspace_sharp,
-                                    color: Colors.white,
-                                    size: screenWidth / 20,
-                                  ),
+                                  color: submitButtonColor,
+                                  // decoration: BoxDecoration(
+                                  //   color: Colors.black,
+                                  //   // borderRadius:
+                                  //   //     BorderRadius.all(Radius.circular(10.0)),
+                                  // ),
+                                  child: SvgPicture.asset(
+                                      'assets/images/arrow_backward.svg'),
                                 ),
                               ),
                               SizedBox(
@@ -147,7 +147,7 @@ class _UserLoginState extends State<UserLogin> {
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
                                         fontWeight: FontWeight.w500,
-                                        fontSize: screenWidth / 30)),
+                                        fontSize: screenWidth / 28)),
                               )
                             ],
                           ),
@@ -157,7 +157,7 @@ class _UserLoginState extends State<UserLogin> {
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
                                   color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   fontSize: screenWidth / 25)),
                         )
                       ],
@@ -170,6 +170,7 @@ class _UserLoginState extends State<UserLogin> {
                 Container(
                   child: TextFormField(
                     decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(12.0),
                         enabledBorder: boxBorder(),
                         focusedErrorBorder: boxBorder(),
                         focusedBorder: boxBorder(),
@@ -200,6 +201,7 @@ class _UserLoginState extends State<UserLogin> {
                   child: TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(12.0),
                         enabledBorder: boxBorder(),
                         focusedErrorBorder: boxBorder(),
                         focusedBorder: boxBorder(),
@@ -271,11 +273,12 @@ class _UserLoginState extends State<UserLogin> {
                                 alignment: Alignment.center,
                                 height: screenHeight * 0.06,
                                 width: screenWidth * 0.4,
-                                decoration: BoxDecoration(
-                                  color: Color.fromRGBO(73, 163, 69, 1),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)),
-                                ),
+                                color: submitButtonColor,
+                                // decoration: BoxDecoration(
+                                //   color: Color.fromRGBO(73, 163, 69, 1),
+                                //   borderRadius:
+                                //       BorderRadius.all(Radius.circular(10.0)),
+                                // ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -285,11 +288,11 @@ class _UserLoginState extends State<UserLogin> {
                                       style: GoogleFonts.robotoSlab(
                                           textStyle: TextStyle(
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: screenWidth / 24)),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: screenWidth / 22)),
                                     ),
-                                    Icon(Icons.arrow_forward,
-                                        color: Colors.white)
+                                    SvgPicture.asset(
+                                        'assets/images/arrow_forward.svg')
                                   ],
                                 ),
                               ),
@@ -301,7 +304,7 @@ class _UserLoginState extends State<UserLogin> {
                         margin: EdgeInsets.only(top: 10.0),
                         child: CircularProgressIndicator(
                             valueColor: new AlwaysStoppedAnimation<Color>(
-                                Color.fromRGBO(73, 163, 69, 1))),
+                                submitButtonColor)),
                       ),
               ],
             ),
@@ -325,7 +328,7 @@ class _UserLoginState extends State<UserLogin> {
                   loginWidget(),
                   FooterBtnWidget(
                     labelText: "Don't have an Account?",
-                    buttonLabelText: "Register Here",
+                    buttonLabelText: "Register",
                     routeName: "/user_register",
                   )
                 ],

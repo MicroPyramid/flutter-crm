@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -85,17 +86,12 @@ class _SplashScreenState extends State<SplashScreen> {
                         height: MediaQuery.of(context).size.height * 0.2,
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 30.0),
-                        child: Text(
-                          'Bottle CRM',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width / 13)),
-                        ),
-                      ),
+                          margin: EdgeInsets.only(bottom: 30.0),
+                          // child: Image.asset('assets/images/logo.png'),
+                          child: SvgPicture.asset(
+                            'assets/images/logo.svg',
+                            width: screenWidth * 0.5,
+                          )),
                       CircularProgressIndicator(
                           valueColor: new AlwaysStoppedAnimation<Color>(
                               Theme.of(context).secondaryHeaderColor)),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FooterBtnWidget extends StatelessWidget {
-
   final String labelText;
   @required
   final String buttonLabelText;
@@ -38,24 +38,24 @@ class FooterBtnWidget extends StatelessWidget {
                 width: screenWidth * 0.9,
                 decoration: BoxDecoration(
                   color: Theme.of(context).buttonColor,
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  // borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     labelText == ""
-                        ? Icon(Icons.arrow_back, color: Colors.white)
+                        ? SvgPicture.asset('assets/images/arrow_backward.svg')
                         : Container(),
                     Text(
                       buttonLabelText,
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                               fontSize: screenWidth / 22)),
                     ),
                     labelText != ""
-                        ? Icon(Icons.arrow_forward, color: Colors.white)
+                        ? SvgPicture.asset('assets/images/arrow_forward.svg')
                         : Container()
                   ],
                 ),
