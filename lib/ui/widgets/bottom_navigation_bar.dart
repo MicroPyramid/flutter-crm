@@ -31,7 +31,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/dashboard');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/dashboard', (route) => false);
               setState(() {
                 _currentBottomBarIndex = "0";
               });
@@ -39,7 +40,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             },
             child: Container(
               color: _currentBottomBarIndex == "0"
-                  ? Color.fromRGBO(215, 224, 236, 1)
+                  ? bottomNavBarSelectedBGColor
                   : Colors.white,
               width: screenWidth * 0.25,
               child: Column(
@@ -50,8 +51,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       'assets/images/dashboard_icon.svg',
                       width: screenWidth / 15,
                       color: _currentBottomBarIndex == "0"
-                          ? Theme.of(context).secondaryHeaderColor
-                          : Colors.grey,
+                          ? bottomNavBarSelectedTextColor
+                          : bottomNavBarTextColor,
                     ),
                   ),
                   Container(
@@ -61,8 +62,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: _currentBottomBarIndex == "0"
-                                  ? Theme.of(context).secondaryHeaderColor
-                                  : Colors.grey)),
+                                  ? bottomNavBarSelectedTextColor
+                                  : bottomNavBarTextColor)),
                     ),
                   )
                 ],
@@ -71,7 +72,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/leads');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/leads', (route) => false);
               setState(() {
                 _currentBottomBarIndex = "1";
               });
@@ -79,7 +81,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             },
             child: Container(
               color: _currentBottomBarIndex == "1"
-                  ? Color.fromRGBO(215, 224, 236, 1)
+                  ? bottomNavBarSelectedBGColor
                   : Colors.white,
               width: screenWidth * 0.25,
               child: Column(
@@ -90,8 +92,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       'assets/images/leads_icon.svg',
                       width: screenWidth / 15,
                       color: _currentBottomBarIndex == "1"
-                          ? Theme.of(context).secondaryHeaderColor
-                          : Colors.grey,
+                          ? bottomNavBarSelectedTextColor
+                          : bottomNavBarTextColor,
                     ),
                   ),
                   Container(
@@ -100,8 +102,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: _currentBottomBarIndex == "1"
-                                  ? Theme.of(context).secondaryHeaderColor
-                                  : Colors.grey)),
+                                  ? bottomNavBarSelectedTextColor
+                                  : bottomNavBarTextColor)),
                     ),
                   )
                 ],
@@ -110,7 +112,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/accounts');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/accounts', (route) => false);
               setState(() {
                 _currentBottomBarIndex = "2";
               });
@@ -118,7 +121,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             },
             child: Container(
               color: _currentBottomBarIndex == "2"
-                  ? Color.fromRGBO(215, 224, 236, 1)
+                  ? bottomNavBarSelectedBGColor
                   : Colors.white,
               width: screenWidth * 0.25,
               child: Column(
@@ -129,8 +132,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       'assets/images/accounts_icon.svg',
                       width: screenWidth / 15,
                       color: _currentBottomBarIndex == "2"
-                          ? Theme.of(context).secondaryHeaderColor
-                          : Colors.grey,
+                          ? bottomNavBarSelectedTextColor
+                          : bottomNavBarTextColor,
                     ),
                   ),
                   Container(
@@ -140,8 +143,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: _currentBottomBarIndex == "2"
-                                  ? Theme.of(context).secondaryHeaderColor
-                                  : Colors.grey)),
+                                  ? bottomNavBarSelectedTextColor
+                                  : bottomNavBarTextColor)),
                     ),
                   )
                 ],
@@ -150,7 +153,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/more_options');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/more_options', (route) => false);
               setState(() {
                 _currentBottomBarIndex = "3";
               });
@@ -158,7 +162,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             },
             child: Container(
               color: _currentBottomBarIndex == "3"
-                  ? Color.fromRGBO(215, 224, 236, 1)
+                  ? bottomNavBarSelectedBGColor
                   : Colors.white,
               width: screenWidth * 0.25,
               child: Column(
@@ -166,11 +170,11 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                 children: [
                   Container(
                     child: SvgPicture.asset(
-                      'assets/images/contacts_icon.svg',
+                      'assets/images/menu.svg',
                       width: screenWidth / 15,
                       color: _currentBottomBarIndex == "3"
-                          ? Theme.of(context).secondaryHeaderColor
-                          : Colors.grey,
+                          ? bottomNavBarSelectedTextColor
+                          : bottomNavBarTextColor,
                     ),
                   ),
                   Container(
@@ -180,8 +184,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: _currentBottomBarIndex == "3"
-                                  ? Theme.of(context).secondaryHeaderColor
-                                  : Colors.grey)),
+                                  ? bottomNavBarSelectedTextColor
+                                  : bottomNavBarTextColor)),
                     ),
                   )
                 ],

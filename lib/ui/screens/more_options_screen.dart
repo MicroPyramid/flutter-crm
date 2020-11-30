@@ -63,17 +63,17 @@ class _MoreOptionsState extends State<MoreOptions> {
     {
       'title': 'Users',
       'route': '/sales_contacts',
-      'icon': 'assets/images/contacts_icon.svg'
+      'icon': 'assets/images/users.svg'
     },
     {
       'title': 'Settings',
       'route': '/opportunities',
-      'icon': 'assets/images/opportunities_icon.svg'
+      'icon': 'assets/images/settings.svg'
     },
     {
       'title': 'Change Password',
       'route': '/change_password',
-      'icon': 'assets/images/cases_icon.svg'
+      'icon': 'assets/images/change_password.svg'
     },
     {'title': 'Logout', 'icon': 'assets/images/logout_icon.svg'},
   ];
@@ -159,7 +159,7 @@ class _MoreOptionsState extends State<MoreOptions> {
                           child: Text(
                             _optionsList[index]['title'],
                             style: GoogleFonts.robotoSlab(
-                                color: Theme.of(context).secondaryHeaderColor,
+                                color: Color.fromRGBO(75, 75, 78, 1),
                                 fontSize: screenWidth / 25),
                           ),
                         )
@@ -212,8 +212,8 @@ class _MoreOptionsState extends State<MoreOptions> {
                             style: GoogleFonts.robotoSlab(
                                 color: _bottomOptionsList[index]['title'] ==
                                         "Logout"
-                                    ? Colors.red
-                                    : Theme.of(context).secondaryHeaderColor,
+                                    ? Color.fromRGBO(234, 67, 53, 1)
+                                    : Color.fromRGBO(75, 75, 78, 1),
                                 fontSize: screenWidth / 25),
                           ),
                         )
@@ -239,8 +239,8 @@ class _MoreOptionsState extends State<MoreOptions> {
             child: authBloc.userProfile.profileUrl != null &&
                     authBloc.userProfile.profileUrl != ""
                 ? CircleAvatar(
-                    radius: screenWidth / 15,
-                    backgroundColor: Colors.grey,
+                    radius: screenWidth / 15.5,
+                    backgroundColor: Color.fromRGBO(75, 75, 78, 1),
                     child: CircleAvatar(
                       radius: screenWidth / 16,
                       backgroundImage:
@@ -273,12 +273,13 @@ class _MoreOptionsState extends State<MoreOptions> {
                               fontSize: screenWidth / 18))),
                 ),
                 Container(
+                  margin: EdgeInsets.symmetric(vertical: 3.0),
                   width: screenWidth * 0.7,
                   child: Text(authBloc.userProfile.email,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
+                              color: Color.fromRGBO(75, 75, 78, 1),
                               fontWeight: FontWeight.w500,
                               fontSize: screenWidth / 25))),
                 ),
@@ -290,7 +291,7 @@ class _MoreOptionsState extends State<MoreOptions> {
                         text: 'Permissions: ',
                         style: GoogleFonts.robotoSlab(
                             textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
+                                color: Color.fromRGBO(75, 75, 78, 1),
                                 fontWeight: FontWeight.w500,
                                 fontSize: screenWidth / 25)),
                         children: <TextSpan>[
@@ -298,7 +299,7 @@ class _MoreOptionsState extends State<MoreOptions> {
                               text: 'Sales And Marketing',
                               style: GoogleFonts.robotoSlab(
                                   textStyle: TextStyle(
-                                      color: Colors.green,
+                                      color: Color.fromRGBO(75, 153, 90, 1),
                                       fontWeight: FontWeight.w500,
                                       fontSize: screenWidth / 25))),
                         ],
@@ -311,7 +312,19 @@ class _MoreOptionsState extends State<MoreOptions> {
               onTap: () {
                 Navigator.pushNamed(context, '/profile_details');
               },
-              child: Container(child: Icon(Icons.arrow_forward_ios)))
+              child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(117, 174, 51, 1),
+                    borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                  ),
+                  alignment: Alignment.center,
+                  width: screenWidth / 15,
+                  height: screenHeight * 0.05,
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: screenWidth / 20,
+                  )))
         ],
       ),
     );
@@ -320,6 +333,7 @@ class _MoreOptionsState extends State<MoreOptions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Color.fromRGBO(219, 232, 249, 1),
       appBar: AppBar(
         title: Text('More Options'),
         automaticallyImplyLeading: false,
