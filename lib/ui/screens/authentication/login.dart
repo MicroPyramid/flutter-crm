@@ -40,7 +40,7 @@ class _UserLoginState extends State<UserLogin> {
       });
       await authBloc.getProfileDetails();
       Navigator.pushNamedAndRemoveUntil(
-          context, '/sales_dashboard', (route) => false);
+          context, '/dashboard', (route) => false);
     } else if (result['error'] == true) {
       setState(() {
         _errorMessage = result['message'];

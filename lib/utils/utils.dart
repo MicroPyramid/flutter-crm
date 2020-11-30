@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 var screenWidth;
 var screenHeight;
 Color submitButtonColor = Color.fromRGBO(75, 153, 90, 1);
+String currentBottomNavigationIndex = "0";
 
 OutlineInputBorder boxBorder() {
   return OutlineInputBorder(

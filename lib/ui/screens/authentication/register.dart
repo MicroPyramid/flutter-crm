@@ -360,7 +360,7 @@ class _UserRegisterState extends State<UserRegister> {
                       //     decoration: BoxDecoration(
                       //       color: Colors.white,
                       //       borderRadius:
-                      //           BorderRadius.all(Radius.circular(10.0)),
+                      //           BorderRadius.all(Radius.circular(3.0)),
                       //     ),
                       //     child: Row(
                       //       mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -18,7 +18,7 @@ class _SideMenuState extends State<SideMenuDrawer> {
   final List _sideMenuList = [
     {
       'title': 'Dashboard',
-      'route': '/sales_dashboard',
+      'route': '/dashboard',
       'icon': 'assets/images/dashboard_icon.svg'
     },
     {

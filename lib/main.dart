@@ -16,6 +16,7 @@ import 'package:flutter_crm/ui/screens/marketing/campaigns/campaigns_index.dart'
 import 'package:flutter_crm/ui/screens/marketing/contacts/contacts_index.dart';
 import 'package:flutter_crm/ui/screens/marketing/dashboard/dashboard_index.dart';
 import 'package:flutter_crm/ui/screens/marketing/email_templates/email_index.dart';
+import 'package:flutter_crm/ui/screens/more_options_screen.dart';
 import 'package:flutter_crm/ui/screens/opportunities/opportunities_index.dart';
 import 'package:flutter_crm/ui/screens/profile/change_password.dart';
 import 'package:flutter_crm/ui/screens/profile/profile_details.dart';
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         '/user_register': (BuildContext context) => UserRegister(),
         '/user_login': (BuildContext context) => UserLogin(),
         '/forgot_password': (BuildContext context) => ForgotPassword(),
-        '/sales_dashboard': (BuildContext context) => Dashboard(),
+        '/dashboard': (BuildContext context) => Dashboard(),
         '/accounts': (BuildContext context) => AccountsScreen(),
         '/cases': (BuildContext context) => CasesScreen(),
         '/sales_contacts': (BuildContext context) => ContactsScreen(),
@@ -67,7 +68,8 @@ class MyApp extends StatelessWidget {
         '/marketing_campaigns': (BuildContext context) =>
             MarketingCampaignsScreen(),
         '/profile_details': (BuildContext context) => ProfileDetails(),
-        '/create_account': (BuildContext context) => CreateAccountScreen()
+        '/create_account': (BuildContext context) => CreateAccountScreen(),
+        '/more_options': (BuildContext context) => MoreOptions()
       },
     );
   }
