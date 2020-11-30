@@ -75,13 +75,6 @@ class _SubDomainState extends State<SubDomain> {
     )..show(context);
   }
 
-  // OutlineInputBorder boxBorder() {
-  //   return OutlineInputBorder(
-  //     // borderRadius: BorderRadius.all(Radius.circular(15)),
-  //     borderSide: BorderSide(width: 1, color: Colors.grey),
-  //   );
-  // }
-
   Widget subDomainBodyWidget() {
     return Container(
       child: Column(
@@ -158,12 +151,11 @@ class _SubDomainState extends State<SubDomain> {
                         child: Container(
                             padding: EdgeInsets.all(17.0),
                             margin: EdgeInsets.only(left: 10.0),
-                            // decoration: BoxDecoration(
-                            //   color: Color.fromRGBO(73, 163, 69, 1),
-                            //   borderRadius:
-                            //       BorderRadius.all(Radius.circular(10.0)),
-                            // ),
-                            color: submitButtonColor,
+                            decoration: BoxDecoration(
+                              color: submitButtonColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(3.0)),
+                            ),
                             width: screenWidth * 0.15,
                             height: 48.0,
                             child: SvgPicture.asset(

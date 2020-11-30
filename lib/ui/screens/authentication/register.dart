@@ -88,13 +88,6 @@ class _UserRegisterState extends State<UserRegister> {
     )..show(context);
   }
 
-  // OutlineInputBorder boxBorder() {
-  //   return OutlineInputBorder(
-  //     // borderRadius: BorderRadius.all(Radius.circular(15)),
-  //     borderSide: BorderSide(width: 1, color: Colors.grey),
-  //   );
-  // }
-
   Widget textFields() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -322,12 +315,11 @@ class _UserRegisterState extends State<UserRegister> {
                           alignment: Alignment.center,
                           height: screenHeight * 0.06,
                           width: screenWidth * 0.4,
-                          color: submitButtonColor,
-                          // decoration: BoxDecoration(
-                          //   color: Color.fromRGBO(73, 163, 69, 1),
-                          //   borderRadius:
-                          //       BorderRadius.all(Radius.circular(10.0)),
-                          // ),
+                          decoration: BoxDecoration(
+                            color: submitButtonColor,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(3.0)),
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -474,7 +466,6 @@ class _UserRegisterState extends State<UserRegister> {
                   buttonLabelText: "Login Here",
                   routeName: "/sub_domain",
                 )
-                // footerButton()
               ],
             ),
           ),

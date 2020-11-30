@@ -38,7 +38,7 @@ class FooterBtnWidget extends StatelessWidget {
                 width: screenWidth * 0.9,
                 decoration: BoxDecoration(
                   color: Theme.of(context).buttonColor,
-                  // borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(3.0)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

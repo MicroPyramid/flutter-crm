@@ -78,13 +78,6 @@ class _UserLoginState extends State<UserLogin> {
     )..show(context);
   }
 
-  // OutlineInputBorder boxBorder() {
-  //   return OutlineInputBorder(
-  //     // borderRadius: BorderRadius.all(Radius.circular(15)),
-  //     borderSide: BorderSide(width: 1, color: Colors.grey),
-  //   );
-  // }
-
   Widget loginWidget() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -127,12 +120,11 @@ class _UserLoginState extends State<UserLogin> {
                                   alignment: Alignment.center,
                                   height: screenHeight * 0.035,
                                   width: screenWidth * 0.1,
-                                  color: submitButtonColor,
-                                  // decoration: BoxDecoration(
-                                  //   color: Colors.black,
-                                  //   // borderRadius:
-                                  //   //     BorderRadius.all(Radius.circular(10.0)),
-                                  // ),
+                                  decoration: BoxDecoration(
+                                    color: submitButtonColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(3.0)),
+                                  ),
                                   child: SvgPicture.asset(
                                       'assets/images/arrow_backward.svg'),
                                 ),
@@ -273,12 +265,11 @@ class _UserLoginState extends State<UserLogin> {
                                 alignment: Alignment.center,
                                 height: screenHeight * 0.06,
                                 width: screenWidth * 0.4,
-                                color: submitButtonColor,
-                                // decoration: BoxDecoration(
-                                //   color: Color.fromRGBO(73, 163, 69, 1),
-                                //   borderRadius:
-                                //       BorderRadius.all(Radius.circular(10.0)),
-                                // ),
+                                decoration: BoxDecoration(
+                                  color: submitButtonColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(3.0)),
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,

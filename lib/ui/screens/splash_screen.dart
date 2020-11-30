@@ -6,7 +6,6 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -65,42 +64,20 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
+    return Container(
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: Colors.white),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                flex: 2,
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.width / 10),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 30.0),
-                          // child: Image.asset('assets/images/logo.png'),
-                          child: SvgPicture.asset(
-                            'assets/images/logo.svg',
-                            width: screenWidth * 0.5,
-                          )),
-                      CircularProgressIndicator(
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).secondaryHeaderColor)),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          )
+              margin: EdgeInsets.only(bottom: 30.0),
+              child: SvgPicture.asset(
+                'assets/images/logo.svg',
+                width: screenWidth * 0.5,
+              )),
+          CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).secondaryHeaderColor)),
         ],
       ),
     );

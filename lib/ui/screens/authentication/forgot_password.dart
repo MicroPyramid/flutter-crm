@@ -153,12 +153,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               child: Container(
                                 padding: EdgeInsets.all(17.0),
                                 margin: EdgeInsets.only(left: 10.0),
-                                color: submitButtonColor,
-                                // decoration: BoxDecoration(
-                                //   color: Color.fromRGBO(73, 163, 69, 1),
-                                //   borderRadius:
-                                //       BorderRadius.all(Radius.circular(10.0)),
-                                // ),
+                                decoration: BoxDecoration(
+                                  color: submitButtonColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(3.0)),
+                                ),
                                 width: screenWidth * 0.15,
                                 height: 48.0,
                                 child: SvgPicture.asset(
