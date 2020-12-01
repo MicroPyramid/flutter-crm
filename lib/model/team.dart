@@ -1,74 +1,48 @@
+import 'package:flutter_crm/model/company.dart';
+import 'package:flutter_crm/model/profile.dart';
+
 class Team {
-  String id;
-  String companyId;
-  String email;
-  String userName;
-  String firstName;
-  String lastName;
-  String profileUrl;
-  String role;
-  bool isActive;
-  bool isAdmin;
-  bool isStaff;
-  bool hasSalesAccess;
-  bool hasMarketingAccess;
-  String dateOfJoin;
-  String appName;
+  int id;
+  String name;
+  String description;
+  List<Profile> users;
+  String createdOn;
+  Profile createdBy;
+  Company company;
+  String createdOnText;
 
   Team(
       {this.id,
-      this.companyId,
-      this.email,
-      this.userName,
-      this.firstName,
-      this.lastName,
-      this.profileUrl,
-      this.role,
-      this.appName,
-      this.dateOfJoin,
-      this.hasMarketingAccess,
-      this.hasSalesAccess,
-      this.isActive,
-      this.isAdmin,
-      this.isStaff});
+        this.name,
+        this.description,
+        this.users,
+        this.createdOn,
+        this.createdBy,
+        this.company,
+        this.createdOnText
+      });
 
   Team.fromJson(Map account) {
-    this.id = account['id'].toString();
-    this.userName = account['username'];
-    this.appName = account['get_app_name'];
-    this.companyId = account['company'].toString();
-    this.role = account['role'] != null ? account['role'] : "";
-    this.profileUrl =
-        account['profile_pic'] != null ? account['profile_pic'] : "";
-    this.dateOfJoin =
-        account['date_joined'] != null ? account['date_joined'] : "";
-    this.email = account['email'] != null ? account['email'] : "";
-    this.firstName = account['first_name'] != null ? account['first_name'] : "";
-    this.hasMarketingAccess = account['has_marketing_access'];
-    this.hasSalesAccess = account['has_sales_access'];
-    this.isActive = account['is_active'];
-    this.isAdmin = account['is_admin'];
-    this.isStaff = account['is_staff'];
-    this.lastName = account['last_name'] != null ? account['last_name'] : "";
-  }
+    this.id = account['id'] != null ?account['id'] : 0;
+    this.name = account['name'] != null ?account['name']:"";
+    this.description = account['description'] != null ? account['description'] :"";
+    this.users =  account['users']!= null ?List<Profile>.from(account['users'].map((x) => Profile.fromJson(x))): [];
+    this.createdOn = account['created_on'] != null ?account['created_on']:"";
+    this.createdBy =  account['created_by']!= null ?Profile.fromJson(account['created_by']): Profile();
+    this.company =  account['company']!= null ?Company.fromJson(account['company']) : Company();
+    this.createdOnText = account['created_on_arrow'] != null ?account['created_on_arrow'] :"";
+    }
 
   toJson() {
     return {
       'id': id,
-      'username': userName,
-      'get_app_name': appName,
-      'company': companyId,
-      'role': role,
-      'profile_pic': profileUrl,
-      'date_joined': dateOfJoin,
-      'email': email,
-      'first_name': firstName,
-      'last_name': lastName,
-      'has_marketing_access': hasMarketingAccess,
-      'has_sales_access': hasSalesAccess,
-      'is_active': isActive,
-      'is_admin': isAdmin,
-      'is_staff': isStaff
+      'name': name,
+      'description': description,
+      'users': users,
+      'created_on': createdOn,
+      'created_by': createdBy,
+      'company': company,
+      'created_on_arrow': createdOnText,
     };
   }
 }

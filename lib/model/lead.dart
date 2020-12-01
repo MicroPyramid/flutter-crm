@@ -1,74 +1,128 @@
+import 'package:flutter_crm/model/profile.dart';
+
+import 'contact.dart';
+
 class Lead {
-  String id;
-  String companyId;
-  String email;
-  String userName;
+  int id;
+  String title;
   String firstName;
   String lastName;
-  String profileUrl;
-  String role;
+  String email;
+  String phone;
+  String status;
+  String source;
+  String addressLine;
+  String street;
+  String city;
+  String state;
+  String postcode;
+  String country;
+  String website;
+  String description;
+  List<Profile> assignedTo;
+  String accountName;
+  String opportunityAmount;
+  Profile createdBy;
+  String createdOn;
   bool isActive;
-  bool isAdmin;
-  bool isStaff;
-  bool hasSalesAccess;
-  bool hasMarketingAccess;
-  String dateOfJoin;
-  String appName;
+  dynamic enqueryType;
+  List tags;
+  List<Contact> contacts;
+  bool createdFromSite;
+  // List<int> teams;
+  int company;
 
-  Lead(
-      {this.id,
-      this.companyId,
-      this.email,
-      this.userName,
-      this.firstName,
-      this.lastName,
-      this.profileUrl,
-      this.role,
-      this.appName,
-      this.dateOfJoin,
-      this.hasMarketingAccess,
-      this.hasSalesAccess,
-      this.isActive,
-      this.isAdmin,
-      this.isStaff});
+  Lead({
+    this.id,
+    this.title,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phone,
+    this.status,
+    this.source,
+    this.addressLine,
+    this.street,
+    this.city,
+    this.state,
+    this.postcode,
+    this.country,
+    this.website,
+    this.description,
+    this.assignedTo,
+    this.accountName,
+    this.opportunityAmount,
+    this.createdBy,
+    this.createdOn,
+    this.isActive,
+    this.enqueryType,
+    this.tags,
+    this.contacts,
+    this.createdFromSite,
+    // this.teams,
+    this.company,
+  });
 
-  Lead.fromJson(Map account) {
-    this.id = account['id'].toString();
-    this.userName = account['username'];
-    this.appName = account['get_app_name'];
-    this.companyId = account['company'].toString();
-    this.role = account['role'] != null ? account['role'] : "";
-    this.profileUrl =
-        account['profile_pic'] != null ? account['profile_pic'] : "";
-    this.dateOfJoin =
-        account['date_joined'] != null ? account['date_joined'] : "";
-    this.email = account['email'] != null ? account['email'] : "";
-    this.firstName = account['first_name'] != null ? account['first_name'] : "";
-    this.hasMarketingAccess = account['has_marketing_access'];
-    this.hasSalesAccess = account['has_sales_access'];
-    this.isActive = account['is_active'];
-    this.isAdmin = account['is_admin'];
-    this.isStaff = account['is_staff'];
-    this.lastName = account['last_name'] != null ? account['last_name'] : "";
-  }
 
-  toJson() {
-    return {
-      'id': id,
-      'username': userName,
-      'get_app_name': appName,
-      'company': companyId,
-      'role': role,
-      'profile_pic': profileUrl,
-      'date_joined': dateOfJoin,
-      'email': email,
-      'first_name': firstName,
-      'last_name': lastName,
-      'has_marketing_access': hasMarketingAccess,
-      'has_sales_access': hasSalesAccess,
-      'is_active': isActive,
-      'is_admin': isAdmin,
-      'is_staff': isStaff
-    };
-  }
+  factory Lead.fromJson(Map<String, dynamic> lead) => Lead(
+    id: lead["id"] != null ? lead["id"] : 0,
+    title: lead["title"] != null ? lead["title"] : "",
+    firstName: lead["first_name"]!= null ? lead["first_name"] : "",
+    lastName: lead["last_name"]!= null ? lead["last_name"] : "",
+    email: lead["email"]!= null ? lead["email"] : "" ,
+    phone: lead["phone"] != null ? lead['phone'] : "",
+    status: lead["status"]!= null ? lead["status"] : "",
+    source: lead["source"]!= null ? lead["source"] : "" ,
+    addressLine: lead["address_line"]!= null ? lead["address_line"] : "",
+    street: lead["street"]!= null ? lead["street"] : "" ,
+    city: lead["city"]!= null ? lead["city"] : "" ,
+    state: lead["state"]!= null ? lead["state"] : "",
+    postcode: lead["postcode"]!= null ? lead["postcode"]:"" ,
+    country: lead["country"]!= null ? lead["country"] : "",
+    website: lead["website"]!= null ? lead["website"] : "",
+    description: lead["description"]!= null ? lead["description"] : "",
+    assignedTo: lead["assigned_to"] != null ? List<Profile>.from(lead["assigned_to"].map((_profile) => Profile.fromJson(_profile))): [],
+    accountName: lead["account_name"]!= null ? lead["account_name"] : "",
+    opportunityAmount: lead["opportunity_amount"] != null ? lead["opportunity_amount"] : "",
+    createdBy: lead["created_by"] != null ? Profile.fromJson(lead["created_by"]) : Profile(),
+    createdOn: lead["created_on"]!= null ? lead["created_on"] : "",
+    isActive: lead["is_active"]!= null ? lead["is_active"] : false,
+    enqueryType: lead["enquery_type"]!= null ? lead["enquery_type"] : "",
+    tags: lead["tags"] != null ? lead["tags"] : [],
+    contacts: lead["contacts"] !=null ? List<Contact>.from(lead["contacts"].map((x) => Contact.fromJson(x))) : [],
+    createdFromSite: lead["created_from_site"]!= null ? lead["created_from_site"] : false,
+    // teams: List<int>.from(lead["teams"].map((x) => x)),
+    company: lead["company"]!= null ? lead["company"] : 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "title": title,
+    "first_name": firstName,
+    "last_name": lastName,
+    "email": email,
+    "phone": phone,
+    "status": status,
+    "source": source,
+    "address_line": addressLine,
+    "street": street,
+    "city": city,
+    "state": state,
+    "postcode": postcode,
+    "country": country,
+    "website": website,
+    "description": description,
+    "assigned_to": List<dynamic>.from(assignedTo.map((x) => x.toJson())),
+    "account_name": accountName,
+    "opportunity_amount": opportunityAmount,
+    "created_by": createdBy.toJson(),
+    "created_on": createdOn,
+    "is_active": isActive,
+    "enquery_type": enqueryType,
+    "tags": tags,
+    "contacts": List<dynamic>.from(contacts.map((x) => x)),
+    "created_from_site": createdFromSite,
+    // "teams": List<dynamic>.from(teams.map((x) => x)),
+    "company": company,
+  };
 }

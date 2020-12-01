@@ -123,6 +123,8 @@ class AuthBloc {
     });
     return result;
   }
+
+
 }
 
 final authBloc = AuthBloc();

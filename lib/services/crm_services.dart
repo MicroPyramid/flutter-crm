@@ -49,6 +49,12 @@ class CrmService {
         headers: getFormatedHeaders(_headers));
   }
 
+  Future<Response> getDashboardDetails() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'dashboard/',
+        headers: getFormatedHeaders(_headers));
+  }
+
   Future<Response> changePassword(data) async {
     await updateHeaders();
     return await networkService.post(baseUrl + 'profile/change-password/',

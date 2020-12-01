@@ -1,7 +1,7 @@
 class Company {
   int id;
   String name;
-  String address;
+  dynamic address;
   String subDomain;
   int userLimit;
   String country;
@@ -15,12 +15,12 @@ class Company {
       this.country});
 
   Company.fromJson(Map company) {
-    this.id = company['id'];
-    this.name = company['name'];
-    this.address = company['address'];
-    this.subDomain = company['sub_domain'];
-    this.userLimit = company['user_limit'];
-    this.country = company['country'];
+    this.id = company['id'] != null ? company['id'] : 0;
+    this.name = company['name'] != null ? company['name'] : '';
+    this.address = company['address']  != null ? company['address'] : '';
+    this.subDomain = company['sub_domain'] != null ? company['sub_domain'] : "";
+    this.userLimit = company['user_limit'] != null ? company['user_limit'] : 0;
+    this.country = company['country']  != null ? company['country'] : '';
   }
 
   toJson() {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_crm/bloc/auth_bloc.dart';
+import 'package:flutter_crm/bloc/dashboard_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/recent_card_widget.dart';
 import 'package:flutter_crm/ui/widgets/side_menu.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,18 +22,20 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    dashboardBloc.fetchDashboardDetails();
     super.initState();
     _tabValue = true;
   }
 
+
   OutlineInputBorder boxBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(15)),
-      borderSide: BorderSide(width: 1, color: Colors.grey),
+      borderRadius: BorderRadius.all(Radius.circular(0)),
+      borderSide: BorderSide(width: 0, color: Colors.grey),
     );
   }
 
-  Widget _buildCards(BuildContext context) {
+  Widget _buildCards(BuildContext context, AsyncSnapshot<Map> snapshot) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
@@ -77,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 Container(
                                   child: Text(
-                                    '0',
+                                    snapshot.data['accountsCount'].toString(),
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize:
@@ -133,7 +138,7 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 Container(
                                   child: Text(
-                                    '0',
+                                    snapshot.data['leadsCount'].toString(),
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize:
@@ -197,7 +202,7 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 Container(
                                   child: Text(
-                                    '0',
+                                    snapshot.data['contactsCount'].toString(),
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize:
@@ -252,7 +257,7 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 Container(
                                   child: Text(
-                                    '0',
+                                    snapshot.data['opportunitiesCount'].toString(),
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize:
@@ -277,33 +282,21 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _buildRecentAccounts(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: Card(
-        color: Color.fromRGBO(229, 229, 229, 1),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Text(
-                  "Recent Accounts",
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 25,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-              Container(
-                  child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.keyboard_arrow_right),
-              ))
-            ],
-          ),
+  Widget _buildRecentAccounts(BuildContext context, AsyncSnapshot<Map> snapshot) {
+    return ListView.builder(
+      itemCount: 10,
+      physics: const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (BuildContext context, int index) {
+      return GestureDetector(
+        onTap: (){},
+        child: RecentCardWidget(
+          position00: snapshot.data['accounts'][index].name,
+          position01: snapshot.data['accounts'][index].createdOn.substring(0,10),
+          position10:  snapshot.data['accounts'][index].billingCity,
+          position11: snapshot.data['accounts'][index].email,
         ),
-      ),
+      );}
     );
   }
 
@@ -319,7 +312,7 @@ class _DashboardState extends State<Dashboard> {
             children: [
               Container(
                 child: Text(
-                  "Recent Opportunities",
+                  "Under Development... Coming Soon",
                   style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width / 25,
                       fontWeight: FontWeight.w500),
@@ -328,11 +321,54 @@ class _DashboardState extends State<Dashboard> {
               Container(
                   child: IconButton(
                 onPressed: () {},
-                icon: Icon(Icons.keyboard_arrow_right),
+                icon: Icon(Icons.info),
               ))
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _recentTabWidget(context) {
+    return Container(
+      width: screenWidth*0.95,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FlatButton(
+              minWidth: screenWidth*0.2,
+              height: screenHeight*0.05,
+              color: Colors.white,
+              disabledColor: Color.fromRGBO(0, 0, 128, 1),
+              disabledTextColor: Colors.white,
+              shape: boxBorder(),
+              onPressed: !_tabValue?(){
+                setState(() {
+                  _tabValue = true;
+                });
+              }:null,
+              child: Text(_tabItems[0],
+              style: GoogleFonts.robotoSlab(
+                  textStyle: TextStyle()),
+              )),
+          FlatButton(
+              minWidth: screenWidth*0.2,
+              height: screenHeight*0.05,
+              color: Colors.white,
+              disabledColor: Color.fromRGBO(0, 0, 128, 1),
+              disabledTextColor: Colors.white,
+              shape: boxBorder(),
+              onPressed: _tabValue?(){
+                setState(() {
+                  _tabValue = false;
+                });
+              }:null,
+              child: Text(_tabItems[1],
+              style: GoogleFonts.robotoSlab(
+                  textStyle: TextStyle()),))
+        ],
       ),
     );
   }
@@ -346,57 +382,27 @@ class _DashboardState extends State<Dashboard> {
           title: Text('Dashboard'),
         ),
         // drawer: SideMenuDrawer(),
-        body: Container(
-          child: Column(
-            children: [
-              ListView(
-                shrinkWrap: true,
+        body: StreamBuilder(
+          stream: dashboardBloc.dashboardDetails,
+          builder: (context, AsyncSnapshot<Map> snapshot) {
+            if (snapshot.hasData) {
+              return Column(
                 children: [
-                  _buildCards(context),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      FlatButton(
-                        minWidth: screenWidth*0.2,
-                          height: screenHeight*0.05,
-                          disabledColor: Colors.blueGrey[900],
-                          disabledTextColor: Colors.grey,
-                          shape: boxBorder(),
-                          onPressed: !_tabValue?(){
-                            setState(() {
-                              _tabValue = true;
-                            });
-                          }:null,
-                          child: Text(_tabItems[0])),
-                      FlatButton(
-                          minWidth: screenWidth*0.2,
-                          height: screenHeight*0.05,
-                          disabledColor: Colors.blueGrey[900],
-                          disabledTextColor: Colors.grey,
-                          shape: boxBorder(),
-                          onPressed: _tabValue?(){
-                            setState(() {
-                              _tabValue = false;
-                            });
-                          }:null,
-                          child: Text(_tabItems[1]))
-                    ],
-                  ),
-                  _tabValue ? _buildRecentAccounts(context): _buildRecentOpportunities(context),
-                  // TabBar(
-                  //   tabs: [
-                  //     Padding(
-                  //       padding: const EdgeInsets.all(10),
-                  //       child: Text(_tabItems[0]),
-                  //     ),
-                  //     Text(_tabItems[1])
-                  //   ],
-                  // )
+                  _buildCards(context, snapshot),
+                  _recentTabWidget(context),
+                  Expanded(child: _tabValue ? _buildRecentAccounts(context, snapshot): _buildRecentOpportunities(context)),
                 ],
-              ),
-            ],
-          ),
+              );
+            }
+            else if (snapshot.hasError) {
+              return Container();
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
+
         bottomNavigationBar: BottomNavigationBarWidget(),
       ),
     );
