@@ -1,9 +1,10 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottleCrm_headerText.dart';
+import 'package:flutter_crm/ui/widgets/bottleCrm_logo.dart';
 import 'package:flutter_crm/ui/widgets/footer_button.dart';
 import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -79,6 +80,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             margin: EdgeInsets.symmetric(
@@ -87,7 +89,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 style: GoogleFonts.robotoSlab(
                     textStyle: TextStyle(
                         color: Theme.of(context).secondaryHeaderColor,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         fontSize: screenWidth / 20))),
           ),
           Container(
@@ -101,6 +103,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         fontSize: screenWidth / 27))),
           ),
           Container(
+            margin: EdgeInsets.only(top: 10.0),
             child: Form(
                 key: _forgotPasswordFormKey,
                 child: Container(
@@ -112,6 +115,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         child: TextFormField(
                           enabled: _successMessage == "" ? true : false,
                           decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(12.0),
                               enabledBorder: boxBorder(),
                               disabledBorder: boxBorder(),
                               focusedErrorBorder: boxBorder(),
@@ -147,16 +151,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 _submitForm();
                               },
                               child: Container(
+                                padding: EdgeInsets.all(17.0),
                                 margin: EdgeInsets.only(left: 10.0),
                                 decoration: BoxDecoration(
-                                  color: Color.fromRGBO(73, 163, 69, 1),
+                                  color: submitButtonColor,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0)),
+                                      BorderRadius.all(Radius.circular(3.0)),
                                 ),
                                 width: screenWidth * 0.15,
-                                height: 55.0,
-                                child: Icon(Icons.arrow_forward,
-                                    color: Colors.white),
+                                height: 48.0,
+                                child: SvgPicture.asset(
+                                    'assets/images/arrow_forward.svg'),
                               ),
                             )
                           : _isLoading
@@ -167,7 +172,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   child: CircularProgressIndicator(
                                       valueColor:
                                           new AlwaysStoppedAnimation<Color>(
-                                              Color.fromRGBO(73, 163, 69, 1))),
+                                              submitButtonColor)),
                                 )
                               : Container()
                     ],
@@ -216,7 +221,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 forgotPasswordWidget(),
                 FooterBtnWidget(
                   labelText: "",
-                  buttonLabelText: "Back to Login",
+                  buttonLabelText: "Back To Login",
                   routeName: "/user_login",
                 )
               ]),

@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_crm">
    <application
-        android:label="flutter_crm"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Bottle CRM"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

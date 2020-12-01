@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/ui/widgets/side_menu.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -344,7 +345,7 @@ class _DashboardState extends State<Dashboard> {
         appBar: AppBar(
           title: Text('Dashboard'),
         ),
-        drawer: SideMenuDrawer(),
+        // drawer: SideMenuDrawer(),
         body: Container(
           child: Column(
             children: [
@@ -396,6 +397,7 @@ class _DashboardState extends State<Dashboard> {
             ],
           ),
         ),
+        bottomNavigationBar: BottomNavigationBarWidget(),
       ),
     );
   }
