@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/ui/widgets/acc_overview_widget.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/ui/widgets/side_menu.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:json_table/json_table.dart';
 

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/dashboard_count_card.dart';
 import 'package:flutter_crm/ui/widgets/recent_card_widget.dart';
-import 'package:flutter_crm/ui/widgets/side_menu.dart';
 import 'package:flutter_crm/utils/utils.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Dashboard extends StatefulWidget {
@@ -15,265 +13,66 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
-  TabController _tabController;
-  List _tabItems = const ['    Recent Accounts    ', 'Recent Opportunities'];
-  bool _tabValue = true;
+  int _selectedTabIndex = 0;
 
   @override
   void initState() {
     dashboardBloc.fetchDashboardDetails();
     super.initState();
-    _tabValue = true;
   }
 
-
-  OutlineInputBorder boxBorder() {
+  OutlineInputBorder boxBorder(Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(0)),
-      borderSide: BorderSide(width: 0, color: Colors.grey),
+      borderSide: BorderSide(width: 0, color: color),
     );
   }
 
   Widget _buildCards(BuildContext context, AsyncSnapshot<Map> snapshot) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Column(
         children: [
           Container(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  child: Card(
-                    shape: boxBorder(),
-                    color: Color.fromRGBO(44, 113, 255, 1),
-                    child: Container(
-                      padding: EdgeInsets.all(5.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: CircleAvatar(
-                              radius: MediaQuery.of(context).size.width / 15,
-                              child: SvgPicture.asset(
-                                  'assets/images/accounts_color.svg'),
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Container(
-                            width: screenWidth*0.2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Text(
-                                    'Accounts',
-                                    style: GoogleFonts.robotoSlab(
-                                        textStyle: TextStyle(
-                                          color: Colors.white,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 12))
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    snapshot.data['accountsCount'].toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width / 20,
-                                        letterSpacing: 0.5,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                CountCard(
+                  color: Color.fromRGBO(44, 113, 255, 1),
+                  lable: "Accounts",
+                  count: snapshot.data['accountsCount'].toString(),
+                  icon: 'assets/images/accounts_color.svg',
+                  routeName: "",
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  child: Card(
-                    shape: boxBorder(),
-                    color: Color.fromRGBO(96,75,186, 1),
-                    child: Container(
-                      padding: EdgeInsets.all(5.0),
-                      child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: CircleAvatar(
-                              radius: MediaQuery.of(context).size.width / 15,
-                              child: SvgPicture.asset(
-                                  'assets/images/flag.svg'),
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Container(
-                            width: screenWidth*0.2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Text(
-                                      'Leads',
-                                      style: GoogleFonts.robotoSlab(
-                                          textStyle: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12))
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    snapshot.data['leadsCount'].toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize:
-                                        MediaQuery.of(context).size.width / 20,
-                                        letterSpacing: 0.5,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                CountCard(
+                  color: Color.fromRGBO(96, 75, 186, 1),
+                  lable: "Leads",
+                  count: snapshot.data['leadsCount'].toString(),
+                  icon: 'assets/images/flag.svg',
+                  routeName: "",
                 )
               ],
             ),
           ),
           Container(
+            margin: EdgeInsets.only(top: 10.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  child: Card(
-                    shape: boxBorder(),
-                    color: Color.fromRGBO(52,141,80, 1),
-                    child: Container(
-                      padding: EdgeInsets.all(5.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: CircleAvatar(
-                              radius: MediaQuery.of(context).size.width / 15,
-                              child: SvgPicture.asset(
-                                  'assets/images/identification.svg',
-                                color: Color.fromRGBO(52,141,80, 1),
-                              ),
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Container(
-                            width: screenWidth*0.2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Text(
-                                      'Contacts',
-                                      style: GoogleFonts.robotoSlab(
-                                          textStyle: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12))
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    snapshot.data['contactsCount'].toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize:
-                                        MediaQuery.of(context).size.width / 20,
-                                        letterSpacing: 0.5,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                CountCard(
+                  color: Color.fromRGBO(52, 141, 80, 1),
+                  lable: "Contacts",
+                  count: snapshot.data['contactsCount'].toString(),
+                  icon: 'assets/images/identification.svg',
+                  routeName: "",
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  child: Card(
-                    shape: boxBorder(),
-                    color: Color.fromRGBO(255,86,45, 1),
-                    child: Container(
-                      padding: EdgeInsets.all(5.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: CircleAvatar(
-                              radius: MediaQuery.of(context).size.width / 15,
-                              child: SvgPicture.asset(
-                                  'assets/images/opportunities_color.svg'),
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Container(
-                            width: screenWidth*0.2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Text(
-                                      'Opportunities',
-                                      style: GoogleFonts.robotoSlab(
-                                          textStyle: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12))
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    snapshot.data['opportunitiesCount'].toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize:
-                                        MediaQuery.of(context).size.width / 20,
-                                        letterSpacing: 0.5,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                CountCard(
+                  color: Color.fromRGBO(255, 86, 45, 1),
+                  lable: "Opportunities",
+                  count: snapshot.data['opportunitiesCount'].toString(),
+                  icon: 'assets/images/opportunities_color.svg',
+                  routeName: "",
+                )
               ],
             ),
           ),
@@ -282,92 +81,108 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _buildRecentAccounts(BuildContext context, AsyncSnapshot<Map> snapshot) {
+  Widget _buildRecentAccounts(
+      BuildContext context, AsyncSnapshot<Map> snapshot) {
     return ListView.builder(
-      itemCount: 10,
-      physics: const AlwaysScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int index) {
-      return GestureDetector(
-        onTap: (){},
-        child: RecentCardWidget(
-          position00: snapshot.data['accounts'][index].name,
-          position01: snapshot.data['accounts'][index].createdOn.substring(0,10),
-          position10:  snapshot.data['accounts'][index].billingCity,
-          position11: snapshot.data['accounts'][index].email,
-        ),
-      );}
-    );
+        itemCount: 10,
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {},
+            child: RecentCardWidget(
+              source: 'accounts',
+              name: snapshot.data['accounts'][index].name,
+              date: snapshot.data['accounts'][index].createdOn,
+              city: snapshot.data['accounts'][index].billingCity,
+              email: snapshot.data['accounts'][index].email,
+            ),
+          );
+        });
   }
 
-  Widget _buildRecentOpportunities(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: Card(
-        color: Color.fromRGBO(229, 229, 229, 1),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Text(
-                  "Under Development... Coming Soon",
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 25,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-              Container(
-                  child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.info),
-              ))
-            ],
-          ),
-        ),
-      ),
-    );
+  Widget _buildRecentOpportunities(
+      BuildContext context, AsyncSnapshot<Map> snapshot) {
+    return ListView.builder(
+        itemCount: 10,
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {},
+            child: RecentCardWidget(
+              source: 'opportunities',
+              name: snapshot.data['opportunities'][index].name,
+              date: snapshot.data['opportunities'][index].createdOn,
+              city: snapshot.data['opportunities'][index].leadSource,
+              email: snapshot.data['opportunities'][index].amount,
+            ),
+          );
+        });
   }
 
   Widget _recentTabWidget(context) {
     return Container(
-      width: screenWidth*0.95,
+      margin: EdgeInsets.all(10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FlatButton(
-              minWidth: screenWidth*0.2,
-              height: screenHeight*0.05,
-              color: Colors.white,
-              disabledColor: Color.fromRGBO(0, 0, 128, 1),
-              disabledTextColor: Colors.white,
-              shape: boxBorder(),
-              onPressed: !_tabValue?(){
-                setState(() {
-                  _tabValue = true;
-                });
-              }:null,
-              child: Text(_tabItems[0],
-              style: GoogleFonts.robotoSlab(
-                  textStyle: TextStyle()),
-              )),
-          FlatButton(
-              minWidth: screenWidth*0.2,
-              height: screenHeight*0.05,
-              color: Colors.white,
-              disabledColor: Color.fromRGBO(0, 0, 128, 1),
-              disabledTextColor: Colors.white,
-              shape: boxBorder(),
-              onPressed: _tabValue?(){
-                setState(() {
-                  _tabValue = false;
-                });
-              }:null,
-              child: Text(_tabItems[1],
-              style: GoogleFonts.robotoSlab(
-                  textStyle: TextStyle()),))
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedTabIndex = 0;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: _selectedTabIndex == 0
+                      ? Theme.of(context).secondaryHeaderColor
+                      : Colors.white,
+                  border: Border.all(
+                      width: 1.0,
+                      color: Theme.of(context).secondaryHeaderColor)),
+              alignment: Alignment.center,
+              width: screenWidth * 0.46,
+              height: screenHeight * 0.05,
+              child: Text(
+                "Recent Accounts",
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        fontSize: screenWidth / 25,
+                        color: _selectedTabIndex == 0
+                            ? Colors.white
+                            : Theme.of(context).secondaryHeaderColor)),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedTabIndex = 1;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: _selectedTabIndex == 1
+                      ? Theme.of(context).secondaryHeaderColor
+                      : Colors.white,
+                  border: Border.all(
+                      width: 1.0,
+                      color: Theme.of(context).secondaryHeaderColor)),
+              alignment: Alignment.center,
+              width: screenWidth * 0.46,
+              height: screenHeight * 0.05,
+              child: Text(
+                "Recent Opportunities",
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        fontSize: screenWidth / 25,
+                        color: _selectedTabIndex == 1
+                            ? Colors.white
+                            : Theme.of(context).secondaryHeaderColor)),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -379,9 +194,11 @@ class _DashboardState extends State<Dashboard> {
       onWillPop: onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Dashboard'),
+          title: Text(
+            'Dashboard',
+            style: GoogleFonts.robotoSlab(),
+          ),
         ),
-        // drawer: SideMenuDrawer(),
         body: StreamBuilder(
           stream: dashboardBloc.dashboardDetails,
           builder: (context, AsyncSnapshot<Map> snapshot) {
@@ -390,11 +207,13 @@ class _DashboardState extends State<Dashboard> {
                 children: [
                   _buildCards(context, snapshot),
                   _recentTabWidget(context),
-                  Expanded(child: _tabValue ? _buildRecentAccounts(context, snapshot): _buildRecentOpportunities(context)),
+                  Expanded(
+                      child: _selectedTabIndex == 0
+                          ? _buildRecentAccounts(context, snapshot)
+                          : _buildRecentOpportunities(context, snapshot)),
                 ],
               );
-            }
-            else if (snapshot.hasError) {
+            } else if (snapshot.hasError) {
               return Container();
             }
             return Center(
@@ -402,7 +221,6 @@ class _DashboardState extends State<Dashboard> {
             );
           },
         ),
-
         bottomNavigationBar: BottomNavigationBarWidget(),
       ),
     );

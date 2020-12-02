@@ -111,20 +111,13 @@ class AuthBloc {
     Map result;
     await CrmService().changePassword(data).then((response) {
       var res = (json.decode(response.body));
-      print(res);
-      if (res['status'] == "success") {
-        result = res;
-      } else {
-        result = res;
-      }
+      result = res;
     }).catchError((onError) {
       print(onError);
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
   }
-
-
 }
 
 final authBloc = AuthBloc();

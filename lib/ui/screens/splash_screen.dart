@@ -30,7 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
       if (preferences.getString('authToken') != null &&
           preferences.getString('authToken') != "") {
         await authBloc.getProfileDetails();
-        await dashboardBloc.fetchDashboardDetails();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         Navigator.pushReplacementNamed(context, '/sub_domain');

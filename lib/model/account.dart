@@ -3,6 +3,7 @@ import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/model/profile.dart';
 import 'package:flutter_crm/model/team.dart';
+import 'package:intl/intl.dart';
 
 class Account {
   int id;
@@ -26,7 +27,7 @@ class Account {
   Lead lead;
   String contactName;
   List<Contact> contacts;
-  List <Profile> assignedTo;
+  List<Profile> assignedTo;
   List<Team> teams;
   Company company;
 
@@ -58,29 +59,54 @@ class Account {
 
   Account.fromJson(Map account) {
     this.id = account['id'] != null ? account['id'] : 0;
-    this.name = account['name']!= null ? account['name'] : "";
-    this.email = account['email']!= null ? account['email'] : "";
-    this.phone = account['phone']!= null ? account['phone'] : "";
-    this.industry = account['industry']!= null ? account['industry'] : "";
-    this.billingAddressLine = account['billing_address_line']!= null ? account['billing_address_line'] : "";
-    this.billingStreet = account['billing_street']!= null ? account['billing_street'] : "";
-    this.billingCity = account['billing_city']!= null ? account['billing_city'] : "";
-    this.billingState = account['billing_state']!= null ? account['billing_state'] : "";
-    this.billingPostcode = account['billing_postcode']!= null ? account['billing_postcode'] : "";
-    this.billingCountry = account['billing_country']!= null ? account['billing_country'] : "";
-    this.website = account['website']!= null ? account['website'] : "";
-    this.description = account['description']!= null ? account['description'] : "";
-    this.createdBy = account['created_by'] != null  ? Profile.fromJson(account['created_by']) : Profile();
-    this.assignedTo = account['assigned_to'] != null ? List<Profile>.from(account['assigned_to'].map((x) => Profile.fromJson(x))) : [];
-    this.createdOn = account['created_on']!= null ? account['created_on'] : "";
-    this.isActive = account['is_active']!= null ? account['is_active'] : false;
+    this.name = account['name'] != null ? account['name'] : "";
+    this.email = account['email'] != null ? account['email'] : "";
+    this.phone = account['phone'] != null ? account['phone'] : "";
+    this.industry = account['industry'] != null ? account['industry'] : "";
+    this.billingAddressLine = account['billing_address_line'] != null
+        ? account['billing_address_line']
+        : "";
+    this.billingStreet =
+        account['billing_street'] != null ? account['billing_street'] : "";
+    this.billingCity =
+        account['billing_city'] != null ? account['billing_city'] : "";
+    this.billingState =
+        account['billing_state'] != null ? account['billing_state'] : "";
+    this.billingPostcode =
+        account['billing_postcode'] != null ? account['billing_postcode'] : "";
+    this.billingCountry =
+        account['billing_country'] != null ? account['billing_country'] : "";
+    this.website = account['website'] != null ? account['website'] : "";
+    this.description =
+        account['description'] != null ? account['description'] : "";
+    this.createdBy = account['created_by'] != null
+        ? Profile.fromJson(account['created_by'])
+        : Profile();
+    this.assignedTo = account['assigned_to'] != null
+        ? List<Profile>.from(
+            account['assigned_to'].map((x) => Profile.fromJson(x)))
+        : [];
+    this.createdOn = account['created_on'] != null
+        ? DateFormat("dd-MM-yyyy")
+            .format(DateFormat("yyyy-MM-dd").parse(account['created_on']))
+        : "";
+    this.isActive = account['is_active'] != null ? account['is_active'] : false;
     this.tags = account['tags'] != null ? account['tags'] : [];
-    this.status = account['status']!= null ? account['status'] : "";
-    this.lead = account['lead'] != null ? Lead.fromJson(account['lead']) : Lead();
-    this.contactName = account['contact_name']!= null ? account['contact_name'] : "";
-    this.contacts = account["contacts"] != null ? List<Contact>.from(account["contacts"].map((x) => Contact.fromJson(x))) : [];
-    this.teams = account["teams"] != null ? List<Team>.from(account["teams"].map((x) => Team.fromJson(x))) : [];
-    this.company = account['company'] != null ? Company.fromJson(account['company']) : Company();
+    this.status = account['status'] != null ? account['status'] : "";
+    this.lead =
+        account['lead'] != null ? Lead.fromJson(account['lead']) : Lead();
+    this.contactName =
+        account['contact_name'] != null ? account['contact_name'] : "";
+    this.contacts = account["contacts"] != null
+        ? List<Contact>.from(
+            account["contacts"].map((x) => Contact.fromJson(x)))
+        : [];
+    this.teams = account["teams"] != null
+        ? List<Team>.from(account["teams"].map((x) => Team.fromJson(x)))
+        : [];
+    this.company = account['company'] != null
+        ? Company.fromJson(account['company'])
+        : Company();
   }
 
   toJson() {

@@ -18,9 +18,8 @@ import 'package:flutter_crm/ui/screens/marketing/dashboard/dashboard_index.dart'
 import 'package:flutter_crm/ui/screens/marketing/email_templates/email_index.dart';
 import 'package:flutter_crm/ui/screens/more_options_screen.dart';
 import 'package:flutter_crm/ui/screens/opportunities/opportunities_index.dart';
-import 'package:flutter_crm/ui/screens/profile/change_password.dart';
-import 'package:flutter_crm/ui/screens/profile/profile_details.dart';
-import 'package:flutter_crm/ui/screens/profile/profile_index.dart';
+import 'package:flutter_crm/ui/screens/authentication/change_password.dart';
+import 'package:flutter_crm/ui/screens/authentication/profile_details.dart';
 import 'package:flutter_crm/ui/screens/splash_screen.dart';
 import 'package:flutter_crm/ui/screens/tasks/tasks_index.dart';
 import 'package:flutter_crm/ui/screens/teams/teams_index.dart';
@@ -58,7 +57,6 @@ class MyApp extends StatelessWidget {
         '/invoices': (BuildContext context) => InvoicesScreen(),
         '/leads': (BuildContext context) => LeadsScreen(),
         '/opportunities': (BuildContext context) => OpportunitiesScreen(),
-        '/profile': (BuildContext context) => ProfileScreen(),
         '/tasks': (BuildContext context) => TasksScreen(),
         '/teams': (BuildContext context) => TeamsScreen(),
         '/change_password': (BuildContext context) => ChangePassword(),

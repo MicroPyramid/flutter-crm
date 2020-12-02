@@ -31,12 +31,14 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/dashboard', (route) => false);
-              setState(() {
-                _currentBottomBarIndex = "0";
-              });
-              currentBottomNavigationIndex = _currentBottomBarIndex;
+              if (_currentBottomBarIndex != '0') {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/dashboard', (route) => false);
+                setState(() {
+                  _currentBottomBarIndex = "0";
+                });
+                currentBottomNavigationIndex = _currentBottomBarIndex;
+              }
             },
             child: Container(
               color: _currentBottomBarIndex == "0"
@@ -72,12 +74,14 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/leads', (route) => false);
-              setState(() {
-                _currentBottomBarIndex = "1";
-              });
-              currentBottomNavigationIndex = _currentBottomBarIndex;
+              if (_currentBottomBarIndex != '1') {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/leads', (route) => false);
+                setState(() {
+                  _currentBottomBarIndex = "1";
+                });
+                currentBottomNavigationIndex = _currentBottomBarIndex;
+              }
             },
             child: Container(
               color: _currentBottomBarIndex == "1"
@@ -112,12 +116,14 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/accounts', (route) => false);
-              setState(() {
-                _currentBottomBarIndex = "2";
-              });
-              currentBottomNavigationIndex = _currentBottomBarIndex;
+              if (_currentBottomBarIndex != '2') {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/accounts', (route) => false);
+                setState(() {
+                  _currentBottomBarIndex = "2";
+                });
+                currentBottomNavigationIndex = _currentBottomBarIndex;
+              }
             },
             child: Container(
               color: _currentBottomBarIndex == "2"
@@ -153,12 +159,14 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/more_options', (route) => false);
-              setState(() {
-                _currentBottomBarIndex = "3";
-              });
-              currentBottomNavigationIndex = _currentBottomBarIndex;
+              if (_currentBottomBarIndex != '3') {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/more_options', (route) => false);
+                setState(() {
+                  _currentBottomBarIndex = "3";
+                });
+                currentBottomNavigationIndex = _currentBottomBarIndex;
+              }
             },
             child: Container(
               color: _currentBottomBarIndex == "3"

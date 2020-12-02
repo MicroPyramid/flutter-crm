@@ -332,27 +332,32 @@ class _MoreOptionsState extends State<MoreOptions> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: Color.fromRGBO(219, 232, 249, 1),
-      appBar: AppBar(
-        title: Text('More Options'),
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: screenHeight * 0.8,
-          child: Column(
-            children: <Widget>[
-              _buildProfileWidget(),
-              Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Divider(color: Colors.grey[400])),
-              Container(child: _buildMenuItems(context))
-            ],
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'More Options',
+            style: GoogleFonts.robotoSlab(),
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            height: screenHeight * 0.8,
+            child: Column(
+              children: <Widget>[
+                _buildProfileWidget(),
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Divider(color: Colors.grey[400])),
+                Container(child: _buildMenuItems(context))
+              ],
+            ),
           ),
         ),
+        bottomNavigationBar: BottomNavigationBarWidget(),
       ),
-      bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }
 }

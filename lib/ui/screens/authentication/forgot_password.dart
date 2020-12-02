@@ -58,15 +58,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     Flushbar(
       backgroundColor: Colors.white,
       messageText: Text(errorContent,
-          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.red)),
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
       isDismissible: false,
       mainButton: FlatButton(
-        child: Text(
-          'TRY AGAIN',
-          style: TextStyle(
-              color: Theme.of(context).accentColor,
-              fontWeight: FontWeight.w500),
-        ),
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
           _submitForm();

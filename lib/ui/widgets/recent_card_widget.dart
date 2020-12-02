@@ -3,72 +3,78 @@ import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RecentCardWidget extends StatelessWidget {
+  final String source;
+  final String name;
+  final String date;
+  final String city;
+  final String email;
 
-  final String position00;
-  final String position01;
-  final String position10;
-  final String position11;
-
-  RecentCardWidget({this.position00, this.position01, this.position10, this.position11=""});
-
+  RecentCardWidget({this.source, this.name, this.date, this.city, this.email});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: Card(
-        color: Colors.white,
-        child: Container(
-          height: screenHeight*0.07,
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 7),
-          child: Column(
+      height: screenHeight * 0.09,
+      color: Colors.white,
+      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    position00,
+              Container(
+                width: screenWidth * 0.6,
+                child: Text(name,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.robotoSlab(
                         textStyle: TextStyle(
-                          color: Color.fromRGBO(0, 0, 128, 1),
-                          fontWeight: FontWeight.w500,
-                            fontSize: MediaQuery.of(context).size.width / 25))
-                  ),
-                  Text(
-                    position01,
-                    style: GoogleFonts.robotoSlab(
-                        textStyle: TextStyle(
-                          // color: Colors.white,
-                          // fontWeight: FontWeight.w400,
-                            fontSize: MediaQuery.of(context).size.width / 25))
-                  ),
-                ],
+                            color: Theme.of(context).secondaryHeaderColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: screenWidth / 24))),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    position10,
+              Container(
+                alignment: Alignment.centerRight,
+                width: screenWidth * 0.25,
+                child: Text(date,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.robotoSlab(
                         textStyle: TextStyle(
-                          // color: Colors.white,
-                          // fontWeight: FontWeight.w400,
-                            fontSize: MediaQuery.of(context).size.width / 30))
-                  ),
-                  Text(
-                    position11,
-                    style: GoogleFonts.robotoSlab(
-                        textStyle: TextStyle(
-                          // color: Colors.white,
-                          // fontWeight: FontWeight.w400,
-                            fontSize: MediaQuery.of(context).size.width / 30))
-                  ),
-                ],
+                            color: bottomNavBarTextColor,
+                            fontSize: screenWidth / 25))),
               ),
             ],
           ),
-        ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: source == "opportunities"
+                    ? screenWidth * 0.5
+                    : screenWidth * 0.3,
+                child: Text(city,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.robotoSlab(
+                        textStyle: TextStyle(
+                            color: bottomNavBarTextColor,
+                            fontSize: screenWidth / 26))),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                width: source == "opportunities"
+                    ? screenWidth * 0.35
+                    : screenWidth * 0.55,
+                child: Text(email,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.robotoSlab(
+                        textStyle: TextStyle(
+                            color: bottomNavBarTextColor,
+                            fontSize: screenWidth / 26))),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

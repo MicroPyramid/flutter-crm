@@ -24,7 +24,7 @@ Future<bool> onWillPop() {
   if (currentBackPressTime == null ||
       now.difference(currentBackPressTime) > Duration(seconds: 2)) {
     currentBackPressTime = now;
-    Fluttertoast.showToast(msg: 'Press again to close');
+    Fluttertoast.showToast(msg: 'Press again to close Bottle CRM');
     return Future.value(false);
   }
   exit(0);
