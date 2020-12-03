@@ -45,15 +45,21 @@ class CrmService {
         headers: getFormatedHeaders(_headers));
   }
 
+  Future<Response> changePassword(data) async {
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'profile/change-password/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
   Future<Response> getDashboardDetails() async {
     await updateHeaders();
     return await networkService.get(baseUrl + 'dashboard/',
         headers: getFormatedHeaders(_headers));
   }
 
-  Future<Response> changePassword(data) async {
+  Future<Response> getAccounts() async {
     await updateHeaders();
-    return await networkService.post(baseUrl + 'profile/change-password/',
-        headers: getFormatedHeaders(_headers), body: data);
+    return await networkService.get(baseUrl + 'accounts/',
+        headers: getFormatedHeaders(_headers));
   }
 }

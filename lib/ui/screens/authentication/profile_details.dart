@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
+import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/utils/utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileDetails extends StatefulWidget {
   ProfileDetails();
@@ -9,8 +12,6 @@ class ProfileDetails extends StatefulWidget {
 }
 
 class _ProfileDetailsState extends State<ProfileDetails> {
-  String _profilePicUrl =
-      "https://starsunfolded.com/wp-content/uploads/2017/09/Virat-Kohli-French-cut-with-trimmed-scruff-beard-style.jpg";
   @override
   void initState() {
     super.initState();
@@ -20,89 +21,144 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text(
+          "Profile",
+          style: GoogleFonts.robotoSlab(),
+        ),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.all(15.0),
         child: Container(
-          padding: EdgeInsets.all(20.0),
+          color: Colors.white,
+          padding: EdgeInsets.all(15.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                child: authBloc.userProfile != null &&
-                        authBloc.userProfile.profileUrl != null &&
-                        authBloc.userProfile.profileUrl != ""
-                    ? CircleAvatar(
-                        radius: MediaQuery.of(context).size.width * 0.2,
-                        backgroundImage:
-                            NetworkImage(authBloc.userProfile.profileUrl),
-                        backgroundColor: Colors.white,
-                      )
-                    : authBloc.userProfile != null &&
-                            authBloc.userProfile.firstName != ""
-                        ? CircleAvatar(
-                            radius: MediaQuery.of(context).size.width * 0.2,
-                            child: Text(
-                              authBloc.userProfile.firstName[0],
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            backgroundColor: Colors.white,
-                          )
-                        : CircleAvatar(
-                            radius: MediaQuery.of(context).size.width * 0.2,
-                            child: Icon(
-                              Icons.person,
-                              size: MediaQuery.of(context).size.width * 0.3,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            backgroundColor: Colors.white,
+                  child: authBloc.userProfile != null &&
+                          authBloc.userProfile.profileUrl != null &&
+                          authBloc.userProfile.profileUrl != ""
+                      ? CircleAvatar(
+                          radius: MediaQuery.of(context).size.width * 0.13,
+                          backgroundImage:
+                              NetworkImage(authBloc.userProfile.profileUrl),
+                          backgroundColor: Colors.white,
+                        )
+                      : CircleAvatar(
+                          radius: MediaQuery.of(context).size.width * 0.13,
+                          child: Icon(
+                            Icons.person,
+                            size: MediaQuery.of(context).size.width * 0.18,
+                            color: bottomNavBarSelectedTextColor,
                           ),
+                          backgroundColor: Theme.of(context).splashColor,
+                        )),
+              Container(
+                  margin: EdgeInsets.symmetric(vertical: 5.0),
+                  child: Divider(color: Colors.grey)),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3.0),
+                      child: Text("Name :",
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarSelectedTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                      child: Text(
+                          authBloc.userProfile.firstName +
+                              " " +
+                              authBloc.userProfile.lastName,
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.0),
+                        child: Divider(color: Colors.grey)),
+                  ],
+                ),
               ),
               Container(
-                  margin: EdgeInsets.only(top: 20.0),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text('Name'),
-                        subtitle: Text(authBloc.userProfile.firstName +
-                            " " +
-                            authBloc.userProfile.lastName),
-                      ),
-                      ListTile(
-                        title: Text('UserName'),
-                        subtitle: Text(authBloc.userProfile.userName),
-                      ),
-                      ListTile(
-                        title: Text('Email'),
-                        subtitle: Text(authBloc.userProfile.email),
-                      ),
-                      ListTile(
-                        title: Text('Permissions'),
-                        subtitle: Text(authBloc.userProfile.hasSalesAccess &&
-                                authBloc.userProfile.hasMarketingAccess
-                            ? "Sales and Marketing"
-                            : authBloc.userProfile.hasSalesAccess
-                                ? "Sales"
-                                : authBloc.userProfile.hasMarketingAccess
-                                    ? "Marketing"
-                                    : "No Permissions"),
-                      )
-                    ],
-                  ))
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3.0),
+                      child: Text("User Name :",
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarSelectedTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                      child: Text(authBloc.userProfile.userName,
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.0),
+                        child: Divider(color: Colors.grey)),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3.0),
+                      child: Text("Email Address :",
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarSelectedTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                      child: Text(authBloc.userProfile.email,
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.0),
+                        child: Divider(color: Colors.grey)),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 3.0),
+                      child: Text("Permissions :",
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarSelectedTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                    Container(
+                      child: Text('Sales And Marketing',
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24)),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: Icon(Icons.edit),
-        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: () {},
+        child: Icon(Icons.edit_outlined),
+        backgroundColor: Color.fromRGBO(117, 174, 51, 1),
       ),
+      bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }
 }

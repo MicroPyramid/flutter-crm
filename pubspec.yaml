@@ -27,6 +27,7 @@ dependencies:
   flutter_svg:
   rxdart: ^0.24.1
   intl: ^0.16.1
+  random_color: ^1.0.5
 
 dev_dependencies:
   flutter_test:

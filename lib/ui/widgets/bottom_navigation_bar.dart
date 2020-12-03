@@ -118,7 +118,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             onTap: () {
               if (_currentBottomBarIndex != '2') {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/accounts', (route) => false);
+                    context, '/account_list', (route) => false);
                 setState(() {
                   _currentBottomBarIndex = "2";
                 });

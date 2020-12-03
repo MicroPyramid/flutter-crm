@@ -17,7 +17,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    dashboardBloc.fetchDashboardDetails();
+    // dashboardBloc.fetchDashboardDetails();
     super.initState();
   }
 
@@ -28,7 +28,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _buildCards(BuildContext context, AsyncSnapshot<Map> snapshot) {
+  Widget _buildCards(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Column(
@@ -40,14 +40,15 @@ class _DashboardState extends State<Dashboard> {
                 CountCard(
                   color: Color.fromRGBO(44, 113, 255, 1),
                   lable: "Accounts",
-                  count: snapshot.data['accountsCount'].toString(),
+                  count:
+                      dashboardBloc.dashboardData['accountsCount'].toString(),
                   icon: 'assets/images/accounts_color.svg',
                   routeName: "",
                 ),
                 CountCard(
                   color: Color.fromRGBO(96, 75, 186, 1),
                   lable: "Leads",
-                  count: snapshot.data['leadsCount'].toString(),
+                  count: dashboardBloc.dashboardData['leadsCount'].toString(),
                   icon: 'assets/images/flag.svg',
                   routeName: "",
                 )
@@ -62,14 +63,16 @@ class _DashboardState extends State<Dashboard> {
                 CountCard(
                   color: Color.fromRGBO(52, 141, 80, 1),
                   lable: "Contacts",
-                  count: snapshot.data['contactsCount'].toString(),
+                  count:
+                      dashboardBloc.dashboardData['contactsCount'].toString(),
                   icon: 'assets/images/identification.svg',
                   routeName: "",
                 ),
                 CountCard(
                   color: Color.fromRGBO(255, 86, 45, 1),
                   lable: "Opportunities",
-                  count: snapshot.data['opportunitiesCount'].toString(),
+                  count: dashboardBloc.dashboardData['opportunitiesCount']
+                      .toString(),
                   icon: 'assets/images/opportunities_color.svg',
                   routeName: "",
                 )
@@ -81,8 +84,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _buildRecentAccounts(
-      BuildContext context, AsyncSnapshot<Map> snapshot) {
+  Widget _buildRecentAccounts(BuildContext context) {
     return ListView.builder(
         itemCount: 10,
         physics: const AlwaysScrollableScrollPhysics(),
@@ -92,17 +94,16 @@ class _DashboardState extends State<Dashboard> {
             onTap: () {},
             child: RecentCardWidget(
               source: 'accounts',
-              name: snapshot.data['accounts'][index].name,
-              date: snapshot.data['accounts'][index].createdOn,
-              city: snapshot.data['accounts'][index].billingCity,
-              email: snapshot.data['accounts'][index].email,
+              name: dashboardBloc.dashboardData['accounts'][index].name,
+              date: dashboardBloc.dashboardData['accounts'][index].createdOn,
+              city: dashboardBloc.dashboardData['accounts'][index].billingCity,
+              email: dashboardBloc.dashboardData['accounts'][index].email,
             ),
           );
         });
   }
 
-  Widget _buildRecentOpportunities(
-      BuildContext context, AsyncSnapshot<Map> snapshot) {
+  Widget _buildRecentOpportunities(BuildContext context) {
     return ListView.builder(
         itemCount: 10,
         physics: const AlwaysScrollableScrollPhysics(),
@@ -112,10 +113,12 @@ class _DashboardState extends State<Dashboard> {
             onTap: () {},
             child: RecentCardWidget(
               source: 'opportunities',
-              name: snapshot.data['opportunities'][index].name,
-              date: snapshot.data['opportunities'][index].createdOn,
-              city: snapshot.data['opportunities'][index].leadSource,
-              email: snapshot.data['opportunities'][index].amount,
+              name: dashboardBloc.dashboardData['opportunities'][index].name,
+              date:
+                  dashboardBloc.dashboardData['opportunities'][index].createdOn,
+              city: dashboardBloc
+                  .dashboardData['opportunities'][index].leadSource,
+              email: dashboardBloc.dashboardData['opportunities'][index].amount,
             ),
           );
         });
@@ -199,27 +202,15 @@ class _DashboardState extends State<Dashboard> {
             style: GoogleFonts.robotoSlab(),
           ),
         ),
-        body: StreamBuilder(
-          stream: dashboardBloc.dashboardDetails,
-          builder: (context, AsyncSnapshot<Map> snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: [
-                  _buildCards(context, snapshot),
-                  _recentTabWidget(context),
-                  Expanded(
-                      child: _selectedTabIndex == 0
-                          ? _buildRecentAccounts(context, snapshot)
-                          : _buildRecentOpportunities(context, snapshot)),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Container();
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+        body: Column(
+          children: [
+            _buildCards(context),
+            _recentTabWidget(context),
+            Expanded(
+                child: _selectedTabIndex == 0
+                    ? _buildRecentAccounts(context)
+                    : _buildRecentOpportunities(context)),
+          ],
         ),
         bottomNavigationBar: BottomNavigationBarWidget(),
       ),

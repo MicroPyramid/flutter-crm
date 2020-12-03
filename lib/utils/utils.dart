@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:random_color/random_color.dart';
 
 var screenWidth;
 var screenHeight;
@@ -10,6 +11,8 @@ Color bottomNavBarSelectedBGColor = Color.fromRGBO(219, 232, 249, 1);
 Color bottomNavBarSelectedTextColor = Color.fromRGBO(15, 36, 62, 1);
 Color bottomNavBarTextColor = Color.fromRGBO(75, 75, 78, 1);
 String currentBottomNavigationIndex = "0";
+
+RandomColor randomColor = RandomColor();
 
 OutlineInputBorder boxBorder() {
   return OutlineInputBorder(

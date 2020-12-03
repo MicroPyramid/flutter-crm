@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/ui/screens/accounts/account_create.dart';
-import 'package:flutter_crm/ui/screens/accounts/accounts_index.dart';
+import 'package:flutter_crm/ui/screens/accounts/account_details.dart';
+import 'package:flutter_crm/ui/screens/accounts/accounts_list.dart';
 import 'package:flutter_crm/ui/screens/authentication/forgot_password.dart';
 import 'package:flutter_crm/ui/screens/authentication/login.dart';
 import 'package:flutter_crm/ui/screens/authentication/register.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       title: 'bottlecrm',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromRGBO(238, 238, 238, 1),
+          scaffoldBackgroundColor: Color.fromRGBO(236, 238, 244, 1),
           buttonColor: Color.fromRGBO(223, 83, 42, 1),
           primarySwatch: Colors.blue,
           // primaryColor: Color.fromRGBO(29, 132, 150, 1),
@@ -49,7 +50,8 @@ class MyApp extends StatelessWidget {
         '/user_login': (BuildContext context) => UserLogin(),
         '/forgot_password': (BuildContext context) => ForgotPassword(),
         '/dashboard': (BuildContext context) => Dashboard(),
-        '/accounts': (BuildContext context) => AccountsScreen(),
+        '/account_list': (BuildContext context) => AccountsList(),
+        '/account_details': (BuildContext context) => AccountDetails(),
         '/cases': (BuildContext context) => CasesScreen(),
         '/sales_contacts': (BuildContext context) => ContactsScreen(),
         '/documents': (BuildContext context) => DocumentsScreen(),

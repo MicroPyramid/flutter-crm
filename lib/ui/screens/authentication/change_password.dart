@@ -364,8 +364,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 Container(
                                   margin: EdgeInsets.symmetric(vertical: 5.0),
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                           width: screenWidth / 20,

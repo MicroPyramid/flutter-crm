@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/ui/widgets/side_menu.dart';
 import 'package:flutter_crm/utils/utils.dart';
 
 class LeadsScreen extends StatefulWidget {

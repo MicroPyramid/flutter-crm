@@ -23,7 +23,7 @@ class _SideMenuState extends State<SideMenuDrawer> {
     },
     {
       'title': 'Accounts',
-      'route': '/accounts',
+      'route': '/account_list',
       'icon': 'assets/images/accounts_icon.svg'
     },
     {

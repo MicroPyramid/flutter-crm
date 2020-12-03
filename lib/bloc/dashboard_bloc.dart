@@ -6,8 +6,8 @@ import 'package:flutter_crm/services/crm_services.dart';
 
 class DashboardBloc {
   Map _dashboardData = {};
-  final _dashboardFetcher = PublishSubject<Map>();
-  Stream<Map> get dashboardDetails => _dashboardFetcher.stream;
+  // final _dashboardFetcher = PublishSubject<Map>();
+  // Stream<Map> get dashboardDetails => _dashboardFetcher.stream;
 
   Future fetchDashboardDetails() async {
     await CrmService().getDashboardDetails().then((response) {
@@ -34,20 +34,19 @@ class DashboardBloc {
       _dashboardData['leadsCount'] = res['leads_count'];
       _dashboardData['opportunitiesCount'] = res['opportunities_count'];
 
-      _dashboardFetcher.sink.add(_dashboardData);
+      // _dashboardFetcher.sink.add(_dashboardData);
+    }).catchError((onError) {
+      print("fetchDashboardDetails>> $onError");
     });
-    //     .catchError((onError) {
-    //   print(onError);
-    // });
   }
 
   Map get dashboardData {
     return _dashboardData;
   }
 
-  void dispose() {
-    _dashboardFetcher.close();
-  }
+  // void dispose() {
+  //   _dashboardFetcher.close();
+  // }
 }
 
 final dashboardBloc = DashboardBloc();
