@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/tags_widget.dart';
 import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_color/random_color.dart';
 
@@ -17,6 +19,69 @@ class _AccountDetailsState extends State<AccountDetails> {
   @override
   void initState() {
     super.initState();
+  }
+
+  List<Widget> buildTags() {
+    List<Widget> tags = <Widget>[];
+    for (int i = 0; i < accountBloc.currentAccount.tags.length; i++) {
+      tags.add(createTag(i));
+    }
+    return tags;
+  }
+
+  Widget createTag(tagIndex) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+      color: randomColor.randomColor(colorBrightness: ColorBrightness.light),
+      child: Text(
+        accountBloc.currentAccount.tags[tagIndex]['name'],
+        style: GoogleFonts.robotoSlab(
+            textStyle: TextStyle(color: Colors.white, fontSize: 12.0)),
+      ),
+    );
+  }
+
+  void showDeleteAccountAlertDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        child: CupertinoAlertDialog(
+          title: Text(
+            accountBloc.currentAccount.name,
+            style: GoogleFonts.robotoSlab(
+                color: Theme.of(context).secondaryHeaderColor),
+          ),
+          content: Text(
+            "Are you sure you want to delete this account?",
+            style: GoogleFonts.robotoSlab(fontSize: 15.0),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+                isDefaultAction: true,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Cancel",
+                  style: GoogleFonts.robotoSlab(),
+                )),
+            CupertinoDialogAction(
+                textStyle: TextStyle(color: Colors.red),
+                isDefaultAction: true,
+                onPressed: () async {
+                  deleteAccount();
+                },
+                child: Text(
+                  "Delete",
+                  style: GoogleFonts.robotoSlab(),
+                )),
+          ],
+        ));
+  }
+
+  deleteAccount() {
+    // accountBloc.deleteAccount(account);
+    Navigator.pop(context);
   }
 
   @override
@@ -302,32 +367,11 @@ class _AccountDetailsState extends State<AccountDetails> {
                               fontSize: screenWidth / 24),
                         ),
                       ),
+                      accountBloc.currentAccount.tags.length > 0
+                          ? TagViewWidget(accountBloc.currentAccount.tags)
+                          : Container(),
                       Container(
-                        height: screenHeight / 33,
-                        child: ListView.builder(
-                            // physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: accountBloc.currentAccount.tags.length,
-                            itemBuilder: (BuildContext context, int tagIndex) {
-                              return Container(
-                                margin: EdgeInsets.only(right: 5.0),
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(horizontal: 5.0),
-                                color: randomColor.randomColor(
-                                    colorBrightness: ColorBrightness.light),
-                                child: Text(
-                                  accountBloc.currentAccount.tags[tagIndex]
-                                      ['name'],
-                                  style: GoogleFonts.robotoSlab(
-                                      textStyle: TextStyle(
-                                          color: Colors.white, fontSize: 12.0)),
-                                ),
-                              );
-                            }),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
+                          margin: EdgeInsets.only(bottom: 5.0),
                           child: Divider(color: Colors.grey))
                     ],
                   ),
@@ -347,10 +391,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                             children: [
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  color: Color.fromRGBO(117, 174, 51, 1),
-                                  size: screenWidth / 18,
+                                child: SvgPicture.asset(
+                                  'assets/images/Icon_edit_color.svg',
+                                  width: screenWidth / 25,
                                 ),
                               ),
                               Container(
@@ -368,7 +411,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          showDeleteAccountAlertDialog(context);
+                        },
                         child: Container(
                           margin: EdgeInsets.only(left: 10.0),
                           decoration: BoxDecoration(
@@ -379,10 +424,9 @@ class _AccountDetailsState extends State<AccountDetails> {
                             children: [
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),
-                                child: Icon(
-                                  Icons.delete_outlined,
-                                  color: Color.fromRGBO(234, 67, 53, 1),
-                                  size: screenWidth / 18,
+                                child: SvgPicture.asset(
+                                  'assets/images/icon_delete_color.svg',
+                                  width: screenWidth / 25,
                                 ),
                               ),
                               Container(

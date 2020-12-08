@@ -62,4 +62,22 @@ class CrmService {
     return await networkService.get(baseUrl + 'accounts/',
         headers: getFormatedHeaders(_headers));
   }
+
+  Future<Response> deleteAccount(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'accounts/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> getContacts() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'contacts/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> getLeads() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'leads/',
+        headers: getFormatedHeaders(_headers));
+  }
 }

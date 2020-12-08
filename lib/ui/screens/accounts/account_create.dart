@@ -1,1324 +1,1119 @@
-import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/services.dart';
-import 'package:smart_select/smart_select.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
-class CreateAccountScreen extends StatefulWidget {
-  CreateAccountScreen();
+class CreateAccount extends StatefulWidget {
+  CreateAccount();
   @override
-  State createState() => _CreateAccountScreenState();
+  State createState() => _CreateAccountState();
 }
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> {
+class _CreateAccountState extends State<CreateAccount> {
   final GlobalKey<FormState> _createAccountFormKey = GlobalKey<FormState>();
-  List<String> _fruit;
-  List<S2Choice<String>> fruits = [
-    S2Choice<String>(value: 'app', title: 'Apple'),
-    S2Choice<String>(value: 'ore', title: 'Orange'),
-    S2Choice<String>(value: 'mel', title: 'Melon'),
-    S2Choice<String>(value: 'ban', title: 'Banana'),
-    S2Choice<String>(value: 'gra', title: 'Grape'),
-    S2Choice<String>(value: 'man', title: 'Mango'),
-  ];
-  FilePickerResult attachmentFile;
-  List<String> _myListCustom = ['Jagadeesh', 'Jagadeesh'];
+  FilePickerResult result;
+  PlatformFile file;
+  List _myActivities;
+  String _selectedStatus = 'Open';
 
   @override
   void initState() {
     super.initState();
   }
 
+  Widget _buildForm() {
+    return Container(
+      child: Form(
+        key: _createAccountFormKey,
+        child: Column(
+          children: [
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Name',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {},
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: Text(
+                        'Website :',
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(
+                                color: Theme.of(context).secondaryHeaderColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: screenWidth / 25)),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Website',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {},
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Phone Number',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: '+919876543210',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {},
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Email Address',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Email Address',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {},
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: Text(
+                        'Leads :',
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(
+                                color: Theme.of(context).secondaryHeaderColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: screenWidth / 25)),
+                      )),
+                  Container(
+                    height: 48.0,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: DropdownSearch<String>(
+                      mode: Mode.BOTTOM_SHEET,
+                      items: [
+                        "none",
+                        "Brazil",
+                        "Italia",
+                        "Tunisia",
+                        'Canada',
+                        "Brazil",
+                        "Italia",
+                        "Tunisia",
+                        'Canada'
+                      ],
+                      onChanged: print,
+                      // selectedItem: "",
+                      hint: 'Select Lead',
+                      showSearchBox: true,
+                      showSelectedItem: false,
+                      showClearButton: true,
+                      searchBoxDecoration: InputDecoration(
+                        border: boxBorder(),
+                        enabledBorder: boxBorder(),
+                        focusedErrorBorder: boxBorder(),
+                        focusedBorder: boxBorder(),
+                        errorBorder: boxBorder(),
+                        contentPadding: EdgeInsets.all(12),
+                        hintText: "Search a Lead",
+                        hintStyle: GoogleFonts.robotoSlab(),
+                      ),
+                      popupTitle: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Leads',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    fontSize: screenWidth / 20,
+                                    color: Colors.white)),
+                          ),
+                        ),
+                      ),
+                      popupShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Billing Address',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Address Line',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {},
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'Street',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.text,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'This field is required.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {},
+                          ),
+                        ),
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'Postal Code',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.phone,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'This field is required.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {},
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'City',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.text,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'This field is required.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {},
+                          ),
+                        ),
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'State',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.text,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'This field is required.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {},
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 48.0,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: DropdownSearch<String>(
+                      mode: Mode.BOTTOM_SHEET,
+                      items: [
+                        "none",
+                        "Brazil",
+                        "Italia",
+                        "Tunisia",
+                        'Canada',
+                        "Brazil",
+                        "Italia",
+                        "Tunisia",
+                        'Canada'
+                      ],
+                      onChanged: print,
+                      // selectedItem: "",
+                      hint: 'Select Country',
+                      showSearchBox: true,
+                      showSelectedItem: false,
+                      showClearButton: true,
+                      searchBoxDecoration: InputDecoration(
+                        border: boxBorder(),
+                        enabledBorder: boxBorder(),
+                        focusedErrorBorder: boxBorder(),
+                        focusedBorder: boxBorder(),
+                        errorBorder: boxBorder(),
+                        contentPadding: EdgeInsets.all(12),
+                        hintText: "Search a Country",
+                        hintStyle: GoogleFonts.robotoSlab(),
+                        errorStyle: GoogleFonts.robotoSlab(),
+                      ),
+                      popupTitle: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Countries',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    fontSize: screenWidth / 20,
+                                    color: Colors.white)),
+                          ),
+                        ),
+                      ),
+                      popupShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Contacts',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: MultiSelectFormField(
+                      border: boxBorder(),
+                      fillColor: Colors.white,
+                      autovalidate: false,
+                      validator: (value) {
+                        if (value == null || value.length == 0) {
+                          return 'Please select one or more options';
+                        }
+                      },
+                      dataSource: [
+                        {
+                          "display": "Running",
+                          "value": "Running",
+                        },
+                        {
+                          "display": "Climbing",
+                          "value": "Climbing",
+                        },
+                        {
+                          "display": "Walking",
+                          "value": "Walking",
+                        },
+                        {
+                          "display": "Swimming",
+                          "value": "Swimming",
+                        },
+                        {
+                          "display": "Soccer Practice",
+                          "value": "Soccer Practice",
+                        },
+                        {
+                          "display": "Baseball Practice",
+                          "value": "Baseball Practice",
+                        },
+                        {
+                          "display": "Football Practice",
+                          "value": "Football Practice",
+                        },
+                      ],
+                      textField: 'display',
+                      valueField: 'value',
+                      okButtonLabel: 'OK',
+                      chipLabelStyle: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      dialogTextStyle: GoogleFonts.robotoSlab(),
+                      cancelButtonLabel: 'CANCEL',
+                      // required: true,
+                      hintWidget: Text(
+                        "Please choose one or more",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      title: Text(
+                        "Contacts",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      initialValue: _myActivities,
+
+                      onSaved: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          _myActivities = value;
+                        });
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Teams :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: MultiSelectFormField(
+                      border: boxBorder(),
+                      fillColor: Colors.white,
+                      autovalidate: false,
+                      validator: (value) {
+                        if (value == null || value.length == 0) {
+                          return 'Please select one or more options';
+                        }
+                      },
+                      dataSource: [
+                        {
+                          "display": "Running",
+                          "value": "Running",
+                        },
+                        {
+                          "display": "Climbing",
+                          "value": "Climbing",
+                        },
+                        {
+                          "display": "Walking",
+                          "value": "Walking",
+                        },
+                        {
+                          "display": "Swimming",
+                          "value": "Swimming",
+                        },
+                        {
+                          "display": "Soccer Practice",
+                          "value": "Soccer Practice",
+                        },
+                        {
+                          "display": "Baseball Practice",
+                          "value": "Baseball Practice",
+                        },
+                        {
+                          "display": "Football Practice",
+                          "value": "Football Practice",
+                        },
+                      ],
+                      textField: 'display',
+                      valueField: 'value',
+                      okButtonLabel: 'OK',
+                      chipLabelStyle: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      dialogTextStyle: GoogleFonts.robotoSlab(),
+                      cancelButtonLabel: 'CANCEL',
+                      // required: true,
+                      hintWidget: Text(
+                        "Please choose one or more",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      title: Text(
+                        "Teams",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      initialValue: _myActivities,
+
+                      onSaved: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          _myActivities = value;
+                        });
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Users :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: MultiSelectFormField(
+                      border: boxBorder(),
+                      fillColor: Colors.white,
+                      autovalidate: false,
+                      validator: (value) {
+                        if (value == null || value.length == 0) {
+                          return 'Please select one or more options';
+                        }
+                      },
+                      dataSource: [
+                        {
+                          "display": "Running",
+                          "value": "Running",
+                        },
+                        {
+                          "display": "Climbing",
+                          "value": "Climbing",
+                        },
+                        {
+                          "display": "Walking",
+                          "value": "Walking",
+                        },
+                        {
+                          "display": "Swimming",
+                          "value": "Swimming",
+                        },
+                        {
+                          "display": "Soccer Practice",
+                          "value": "Soccer Practice",
+                        },
+                        {
+                          "display": "Baseball Practice",
+                          "value": "Baseball Practice",
+                        },
+                        {
+                          "display": "Football Practice",
+                          "value": "Football Practice",
+                        },
+                      ],
+                      textField: 'display',
+                      valueField: 'value',
+                      okButtonLabel: 'OK',
+                      chipLabelStyle: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      dialogTextStyle: GoogleFonts.robotoSlab(),
+                      cancelButtonLabel: 'CANCEL',
+                      // required: true,
+                      hintWidget: Text(
+                        "Please choose one or more",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      title: Text(
+                        "Users",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      initialValue: _myActivities,
+
+                      onSaved: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          _myActivities = value;
+                        });
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Assign To :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: MultiSelectFormField(
+                      border: boxBorder(),
+                      fillColor: Colors.white,
+                      autovalidate: false,
+                      validator: (value) {
+                        if (value == null || value.length == 0) {
+                          return 'Please select one or more options';
+                        }
+                      },
+                      dataSource: [
+                        {
+                          "display": "Running",
+                          "value": "Running",
+                        },
+                        {
+                          "display": "Climbing",
+                          "value": "Climbing",
+                        },
+                        {
+                          "display": "Walking",
+                          "value": "Walking",
+                        },
+                        {
+                          "display": "Swimming",
+                          "value": "Swimming",
+                        },
+                        {
+                          "display": "Soccer Practice",
+                          "value": "Soccer Practice",
+                        },
+                        {
+                          "display": "Baseball Practice",
+                          "value": "Baseball Practice",
+                        },
+                        {
+                          "display": "Football Practice",
+                          "value": "Football Practice",
+                        },
+                      ],
+                      textField: 'display',
+                      valueField: 'value',
+                      okButtonLabel: 'OK',
+                      chipLabelStyle: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      dialogTextStyle: GoogleFonts.robotoSlab(),
+                      cancelButtonLabel: 'CANCEL',
+                      // required: true,
+                      hintWidget: Text(
+                        "Please choose one or more",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      title: Text(
+                        "Assigned To",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      initialValue: _myActivities,
+
+                      onSaved: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          _myActivities = value;
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Select one or more",
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.grey)),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Status :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    height: 48.0,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          border: boxBorder(),
+                          contentPadding: EdgeInsets.all(12.0)),
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      hint: Text('select Status'),
+                      value: _selectedStatus,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedStatus = value;
+                        });
+                      },
+                      items: ['Open', 'Close'].map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location),
+                          value: location,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Tags :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: TextFieldTags(
+                      // initialTags: <String>['Wero', 'baby'],
+                      textFieldStyler: TextFieldStyler(
+                        contentPadding: EdgeInsets.all(12.0),
+                        textFieldBorder: boxBorder(),
+                        textFieldFocusedBorder: boxBorder(),
+                        hintText: 'Enter Tags',
+                        hintStyle: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(fontSize: 14.0)),
+                        helperText: null,
+                      ),
+                      tagsStyler: TagsStyler(
+                          tagTextPadding: EdgeInsets.symmetric(horizontal: 5.0),
+                          tagTextStyle: GoogleFonts.robotoSlab(),
+                          tagDecoration: BoxDecoration(
+                            color: Colors.lightGreen[300],
+                            borderRadius: BorderRadius.circular(0.0),
+                          ),
+                          tagCancelIcon: Icon(Icons.cancel,
+                              size: 18.0, color: Colors.green[900]),
+                          tagPadding: const EdgeInsets.all(6.0)),
+                      onTag: (tag) {
+                        print('onTag ' + tag);
+                      },
+                      onDelete: (tag) {
+                        print('onDelete ' + tag);
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Attachments :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      result = await FilePicker.platform.pickFiles();
+                      setState(() {
+                        file = result.files.first;
+                        print(file.name);
+                      });
+                    },
+                    child: Container(
+                      color: bottomNavBarTextColor,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 20.0),
+                      child: Text(
+                        "Choose File",
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ),
+                  file != null
+                      ? Container(
+                          child: Text(
+                            file.name,
+                            style: GoogleFonts.robotoSlab(),
+                          ),
+                        )
+                      : Container(),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: screenHeight * 0.06,
+                      width: screenWidth * 0.5,
+                      decoration: BoxDecoration(
+                        color: submitButtonColor,
+                        borderRadius: BorderRadius.all(Radius.circular(3.0)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            'Create Account',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 24)),
+                          ),
+                          SvgPicture.asset('assets/images/arrow_forward.svg')
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      child: Text(
+                        "Cancel",
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: bottomNavBarTextColor,
+                                fontSize: screenWidth / 24)),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Create Account"),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Create Account",
+          style: GoogleFonts.robotoSlab(),
         ),
-        body: SingleChildScrollView(
-            padding: EdgeInsets.all(15.0),
-            child: Form(
-                key: _createAccountFormKey,
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Name ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: 'Name'),
-                              keyboardType: TextInputType.text,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Website ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                22)),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: 'Website'),
-                              keyboardType: TextInputType.text,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Phone ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: '+919999999999'),
-                              keyboardType: TextInputType.text,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Email Address ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: 'Email'),
-                              keyboardType: TextInputType.text,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Leads ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                22)),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: DropdownSearch<String>(
-                              mode: Mode.BOTTOM_SHEET,
-                              maxHeight: 300,
-                              items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-                              // label: "Custom BottomShet mode",
-                              onChanged: print,
-                              selectedItem: "----------",
-                              showSearchBox: true,
-                              showSelectedItem: true,
-                              searchBoxDecoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(12, 12, 8, 0),
-                                hintText: "Search a Lead",
-                              ),
-                              popupTitle: Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColorDark,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Leads',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              popupShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24),
-                                  topRight: Radius.circular(24),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Billing Address ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(4)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromRGBO(221, 221, 221, 1)),
-                                  ),
-                                  fillColor: Colors.white,
-                                  filled: true,
-                                  hintText: 'Address Line'),
-                              keyboardType: TextInputType.text,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.44,
-                                    margin: EdgeInsets.only(top: 15.0),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: 'Street ',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                22),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: '*',
-                                              style:
-                                                  TextStyle(color: Colors.red)),
-                                        ],
-                                      ),
-                                    )),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.44,
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        hintText: 'Street'),
-                                    keyboardType: TextInputType.text,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.44,
-                                    margin: EdgeInsets.only(top: 15.0),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: 'PostCode ',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                22),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: '*',
-                                              style:
-                                                  TextStyle(color: Colors.red)),
-                                        ],
-                                      ),
-                                    )),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.44,
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        hintText: 'Postcode'),
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.44,
-                                    margin: EdgeInsets.only(top: 15.0),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: 'City ',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                22),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: '*',
-                                              style:
-                                                  TextStyle(color: Colors.red)),
-                                        ],
-                                      ),
-                                    )),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.44,
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        hintText: 'City'),
-                                    keyboardType: TextInputType.text,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.44,
-                                    margin: EdgeInsets.only(top: 15.0),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: 'State ',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                22),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: '*',
-                                              style:
-                                                  TextStyle(color: Colors.red)),
-                                        ],
-                                      ),
-                                    )),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.44,
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Color.fromRGBO(
-                                                  221, 221, 221, 1)),
-                                        ),
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        hintText: 'State'),
-                                    keyboardType: TextInputType.text,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {},
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Country ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.only(top: 10.0),
-                            child: DropdownSearch<String>(
-                              mode: Mode.BOTTOM_SHEET,
-                              maxHeight: 300,
-                              items: ["Brazil", "Italia", "Tunisia", 'Canada'],
-                              // label: "Custom BottomShet mode",
-                              onChanged: print,
-                              selectedItem: "----------",
-                              showSearchBox: true,
-                              showSelectedItem: true,
-                              searchBoxDecoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(12, 12, 8, 0),
-                                hintText: "Search a Lead",
-                              ),
-                              popupTitle: Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColorDark,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Leads',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              popupShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24),
-                                  topRight: Radius.circular(24),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  text: 'Contacts ',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: '*',
-                                        style: TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: SmartSelect<String>.multiple(
-                                title: 'Contacts',
-                                value: _fruit,
-                                onChange: (state) =>
-                                    setState(() => _fruit = state.value),
-                                choiceItems: fruits,
-                                modalType: S2ModalType.popupDialog,
-                                modalConfirm: true,
-                                modalValidation: (value) => value.length > 0
-                                    ? null
-                                    : 'Select at least one',
-                                tileBuilder: (context, state) {
-                                  return S2Tile.fromState(
-                                    state,
-                                    isTwoLine: true,
-                                    leading: Container(
-                                      width: 40,
-                                      alignment: Alignment.center,
-                                      child: const Icon(Icons.contacts),
-                                    ),
-                                  );
-                                },
-                                modalHeaderBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15, 15, 15, 15),
-                                    height: kToolbarHeight,
-                                    child: Row(
-                                      children: <Widget>[
-                                        state.modalTitle,
-                                        const Spacer(),
-                                        Visibility(
-                                          visible: !state.changes.valid,
-                                          child: Text(
-                                            state.changes?.error ?? '',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                modalDividerBuilder: (context, state) {
-                                  return const Divider(height: 1);
-                                },
-                                modalFooterBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                      vertical: 7.0,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Spacer(),
-                                        FlatButton(
-                                          child: const Text('Cancel'),
-                                          onPressed: () => state.closeModal(
-                                              confirmed: false),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        FlatButton.icon(
-                                          icon: Icon(Icons.check),
-                                          label: Text(
-                                              'OK (${state.changes.length})'),
-                                          color: Colors.blue,
-                                          textColor: Colors.white,
-                                          onPressed: state.changes.valid
-                                              ? () => state.closeModal(
-                                                  confirmed: true)
-                                              : null,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Teams ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                22)),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: SmartSelect<String>.multiple(
-                                title: 'Teams',
-                                value: _fruit,
-                                onChange: (state) =>
-                                    setState(() => _fruit = state.value),
-                                choiceItems: fruits,
-                                modalType: S2ModalType.bottomSheet,
-                                modalConfirm: true,
-                                modalValidation: (value) => value.length > 0
-                                    ? null
-                                    : 'Select at least one',
-                                tileBuilder: (context, state) {
-                                  return S2Tile.fromState(
-                                    state,
-                                    isTwoLine: true,
-                                    leading: Container(
-                                      width: 40,
-                                      alignment: Alignment.center,
-                                      child: const Icon(Icons.people),
-                                    ),
-                                  );
-                                },
-                                modalHeaderBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15, 15, 15, 15),
-                                    height: kToolbarHeight,
-                                    child: Row(
-                                      children: <Widget>[
-                                        state.modalTitle,
-                                        const Spacer(),
-                                        Visibility(
-                                          visible: !state.changes.valid,
-                                          child: Text(
-                                            state.changes?.error ?? '',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                modalDividerBuilder: (context, state) {
-                                  return const Divider(height: 1);
-                                },
-                                modalFooterBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                      vertical: 7.0,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Spacer(),
-                                        FlatButton(
-                                          child: const Text('Cancel'),
-                                          onPressed: () => state.closeModal(
-                                              confirmed: false),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        FlatButton.icon(
-                                          icon: Icon(Icons.check),
-                                          label: Text(
-                                              'OK (${state.changes.length})'),
-                                          color: Colors.blue,
-                                          textColor: Colors.white,
-                                          onPressed: state.changes.valid
-                                              ? () => state.closeModal(
-                                                  confirmed: true)
-                                              : null,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Users ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                22)),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: SmartSelect<String>.multiple(
-                                title: 'Users',
-                                value: _fruit,
-                                onChange: (state) =>
-                                    setState(() => _fruit = state.value),
-                                choiceItems: fruits,
-                                modalType: S2ModalType.bottomSheet,
-                                modalConfirm: true,
-                                modalValidation: (value) => value.length > 0
-                                    ? null
-                                    : 'Select at least one',
-                                tileBuilder: (context, state) {
-                                  return S2Tile.fromState(
-                                    state,
-                                    isTwoLine: true,
-                                    leading: Container(
-                                      width: 40,
-                                      alignment: Alignment.center,
-                                      child: const Icon(Icons.people),
-                                    ),
-                                  );
-                                },
-                                modalHeaderBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15, 15, 15, 15),
-                                    height: kToolbarHeight,
-                                    child: Row(
-                                      children: <Widget>[
-                                        state.modalTitle,
-                                        const Spacer(),
-                                        Visibility(
-                                          visible: !state.changes.valid,
-                                          child: Text(
-                                            state.changes?.error ?? '',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                modalDividerBuilder: (context, state) {
-                                  return const Divider(height: 1);
-                                },
-                                modalFooterBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                      vertical: 7.0,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Spacer(),
-                                        FlatButton(
-                                          child: const Text('Cancel'),
-                                          onPressed: () => state.closeModal(
-                                              confirmed: false),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        FlatButton.icon(
-                                          icon: Icon(Icons.check),
-                                          label: Text(
-                                              'OK (${state.changes.length})'),
-                                          color: Colors.blue,
-                                          textColor: Colors.white,
-                                          onPressed: state.changes.valid
-                                              ? () => state.closeModal(
-                                                  confirmed: true)
-                                              : null,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Assign To ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                22)),
-                              )),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: SmartSelect<String>.multiple(
-                                title: 'Assign To',
-                                value: _fruit,
-                                onChange: (state) =>
-                                    setState(() => _fruit = state.value),
-                                choiceItems: fruits,
-                                modalType: S2ModalType.bottomSheet,
-                                modalConfirm: true,
-                                modalValidation: (value) => value.length > 0
-                                    ? null
-                                    : 'Select at least one',
-                                tileBuilder: (context, state) {
-                                  return S2Tile.fromState(
-                                    state,
-                                    isTwoLine: true,
-                                    leading: Container(
-                                      width: 40,
-                                      alignment: Alignment.center,
-                                      child: const Icon(Icons.people),
-                                    ),
-                                  );
-                                },
-                                modalHeaderBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15, 15, 15, 15),
-                                    height: kToolbarHeight,
-                                    child: Row(
-                                      children: <Widget>[
-                                        state.modalTitle,
-                                        const Spacer(),
-                                        Visibility(
-                                          visible: !state.changes.valid,
-                                          child: Text(
-                                            state.changes?.error ?? '',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                modalDividerBuilder: (context, state) {
-                                  return const Divider(height: 1);
-                                },
-                                modalFooterBuilder: (context, state) {
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                      vertical: 7.0,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        const Spacer(),
-                                        FlatButton(
-                                          child: const Text('Cancel'),
-                                          onPressed: () => state.closeModal(
-                                              confirmed: false),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        FlatButton.icon(
-                                          icon: Icon(Icons.check),
-                                          label: Text(
-                                              'OK (${state.changes.length})'),
-                                          color: Colors.blue,
-                                          textColor: Colors.white,
-                                          onPressed: state.changes.valid
-                                              ? () => state.closeModal(
-                                                  confirmed: true)
-                                              : null,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 15.0),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Status ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                22)),
-                              )),
-                          Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.symmetric(horizontal: 15.0),
-                              child: DropdownButtonHideUnderline(
-                                child: new DropdownButton<String>(
-                                  // value: 'open',
-                                  icon: Icon(
-                                    Icons.arrow_drop_down_sharp,
-                                  ),
-                                  hint: Text(
-                                    "Open",
-                                  ),
-                                  items: <String>['Open', 'Close']
-                                      .map((String value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(
-                                        value,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String value) {},
-                                ),
-                              )),
-                        ],
-                      ),
-                    ),
-                    Container(
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                margin: EdgeInsets.only(top: 15.0),
-                                child: RichText(
-                                  text: TextSpan(
-                                      text: 'Tags ',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              22)),
-                                )),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: EdgeInsets.only(top: 10.0),
-                              child: TextFieldTags(
-                                textFieldStyler: TextFieldStyler(
-                                    hintText: 'Add tags',
-                                    helperText: 'Enter space to add tag'),
-                                tagsStyler: TagsStyler(
-                                    tagTextStyle:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    tagDecoration: BoxDecoration(
-                                      color: Colors.green[100],
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    tagCancelIcon: Icon(Icons.cancel,
-                                        size: 18.0, color: Colors.green[900]),
-                                    tagPadding: const EdgeInsets.all(6.0)),
-                                onTag: (tag) {
-                                  print(tag);
-                                },
-                                onDelete: (tag) {},
-                              ),
-                            ),
-                          ],
-                        )),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 10.0),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text('Attachment',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width /
-                                              22)),
-                              Container(
-                                margin: EdgeInsets.only(left: 10.0),
-                                child: RaisedButton(
-                                  color: Color.fromRGBO(239, 239, 239, 1),
-                                  child: Text('Choose file'),
-                                  onPressed: () async {
-                                    attachmentFile =
-                                        await FilePicker.platform.pickFiles();
-                                    setState(() {
-                                      attachmentFile = attachmentFile;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          attachmentFile != null
-                              ? Container(
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        child: Text(
-                                            attachmentFile.files.single.name),
-                                      ),
-                                      Container(
-                                        child: IconButton(
-                                          icon: Icon(Icons.close,
-                                              color: Colors.grey),
-                                          onPressed: () {
-                                            setState(() {
-                                              attachmentFile = null;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : Container()
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 20.0),
-                            child: RaisedButton(
-                              color: Colors.blue,
-                              child: Text(
-                                'Save',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {},
-                            ),
-                          ),
-                          Container(
-                            child: RaisedButton(
-                              color: Colors.white,
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              onPressed: () {},
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ))));
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(10.0),
+        child: Container(
+          color: Colors.white,
+          child: Container(
+            padding: EdgeInsets.all(10.0),
+            child: _buildForm(),
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBarWidget(),
+    );
   }
 }

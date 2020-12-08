@@ -7,6 +7,7 @@ class AccountBloc {
   List<Account> _closedAccounts = [];
   Account _currentAccount;
   String _currentAccountType = "Open";
+  int _currentAccountIndex;
 
   Future fetchAccounts() async {
     await CrmService().getAccounts().then((response) {
@@ -26,6 +27,15 @@ class AccountBloc {
     });
   }
 
+  Future deleteAccount(Account account) async {
+    await CrmService().deleteAccount(account.id).then((response) {
+      var res = (json.decode(response.body));
+      print('account delete>> $res');
+    }).catchError((onError) {
+      print("deleteAccount>> $onError");
+    });
+  }
+
   List<Account> get openAccounts {
     return _openAccounts;
   }
@@ -40,6 +50,14 @@ class AccountBloc {
 
   set currentAccount(Account account) {
     _currentAccount = account;
+  }
+
+  int get currentAccountIndex {
+    return _currentAccountIndex;
+  }
+
+  set currentAccountIndex(int index) {
+    _currentAccountIndex = index;
   }
 
   String get currentAccountType {

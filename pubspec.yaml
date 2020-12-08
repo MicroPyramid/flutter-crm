@@ -18,16 +18,16 @@ dependencies:
   http: ^0.12.2
   shared_preferences: ^0.5.12+2
   fluttertoast: ^7.1.1
-  dropdown_search: ^0.4.6
-  smart_select: ^4.3.2
+  dropdown_search: ^0.4.8
   file_picker: ^2.0.12
-  textfield_tags: ^1.0.3
+  textfield_tags: ^1.1.0+1
   json_table: ^1.4.0 
   google_fonts: ^1.1.1
   flutter_svg:
   rxdart: ^0.24.1
   intl: ^0.16.1
   random_color: ^1.0.5
+  multiselect_formfield: ^0.1.5
 
 dev_dependencies:
   flutter_test:

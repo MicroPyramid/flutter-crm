@@ -115,6 +115,7 @@ class _MoreOptionsState extends State<MoreOptions> {
                       await SharedPreferences.getInstance();
                   prefs.remove('authToken');
                   prefs.remove('subdomain');
+                  currentBottomNavigationIndex = "0";
                   Navigator.pushReplacementNamed(context, "/sub_domain");
                 },
                 child: Text(

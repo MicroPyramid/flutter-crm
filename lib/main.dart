@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/dashboard': (BuildContext context) => Dashboard(),
         '/account_list': (BuildContext context) => AccountsList(),
         '/account_details': (BuildContext context) => AccountDetails(),
+        '/create_account': (BuildContext context) => CreateAccount(),
         '/cases': (BuildContext context) => CasesScreen(),
         '/sales_contacts': (BuildContext context) => ContactsScreen(),
         '/documents': (BuildContext context) => DocumentsScreen(),
@@ -69,7 +70,6 @@ class MyApp extends StatelessWidget {
         '/marketing_campaigns': (BuildContext context) =>
             MarketingCampaignsScreen(),
         '/profile_details': (BuildContext context) => ProfileDetails(),
-        '/create_account': (BuildContext context) => CreateAccountScreen(),
         '/more_options': (BuildContext context) => MoreOptions()
       },
     );
