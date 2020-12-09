@@ -12,7 +12,6 @@ class DashboardBloc {
   Future fetchDashboardDetails() async {
     await CrmService().getDashboardDetails().then((response) {
       var res = (json.decode(response.body));
-      print(res);
 
       List<Account> _accounts = [];
       List<Opportunity> _opportunities = [];

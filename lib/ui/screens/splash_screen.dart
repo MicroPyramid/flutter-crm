@@ -6,6 +6,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await authBloc.getProfileDetails();
         await dashboardBloc.fetchDashboardDetails();
         await accountBloc.fetchAccounts();
+        await leadBloc.fetchLeads();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         Navigator.pushReplacementNamed(context, '/sub_domain');

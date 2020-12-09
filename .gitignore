@@ -21,5 +21,7 @@ doc/api/
 *.js.map
 
 .flutter-plugins
-.flutter-plugins-dependencies
+
 .idea
+.flutter-plugins-dependencies
+.idea/libraries/Dart_Packages.xml

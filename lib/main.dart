@@ -12,7 +12,8 @@ import 'package:flutter_crm/ui/screens/dashboard/dashboard.dart';
 import 'package:flutter_crm/ui/screens/documents/documents_index.dart';
 import 'package:flutter_crm/ui/screens/events/events_index.dart';
 import 'package:flutter_crm/ui/screens/invoices/invoices_index.dart';
-import 'package:flutter_crm/ui/screens/leads/leads_index.dart';
+import 'package:flutter_crm/ui/screens/leads/lead_details.dart';
+import 'package:flutter_crm/ui/screens/leads/leads_list.dart';
 import 'package:flutter_crm/ui/screens/marketing/campaigns/campaigns_index.dart';
 import 'package:flutter_crm/ui/screens/marketing/contacts/contacts_index.dart';
 import 'package:flutter_crm/ui/screens/marketing/dashboard/dashboard_index.dart';
@@ -58,17 +59,16 @@ class MyApp extends StatelessWidget {
         '/documents': (BuildContext context) => DocumentsScreen(),
         '/events': (BuildContext context) => EventsScreen(),
         '/invoices': (BuildContext context) => InvoicesScreen(),
-        '/leads': (BuildContext context) => LeadsScreen(),
+        '/leads': (BuildContext context) => LeadsList(),
+        '/lead_details': (BuildContext context) => LeadDetails(),
         '/opportunities': (BuildContext context) => OpportunitiesScreen(),
         '/tasks': (BuildContext context) => TasksScreen(),
         '/teams': (BuildContext context) => TeamsScreen(),
         '/change_password': (BuildContext context) => ChangePassword(),
         '/marketing_dashboard': (BuildContext context) => MarketingDashboard(),
-        '/marketing_contacts': (BuildContext context) =>
-            MarketingContactsScreen(),
+        '/marketing_contacts': (BuildContext context) => MarketingContactsScreen(),
         '/email_templates': (BuildContext context) => EmailTemplatesScreen(),
-        '/marketing_campaigns': (BuildContext context) =>
-            MarketingCampaignsScreen(),
+        '/marketing_campaigns': (BuildContext context) => MarketingCampaignsScreen(),
         '/profile_details': (BuildContext context) => ProfileDetails(),
         '/more_options': (BuildContext context) => MoreOptions()
       },
