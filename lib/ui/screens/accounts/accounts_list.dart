@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/model/account.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/squareFloatingActionBtn.dart';
 import 'package:flutter_crm/ui/widgets/tags_widget.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
@@ -488,39 +489,8 @@ class _AccountsListState extends State<AccountsList> {
             ],
           ),
         ),
-        floatingActionButton: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/create_account');
-          },
-          child: Container(
-            width: screenWidth * 0.35,
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            decoration: BoxDecoration(
-                color: Colors.red[50],
-                border: Border.all(color: Color.fromRGBO(234, 67, 53, 1))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: Icon(
-                    Icons.add,
-                    size: screenWidth / 18,
-                    color: Color.fromRGBO(234, 67, 53, 1),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    "Add Account",
-                    style: GoogleFonts.robotoSlab(
-                        textStyle: TextStyle(
-                            color: Color.fromRGBO(234, 67, 53, 1),
-                            fontSize: screenWidth / 25)),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
+        floatingActionButton:
+            SquareFloatingActionButton('/create_account', "Add Account"),
         bottomNavigationBar: BottomNavigationBarWidget(),
       ),
     );

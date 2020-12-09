@@ -10,13 +10,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
-class CreateAccount extends StatefulWidget {
-  CreateAccount();
+class CreateLead extends StatefulWidget {
+  CreateLead();
   @override
-  State createState() => _CreateAccountState();
+  State createState() => _CreateLeadState();
 }
 
-class _CreateAccountState extends State<CreateAccount> {
+class _CreateLeadState extends State<CreateLead> {
   final GlobalKey<FormState> _createAccountFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
@@ -28,65 +28,80 @@ class _CreateAccountState extends State<CreateAccount> {
     super.initState();
   }
 
+  Widget _buildTextField(String _title, bool _required, dynamic _controller,
+      TextInputType _keyboardType) {
+    return Column(
+      children: [
+        Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(bottom: 5.0),
+            child: RichText(
+              text: TextSpan(
+                text: _title,
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        color: Theme.of(context).secondaryHeaderColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: screenWidth / 25)),
+                children: <TextSpan>[
+                  _required
+                      ? TextSpan(
+                          text: '* ',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(color: Colors.red)))
+                      : TextSpan(text: ""),
+                  TextSpan(text: ': ', style: GoogleFonts.robotoSlab())
+                ],
+              ),
+            )),
+        Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          child: TextFormField(
+            controller: _controller,
+            decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(12.0),
+                enabledBorder: boxBorder(),
+                focusedErrorBorder: boxBorder(),
+                focusedBorder: boxBorder(),
+                errorBorder: boxBorder(),
+                fillColor: Colors.white,
+                filled: true,
+                hintText: 'Enter $_title',
+                errorStyle: GoogleFonts.robotoSlab(),
+                hintStyle: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(fontSize: 14.0))),
+            keyboardType: _keyboardType,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'This field is required.';
+              }
+              return null;
+            },
+            onSaved: (value) {},
+          ),
+        ),
+        Divider(color: Colors.grey)
+      ],
+    );
+  }
+
   Widget _buildForm() {
     return Container(
       child: Form(
         key: _createAccountFormKey,
         child: Column(
           children: [
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Name',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Enter Name',
-                          errorStyle: GoogleFonts.robotoSlab(),
-                          hintStyle: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'This field is required.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {},
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
+            _buildTextField('First Name', false, null, TextInputType.text),
+            _buildTextField('Last Name', false, null, TextInputType.text),
+            _buildTextField('Account Name', false, null, TextInputType.text),
+            _buildTextField('Title', true, null, TextInputType.text),
+            _buildTextField('Phone', false, null, TextInputType.phone),
+            _buildTextField(
+                'Email Address', false, null, TextInputType.emailAddress),
+            _buildTextField('Website', false, null, TextInputType.url),
+            _buildTextField(
+                'Description', false, null, TextInputType.multiline),
+            _buildTextField('First Name', false, null, TextInputType.text),
             Container(
               child: Column(
                 children: [
@@ -94,151 +109,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: Text(
-                        'Website :',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextFormField(
-                      controller: null,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Enter Website',
-                          errorStyle: GoogleFonts.robotoSlab(),
-                          hintStyle: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) {},
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Phone Number',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: '+919876543210',
-                          errorStyle: GoogleFonts.robotoSlab(),
-                          hintStyle: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'This field is required.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {},
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Email Address',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Enter Email Address',
-                          errorStyle: GoogleFonts.robotoSlab(),
-                          hintStyle: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'This field is required.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {},
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        'Leads :',
+                        'Source :',
                         style: GoogleFonts.robotoSlab(
                             textStyle: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor,
@@ -263,7 +134,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       ],
                       onChanged: print,
                       // selectedItem: "",
-                      hint: 'Select Lead',
+                      hint: 'Select Source',
                       showSearchBox: true,
                       showSelectedItem: false,
                       showClearButton: true,
@@ -274,7 +145,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         focusedBorder: boxBorder(),
                         errorBorder: boxBorder(),
                         contentPadding: EdgeInsets.all(12),
-                        hintText: "Search a Lead",
+                        hintText: "Search for Source",
                         hintStyle: GoogleFonts.robotoSlab(),
                       ),
                       popupTitle: Container(
@@ -288,7 +159,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         ),
                         child: Center(
                           child: Text(
-                            'Leads',
+                            'Source',
                             style: GoogleFonts.robotoSlab(
                                 textStyle: TextStyle(
                                     fontSize: screenWidth / 20,
@@ -1100,7 +971,7 @@ class _CreateAccountState extends State<CreateAccount> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Create Account",
+          "Create Lead",
           style: GoogleFonts.robotoSlab(),
         ),
       ),
