@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -365,36 +364,7 @@ class _AccountsListState extends State<AccountsList> {
                               ? Container(
                                   margin: EdgeInsets.only(top: 10.0),
                                   width: screenWidth * 0.54,
-<<<<<<< HEAD
                                   child: TagViewWidget(_accounts[index].tags),
-=======
-                                  height: screenHeight / 33,
-                                  child: ListView.builder(
-                                      // physics: NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: _accounts[index].tags.length,
-                                      itemBuilder:
-                                          (BuildContext context, int tagIndex) {
-                                        return Container(
-                                          margin: EdgeInsets.only(right: 5.0),
-                                          alignment: Alignment.center,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5.0),
-                                          color: randomColor.randomColor(
-                                              colorBrightness:
-                                                  ColorBrightness.light),
-                                          child: Text(
-                                            _accounts[index].tags[tagIndex]
-                                                ['name'],
-                                            style: GoogleFonts.robotoSlab(
-                                                textStyle: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: screenWidth/35)),
-                                          ),
-                                        );
-                                      }),
->>>>>>> d91384daf851dea28186cb8e9fe62f6e8de46cbc
                                 )
                               : Container()
                         ],
@@ -493,16 +463,11 @@ class _AccountsListState extends State<AccountsList> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-<<<<<<< HEAD
         appBar: AppBar(
             title: Text(
           "Accounts",
           style: GoogleFonts.robotoSlab(),
         )),
-=======
-        appBar: AppBar(title: Text("Accounts",
-            style: GoogleFonts.robotoSlab())),
->>>>>>> d91384daf851dea28186cb8e9fe62f6e8de46cbc
         body: Container(
           padding: EdgeInsets.all(10.0),
           child: Column(
