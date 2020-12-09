@@ -1,31 +1,30 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/model/account.dart';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_color/random_color.dart';
 
-class AccountsList extends StatefulWidget {
-  AccountsList();
+class LeadsList extends StatefulWidget {
+  LeadsList();
   @override
-  State createState() => _AccountsListState();
+  State createState() => _LeadsListState();
 }
 
-class _AccountsListState extends State<AccountsList> {
-  int _currentTabIndex = 0;
-  List<Account> _accounts = [];
+class _LeadsListState extends State<LeadsList> {
+  var _currentTabIndex = 0;
+
   bool _isFilter = false;
+  bool _isEdit = false;
+  List<Lead> _leads = [];
 
   @override
   void initState() {
-    setState(() {
-      _accounts = accountBloc.openAccounts;
-    });
     super.initState();
+    setState(() {
+      _leads = leadBloc.openLeads;
+    });
   }
 
   Widget _buildTabs() {
@@ -40,10 +39,10 @@ class _AccountsListState extends State<AccountsList> {
                   if (_currentTabIndex != 0) {
                     setState(() {
                       _currentTabIndex = 0;
-                      _accounts = accountBloc.openAccounts;
+                      _leads = leadBloc.openLeads;
                       _isFilter = false;
                     });
-                    accountBloc.currentAccountType = "Open";
+                    leadBloc.currentLeadType = "Open";
                   }
                 },
                 child: Container(
@@ -56,7 +55,7 @@ class _AccountsListState extends State<AccountsList> {
                               ? Theme.of(context).secondaryHeaderColor
                               : bottomNavBarTextColor)),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+                  EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
                   child: Row(
                     children: [
                       Container(
@@ -72,10 +71,10 @@ class _AccountsListState extends State<AccountsList> {
                       ),
                       Container(
                         color:
-                            _currentTabIndex == 0 ? Colors.white : Colors.grey,
+                        _currentTabIndex == 0 ? Colors.white : Colors.grey,
                         padding: EdgeInsets.symmetric(horizontal: 5.0),
                         child: Text(
-                          accountBloc.openAccounts.length.toString(),
+                          leadBloc.openLeads.length.toString(),
                           style: GoogleFonts.robotoSlab(
                               fontSize: screenWidth / 25,
                               color: _currentTabIndex == 0
@@ -92,10 +91,10 @@ class _AccountsListState extends State<AccountsList> {
                   if (_currentTabIndex != 1) {
                     setState(() {
                       _currentTabIndex = 1;
-                      _accounts = accountBloc.closedAccounts;
+                      _leads = leadBloc.closedLeads;
                       _isFilter = false;
                     });
-                    accountBloc.currentAccountType = "Closed";
+                    leadBloc.currentLeadType = "Closed";
                   }
                 },
                 child: Container(
@@ -109,7 +108,7 @@ class _AccountsListState extends State<AccountsList> {
                               ? Theme.of(context).secondaryHeaderColor
                               : bottomNavBarTextColor)),
                   padding:
-                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+                  EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
                   child: Row(
                     children: [
                       Container(
@@ -125,10 +124,10 @@ class _AccountsListState extends State<AccountsList> {
                       ),
                       Container(
                         color:
-                            _currentTabIndex == 1 ? Colors.white : Colors.grey,
+                        _currentTabIndex == 1 ? Colors.white : Colors.grey,
                         padding: EdgeInsets.symmetric(horizontal: 5.0),
                         child: Text(
-                          accountBloc.closedAccounts.length.toString(),
+                          leadBloc.closedLeads.length.toString(),
                           style: GoogleFonts.robotoSlab(
                               fontSize: screenWidth / 25,
                               color: _currentTabIndex == 1
@@ -142,44 +141,62 @@ class _AccountsListState extends State<AccountsList> {
               ),
             ],
           ),
-          GestureDetector(
-              onTap: () {
-                if (_accounts.length > 0) {
-                  setState(() {
-                    _isFilter = !_isFilter;
-                  });
-                }
-              },
-              child: Container(
-                padding: EdgeInsets.all(3.0),
-                color: Colors.grey[700],
-                child: Icon(
-                  !_isFilter ? Icons.filter_alt_outlined : Icons.close,
-                  color: Colors.white,
-                  size: screenWidth / 15,
-                ),
-              ))
+          Row(
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    if (_leads.length > 0) {
+                      setState(() {
+                        _isEdit = !_isEdit;
+                      });
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(3.0),
+                    color: Colors.grey[700],
+                    child: Icon(
+                      !_isEdit ? Icons.edit : Icons.close,
+                      color: Colors.white,
+                      size: screenWidth / 15,
+                    ),
+                  )),
+              SizedBox(width: 3,),
+              GestureDetector(
+                  onTap: () {
+                    if (_leads.length > 0) {
+                      setState(() {
+                        _isFilter = !_isFilter;
+                      });
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(3.0),
+                    color: Colors.grey[700],
+                    child: Icon(
+                      !_isFilter ? Icons.filter_alt_outlined : Icons.close,
+                      color: Colors.white,
+                      size: screenWidth / 15,
+                    ),
+                  )),
+            ],
+          )
         ],
       ),
     );
-  }
-
-  Widget _buildFilterWidget() {
-    return _isFilter ? Container() : Container();
   }
 
   Widget _buildAccountList() {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: ListView.builder(
-          itemCount: _accounts.length,
+          itemCount: _leads.length,
           physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                accountBloc.currentAccount = _accounts[index];
-                Navigator.pushNamed(context, '/account_details');
+                leadBloc.currentLead = _leads[index];
+                Navigator.pushNamed(context, '/lead_details');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -189,22 +206,22 @@ class _AccountsListState extends State<AccountsList> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      child: _accounts[index].createdBy.profileUrl != null &&
-                              _accounts[index].createdBy.profileUrl != ""
+                      child: _leads[index].createdBy.profileUrl != null &&
+                          _leads[index].createdBy.profileUrl != ""
                           ? CircleAvatar(
-                              radius: screenWidth / 15,
-                              backgroundImage: NetworkImage(
-                                  _accounts[index].createdBy.profileUrl),
-                            )
+                        radius: screenWidth / 15,
+                        backgroundImage: NetworkImage(
+                            _leads[index].createdBy.profileUrl),
+                      )
                           : CircleAvatar(
-                              radius: screenWidth / 15,
-                              child: Icon(
-                                Icons.person,
-                                size: screenWidth / 10,
-                                color: Colors.white,
-                              ),
-                              backgroundColor: Colors.grey,
-                            ),
+                        radius: screenWidth / 15,
+                        child: Icon(
+                          Icons.person,
+                          size: screenWidth / 10,
+                          color: Colors.white,
+                        ),
+                        backgroundColor: Colors.grey,
+                      ),
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -219,7 +236,7 @@ class _AccountsListState extends State<AccountsList> {
                                 Container(
                                   width: screenWidth * 0.34,
                                   child: Text(
-                                    _accounts[index].name,
+                                    _leads[index].title,
                                     style: GoogleFonts.robotoSlab(
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
@@ -230,7 +247,7 @@ class _AccountsListState extends State<AccountsList> {
                                 Container(
                                   width: screenWidth * 0.20,
                                   child: Text(
-                                    _accounts[index].createdOn,
+                                    _leads[index].createdOn.substring(0, 10),
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.robotoSlab(
                                         color: bottomNavBarTextColor,
@@ -241,37 +258,35 @@ class _AccountsListState extends State<AccountsList> {
                               ],
                             ),
                           ),
-                          _accounts[index].tags.length != 0
+                          _leads[index].tags.length != 0
                               ? Container(
-                                  margin: EdgeInsets.only(top: 10.0),
-                                  width: screenWidth * 0.54,
-                                  height: screenHeight / 33,
-                                  child: ListView.builder(
-                                      // physics: NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: _accounts[index].tags.length,
-                                      itemBuilder:
-                                          (BuildContext context, int tagIndex) {
-                                        return Container(
-                                          margin: EdgeInsets.only(right: 5.0),
-                                          alignment: Alignment.center,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5.0),
-                                          color: randomColor.randomColor(
-                                              colorBrightness:
-                                                  ColorBrightness.light),
-                                          child: Text(
-                                            _accounts[index].tags[tagIndex]
-                                                ['name'],
-                                            style: GoogleFonts.robotoSlab(
-                                                textStyle: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: screenWidth/35)),
-                                          ),
-                                        );
-                                      }),
-                                )
+                            margin: EdgeInsets.only(top: 10.0),
+                            width: screenWidth * 0.54,
+                            height: screenHeight / 33,
+                            child: ListView.builder(
+                              // physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: _leads[index].tags.length,
+                                itemBuilder:
+                                    (BuildContext context, int tagIndex) {
+                                  return Container(
+                                    margin: EdgeInsets.only(right: 5.0),
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.symmetric(horizontal: 5.0),
+                                    color: randomColor.randomColor(
+                                        colorBrightness: ColorBrightness.light),
+                                    child: Text(
+                                      _leads[index].tags[tagIndex]
+                                      ['name'],
+                                      style: GoogleFonts.robotoSlab(
+                                          textStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth/35)),
+                                    ),
+                                  );
+                                }),
+                          )
                               : Container()
                         ],
                       ),
@@ -282,7 +297,7 @@ class _AccountsListState extends State<AccountsList> {
                         margin: EdgeInsets.only(right: 5.0),
                         decoration: BoxDecoration(
                           border:
-                              Border.all(width: 1.0, color: Colors.grey[300]),
+                          Border.all(width: 1.0, color: Colors.grey[300]),
                           borderRadius: BorderRadius.all(Radius.circular(3.0)),
                         ),
                         padding: EdgeInsets.all(3.0),
@@ -298,7 +313,7 @@ class _AccountsListState extends State<AccountsList> {
                       child: Container(
                         decoration: BoxDecoration(
                           border:
-                              Border.all(width: 1.0, color: Colors.grey[300]),
+                          Border.all(width: 1.0, color: Colors.grey[300]),
                           borderRadius: BorderRadius.all(Radius.circular(3.0)),
                         ),
                         padding: EdgeInsets.all(3.0),
@@ -322,25 +337,24 @@ class _AccountsListState extends State<AccountsList> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-        appBar: AppBar(title: Text("Accounts",
-            style: GoogleFonts.robotoSlab())),
+        appBar: AppBar(
+          title: Text("Leads",
+              style: GoogleFonts.robotoSlab()),
+        ),
         body: Container(
           padding: EdgeInsets.all(10.0),
           child: Column(
             children: [
               _buildTabs(),
-              _buildFilterWidget(),
-              _accounts.length > 0
+              _leads.length > 0
                   ? Expanded(child: _buildAccountList())
                   : Container(
-                      margin: EdgeInsets.only(top: 30.0),
-                      child: Center(
-                        child: Text(
-                          "No Accounts Found",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
-                      ),
-                    )
+                margin: EdgeInsets.only(top: 30.0),
+                child: Text(
+                  "No Leads Found",
+                  style: GoogleFonts.robotoSlab(),
+                ),
+              )
             ],
           ),
         ),

@@ -62,4 +62,10 @@ class CrmService {
     return await networkService.get(baseUrl + 'accounts/',
         headers: getFormatedHeaders(_headers));
   }
+
+  Future<Response> getLeads() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'leads/',
+        headers: getFormatedHeaders(_headers));
+  }
 }
