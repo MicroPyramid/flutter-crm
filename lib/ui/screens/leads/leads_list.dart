@@ -32,7 +32,7 @@ class _LeadsListState extends State<LeadsList> {
     });
   }
 
-  Widget _multiSelectBar(List<Map> data) {
+  Widget _buildMultiSelectDropdown(data) {
     List _myActivities;
     return Container(
       // decoration: BoxDecoration(
@@ -44,14 +44,9 @@ class _LeadsListState extends State<LeadsList> {
         border: boxBorder(),
         fillColor: Colors.white,
         autovalidate: false,
-        validator: (value) {
-          if (value == null || value.length == 0) {
-            return 'Please select one or more options';
-          }
-        },
         dataSource: data,
-        textField: 'display',
-        valueField: 'value',
+        textField: 'name',
+        valueField: 'id',
         okButtonLabel: 'OK',
         chipLabelStyle:
             GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.black)),
@@ -59,10 +54,9 @@ class _LeadsListState extends State<LeadsList> {
         cancelButtonLabel: 'CANCEL',
         // required: true,
         hintWidget: Text(
-          "Please select one or more options",
-          style: GoogleFonts.robotoSlab(
-              textStyle: TextStyle(color: Colors.grey[700]),
-              fontSize: screenWidth / 26),
+          "Please choose one or more",
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.grey)),
         ),
         title: Text(
           "Users",
@@ -82,7 +76,7 @@ class _LeadsListState extends State<LeadsList> {
     );
   }
 
-  Widget _dropDownSearchBar(
+  Widget _buildDropDownSearchBar(
       List<String> data, String hint, String hintText, String title) {
     return DropdownSearch<String>(
       mode: Mode.BOTTOM_SHEET,
@@ -158,16 +152,16 @@ class _LeadsListState extends State<LeadsList> {
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 10.0),
-                  height: screenHeight * 0.055,
-                  child: _dropDownSearchBar(leadBloc.source, 'Select Source',
-                      "Search a Source here.", 'Source'),
+                  height: 48.0,
+                  child: _buildDropDownSearchBar(leadBloc.source,
+                      'Select Source', "Search a Source here.", 'Source'),
                 ),
-                _multiSelectBar(leadBloc.users),
+                _buildMultiSelectDropdown(leadBloc.usersObjForDropdown),
                 Container(
                   margin: EdgeInsets.only(bottom: 10.0),
-                  height: screenHeight * 0.055,
-                  child: _dropDownSearchBar(leadBloc.status, 'Select Status',
-                      "Search a Status here.", 'Status'),
+                  height: 48.0,
+                  child: _buildDropDownSearchBar(leadBloc.status,
+                      'Select Status', "Search a Status here.", 'Status'),
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 10.0),

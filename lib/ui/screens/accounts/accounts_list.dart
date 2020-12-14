@@ -372,7 +372,11 @@ class _AccountsListState extends State<AccountsList> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        await accountBloc
+                            .updateCurrentEditAccount(_accounts[index]);
+                        Navigator.pushNamed(context, '/create_account');
+                      },
                       child: Container(
                         margin: EdgeInsets.only(right: 5.0),
                         decoration: BoxDecoration(
@@ -417,38 +421,40 @@ class _AccountsListState extends State<AccountsList> {
       BuildContext context, Account account, index) {
     showDialog(
         context: context,
-        child: CupertinoAlertDialog(
-          title: Text(
-            account.name,
-            style: GoogleFonts.robotoSlab(
-                color: Theme.of(context).secondaryHeaderColor),
-          ),
-          content: Text(
-            "Are you sure you want to delete this account?",
-            style: GoogleFonts.robotoSlab(fontSize: 15.0),
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                isDefaultAction: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-            CupertinoDialogAction(
-                textStyle: TextStyle(color: Colors.red),
-                isDefaultAction: true,
-                onPressed: () async {
-                  deleteAccount(index, account);
-                },
-                child: Text(
-                  "Delete",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-          ],
-        ));
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              account.name,
+              style: GoogleFonts.robotoSlab(
+                  color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "Are you sure you want to delete this account?",
+              style: GoogleFonts.robotoSlab(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    deleteAccount(index, account);
+                  },
+                  child: Text(
+                    "Delete",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+            ],
+          );
+        });
   }
 
   deleteAccount(index, account) {

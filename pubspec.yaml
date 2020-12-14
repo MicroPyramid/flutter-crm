@@ -28,6 +28,7 @@ dependencies:
   intl: ^0.16.1
   random_color: ^1.0.5
   multiselect_formfield: ^0.1.5
+  smart_select: ^4.3.2
 
 dev_dependencies:
   flutter_test:

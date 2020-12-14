@@ -3,6 +3,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/contact_bloc.dart';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/model/contact.dart';
+import 'package:flutter_crm/model/lead.dart';
+import 'package:flutter_crm/model/profile.dart';
+import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,12 +27,17 @@ class _CreateAccountState extends State<CreateAccount> {
   final GlobalKey<FormState> _createAccountFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
-  List _myActivities;
-  String _selectedStatus = 'Open';
 
   @override
   void initState() {
     super.initState();
+  }
+
+  _saveForm() {
+    if (!_createAccountFormKey.currentState.validate()) {
+      return;
+    }
+    _createAccountFormKey.currentState.save();
   }
 
   Widget _buildForm() {
@@ -61,6 +73,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      initialValue: accountBloc.currentEditAccount['name'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -80,7 +93,9 @@ class _CreateAccountState extends State<CreateAccount> {
                         }
                         return null;
                       },
-                      onSaved: (value) {},
+                      onSaved: (value) {
+                        accountBloc.currentEditAccount['name'] = value;
+                      },
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -104,6 +119,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      initialValue: accountBloc.currentEditAccount['website'],
                       controller: null,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -152,6 +168,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      initialValue: accountBloc.currentEditAccount['phone'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -171,7 +188,9 @@ class _CreateAccountState extends State<CreateAccount> {
                         }
                         return null;
                       },
-                      onSaved: (value) {},
+                      onSaved: (value) {
+                        accountBloc.currentEditAccount['phone'] = value;
+                      },
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -205,6 +224,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      initialValue: accountBloc.currentEditAccount['email'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -217,14 +237,16 @@ class _CreateAccountState extends State<CreateAccount> {
                           errorStyle: GoogleFonts.robotoSlab(),
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'This field is required.';
                         }
                         return null;
                       },
-                      onSaved: (value) {},
+                      onSaved: (value) {
+                        accountBloc.currentEditAccount['email'] = value;
+                      },
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -250,19 +272,9 @@ class _CreateAccountState extends State<CreateAccount> {
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: DropdownSearch<String>(
                       mode: Mode.BOTTOM_SHEET,
-                      items: [
-                        "none",
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada',
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada'
-                      ],
+                      items: leadBloc.leadsTitles,
                       onChanged: print,
-                      // selectedItem: "",
+                      selectedItem: accountBloc.currentEditAccount['lead'],
                       hint: 'Select Lead',
                       showSearchBox: true,
                       showSelectedItem: false,
@@ -296,6 +308,18 @@ class _CreateAccountState extends State<CreateAccount> {
                           ),
                         ),
                       ),
+                      popupItemBuilder: (context, item, isSelected) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 10.0),
+                          child: Text(
+                            item,
+                            style: GoogleFonts.robotoSlab(
+                                textStyle:
+                                    TextStyle(fontSize: screenWidth / 22)),
+                          ),
+                        );
+                      },
                       popupShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(24),
@@ -335,6 +359,8 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      initialValue: accountBloc
+                          .currentEditAccount['billing_address_line'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -354,7 +380,10 @@ class _CreateAccountState extends State<CreateAccount> {
                         }
                         return null;
                       },
-                      onSaved: (value) {},
+                      onSaved: (value) {
+                        accountBloc.currentEditAccount['billing_address_line'] =
+                            value;
+                      },
                     ),
                   ),
                   Container(
@@ -365,6 +394,8 @@ class _CreateAccountState extends State<CreateAccount> {
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            initialValue: accountBloc
+                                .currentEditAccount['billing_street'],
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(12.0),
                                 enabledBorder: boxBorder(),
@@ -384,12 +415,17 @@ class _CreateAccountState extends State<CreateAccount> {
                               }
                               return null;
                             },
-                            onSaved: (value) {},
+                            onSaved: (value) {
+                              accountBloc.currentEditAccount['billing_street'] =
+                                  value;
+                            },
                           ),
                         ),
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            initialValue: accountBloc
+                                .currentEditAccount['billing_postcode'],
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(12.0),
                                 enabledBorder: boxBorder(),
@@ -409,7 +445,11 @@ class _CreateAccountState extends State<CreateAccount> {
                               }
                               return null;
                             },
-                            onSaved: (value) {},
+                            onSaved: (value) {
+                              accountBloc
+                                      .currentEditAccount['billing_postcode'] =
+                                  value;
+                            },
                           ),
                         )
                       ],
@@ -423,6 +463,8 @@ class _CreateAccountState extends State<CreateAccount> {
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            initialValue:
+                                accountBloc.currentEditAccount['billing_city'],
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(12.0),
                                 enabledBorder: boxBorder(),
@@ -442,12 +484,17 @@ class _CreateAccountState extends State<CreateAccount> {
                               }
                               return null;
                             },
-                            onSaved: (value) {},
+                            onSaved: (value) {
+                              accountBloc.currentEditAccount['billing_city'] =
+                                  value;
+                            },
                           ),
                         ),
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            initialValue:
+                                accountBloc.currentEditAccount['billing_state'],
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(12.0),
                                 enabledBorder: boxBorder(),
@@ -467,45 +514,39 @@ class _CreateAccountState extends State<CreateAccount> {
                               }
                               return null;
                             },
-                            onSaved: (value) {},
+                            onSaved: (value) {
+                              accountBloc.currentEditAccount['billing_state'] =
+                                  value;
+                            },
                           ),
                         )
                       ],
                     ),
                   ),
                   Container(
-                    height: 48.0,
+                    // height: 48.0,
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: DropdownSearch<String>(
                       mode: Mode.BOTTOM_SHEET,
-                      items: [
-                        "none",
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada',
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada'
-                      ],
+                      items: leadBloc.countries,
                       onChanged: print,
-                      // selectedItem: "",
+                      selectedItem:
+                          accountBloc.currentEditAccount['billing_country'],
                       hint: 'Select Country',
                       showSearchBox: true,
                       showSelectedItem: false,
                       showClearButton: true,
                       searchBoxDecoration: InputDecoration(
-                        border: boxBorder(),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        contentPadding: EdgeInsets.all(12),
-                        hintText: "Search a Country",
-                        hintStyle: GoogleFonts.robotoSlab(),
-                        errorStyle: GoogleFonts.robotoSlab(),
-                      ),
+                          border: boxBorder(),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          contentPadding: EdgeInsets.all(12),
+                          hintText: "Search a Country",
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0)),
+                          errorStyle: GoogleFonts.robotoSlab()),
                       popupTitle: Container(
                         height: 50,
                         decoration: BoxDecoration(
@@ -525,12 +566,34 @@ class _CreateAccountState extends State<CreateAccount> {
                           ),
                         ),
                       ),
+                      popupItemBuilder: (context, item, isSelected) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 10.0),
+                          child: Text(
+                            item,
+                            style: GoogleFonts.robotoSlab(
+                                textStyle:
+                                    TextStyle(fontSize: screenWidth / 22)),
+                          ),
+                        );
+                      },
                       popupShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(24),
                           topRight: Radius.circular(24),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        accountBloc.currentEditAccount['billing_country'] =
+                            newValue;
+                      },
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -571,39 +634,11 @@ class _CreateAccountState extends State<CreateAccount> {
                         if (value == null || value.length == 0) {
                           return 'Please select one or more options';
                         }
+                        return null;
                       },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: contactBloc.contactsObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
@@ -612,18 +647,17 @@ class _CreateAccountState extends State<CreateAccount> {
                       // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
-                        style: GoogleFonts.robotoSlab(),
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.grey)),
                       ),
                       title: Text(
                         "Contacts",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
-
+                      // initialValue: accountBloc.currentEditAccount['contacts'],
                       onSaved: (value) {
-                        if (value == null) return;
                         setState(() {
-                          _myActivities = value;
+                          accountBloc.currentEditAccount['contacts'] = value;
                         });
                       },
                     ),
@@ -653,63 +687,27 @@ class _CreateAccountState extends State<CreateAccount> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: contactBloc.teamsObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       dialogTextStyle: GoogleFonts.robotoSlab(),
                       cancelButtonLabel: 'CANCEL',
-                      // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
-                        style: GoogleFonts.robotoSlab(),
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.grey)),
                       ),
                       title: Text(
                         "Teams",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
-
+                      initialValue: [],
                       onSaved: (value) {
-                        if (value == null) return;
                         setState(() {
-                          _myActivities = value;
+                          accountBloc.currentEditAccount['teams'] = value;
                         });
                       },
                     ),
@@ -739,63 +737,27 @@ class _CreateAccountState extends State<CreateAccount> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: leadBloc.usersObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       dialogTextStyle: GoogleFonts.robotoSlab(),
                       cancelButtonLabel: 'CANCEL',
-                      // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
-                        style: GoogleFonts.robotoSlab(),
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.grey)),
                       ),
                       title: Text(
                         "Users",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
-
+                      initialValue: accountBloc.currentEditAccount['users'],
                       onSaved: (value) {
-                        if (value == null) return;
                         setState(() {
-                          _myActivities = value;
+                          accountBloc.currentEditAccount['users'] = value;
                         });
                       },
                     ),
@@ -825,74 +787,30 @@ class _CreateAccountState extends State<CreateAccount> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: leadBloc.usersObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       dialogTextStyle: GoogleFonts.robotoSlab(),
                       cancelButtonLabel: 'CANCEL',
-                      // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
-                        style: GoogleFonts.robotoSlab(),
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.grey)),
                       ),
                       title: Text(
                         "Assigned To",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
-
+                      initialValue:
+                          accountBloc.currentEditAccount['assigned_to'],
                       onSaved: (value) {
-                        if (value == null) return;
                         setState(() {
-                          _myActivities = value;
+                          accountBloc.currentEditAccount['assigned_to'] = value;
                         });
                       },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Select one or more",
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(color: Colors.grey)),
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -925,10 +843,10 @@ class _CreateAccountState extends State<CreateAccount> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       hint: Text('select Status'),
-                      value: _selectedStatus,
+                      value: "Open",
                       onChanged: (value) {
                         setState(() {
-                          _selectedStatus = value;
+                          accountBloc.currentEditAccount['status'] = value;
                         });
                       },
                       items: ['Open', 'Close'].map((location) {
@@ -961,7 +879,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
-                      // initialTags: <String>['Wero', 'baby'],
+                      initialTags: accountBloc.currentEditAccount['tags'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),
@@ -982,10 +900,16 @@ class _CreateAccountState extends State<CreateAccount> {
                               size: 18.0, color: Colors.green[900]),
                           tagPadding: const EdgeInsets.all(6.0)),
                       onTag: (tag) {
-                        print('onTag ' + tag);
+                        setState(() {
+                          accountBloc.currentEditAccount['tags'].add(tag);
+                        });
+                        print(accountBloc.currentEditAccount['tags']);
                       },
                       onDelete: (tag) {
-                        print('onDelete ' + tag);
+                        setState(() {
+                          accountBloc.currentEditAccount['tags'].remove(tag);
+                        });
+                        print(accountBloc.currentEditAccount['tags']);
                       },
                     ),
                   ),
@@ -1045,7 +969,9 @@ class _CreateAccountState extends State<CreateAccount> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      _saveForm();
+                    },
                     child: Container(
                       alignment: Alignment.center,
                       height: screenHeight * 0.06,

@@ -1,7 +1,9 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -43,6 +45,8 @@ class _UserLoginState extends State<UserLogin> {
       await authBloc.getProfileDetails();
       await dashboardBloc.fetchDashboardDetails();
       await accountBloc.fetchAccounts();
+      await leadBloc.fetchLeads();
+      await contactBloc.fetchContacts();
       Navigator.pushNamedAndRemoveUntil(
           context, '/dashboard', (route) => false);
     } else if (result['error'] == true) {

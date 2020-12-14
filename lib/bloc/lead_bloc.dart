@@ -10,9 +10,12 @@ class LeadBloc {
   List<String> _source = [];
   List<String> _status = [];
 
-  List<Map> _users = [];
   Lead _currentLead;
   String _currentLeadType = "Open";
+  List<Profile> _users = [];
+  List<String> _countries = [];
+  List<String> _ledasTitles = [];
+  List _usersObjForDropdown = [];
 
   Future fetchLeads() async {
     await CrmService().getLeads().then((response) {
@@ -21,6 +24,10 @@ class LeadBloc {
       res['open_leads'].forEach((_lead) {
         Lead lead = Lead.fromJson(_lead);
         _openLeads.add(lead);
+      });
+
+      _openLeads.forEach((Lead lead) {
+        _ledasTitles.add(lead.title);
       });
 
       res['close_leads'].forEach((_lead) {
@@ -32,16 +39,24 @@ class LeadBloc {
         _source.add(_leadsource[1]);
       });
 
-      res['users'].forEach((_user) {
-        Profile user = Profile.fromJson(_user);
-        _users.add({
-          'display': user.userName.toString(),
-          'value': user.userName.toString()
-        });
-      });
-
       res['status'].forEach((_leadstatus) {
         _status.add(_leadstatus[1]);
+      });
+
+      res['users'].forEach((_user) {
+        Profile user = Profile.fromJson(_user);
+        _users.add(user);
+      });
+
+      _users.forEach((_user) {
+        Map user = {};
+        user['id'] = _user.id;
+        user['name'] = _user.firstName + ' ' + _user.lastName;
+        _usersObjForDropdown.add(user);
+      });
+
+      res['countries'].forEach((country) {
+        _countries.add(country[1]);
       });
     }).catchError((onError) {
       print('fetchLeads $onError');
@@ -56,16 +71,20 @@ class LeadBloc {
     return _closedLeads;
   }
 
-  List<Map> get users {
-    return _users;
-  }
-
   List<String> get source {
     return _source;
   }
 
   List<String> get status {
     return _status;
+  }
+
+  List<String> get leadsTitles {
+    return _ledasTitles;
+  }
+
+  List<Profile> get users {
+    return _users;
   }
 
   Lead get currentLead {
@@ -82,6 +101,14 @@ class LeadBloc {
 
   set currentLeadType(String type) {
     _currentLeadType = type;
+  }
+
+  List<String> get countries {
+    return _countries;
+  }
+
+  List get usersObjForDropdown {
+    return _usersObjForDropdown;
   }
 }
 
