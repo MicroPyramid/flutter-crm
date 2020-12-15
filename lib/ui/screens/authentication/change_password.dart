@@ -51,6 +51,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       setState(() {
         _errorMessage = null;
       });
+      showToast(result['message']);
       Navigator.pop(context);
     } else if (result['error'] == true) {
       if (result['message'] != null) {
@@ -59,6 +60,10 @@ class _ChangePasswordState extends State<ChangePassword> {
         });
       }
       if (result['errors'] != null) {
+        if (result['errors']['retype_password'] != null) {
+          result['errors']['retype_password'] =
+              "New Password and Confirm Password did not match.";
+        }
         setState(() {
           _errors = result['errors'];
         });
@@ -184,7 +189,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      _formData['password'] = value;
+                                      _formData['old_password'] = value;
                                     },
                                   ),
                                 ),
@@ -274,7 +279,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      _formData['password'] = value;
+                                      _formData['new_password'] = value;
                                     },
                                   ),
                                 ),
@@ -461,7 +466,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      _formData['password'] = value;
+                                      _formData['retype_password'] = value;
                                     },
                                   ),
                                 ),
@@ -510,6 +515,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                             GestureDetector(
                               onTap: () {
                                 FocusScope.of(context).unfocus();
+                                setState(() {
+                                  _errorMessage = null;
+                                  _errors = null;
+                                });
                                 _submitForm();
                               },
                               child: Container(

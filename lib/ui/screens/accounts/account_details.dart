@@ -381,7 +381,11 @@ class _AccountDetailsState extends State<AccountDetails> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () async {
+                          await accountBloc.updateCurrentEditAccount(
+                              accountBloc.currentAccount);
+                          Navigator.pushNamed(context, '/create_account');
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey[300])),

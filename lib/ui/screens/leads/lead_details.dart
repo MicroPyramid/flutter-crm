@@ -59,10 +59,9 @@ class _LeadDetailsState extends State<LeadDetails> {
                               child: Text(
                                 leadBloc.currentLeadType,
                                 style: GoogleFonts.robotoSlab(
-                                    color:
-                                        leadBloc.currentLeadType == "Open"
-                                            ? Color.fromRGBO(117, 174, 51, 1)
-                                            : Color.fromRGBO(234, 67, 53, 1),
+                                    color: leadBloc.currentLeadType == "Open"
+                                        ? Color.fromRGBO(117, 174, 51, 1)
+                                        : Color.fromRGBO(234, 67, 53, 1),
                                     fontSize: screenWidth / 22),
                               ),
                             ),
@@ -413,8 +412,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                                 color: randomColor.randomColor(
                                     colorBrightness: ColorBrightness.light),
                                 child: Text(
-                                  leadBloc.currentLead.tags[tagIndex]
-                                      ['name'],
+                                  leadBloc.currentLead.tags[tagIndex]['name'],
                                   style: GoogleFonts.robotoSlab(
                                       textStyle: TextStyle(
                                           color: Colors.white, fontSize: 12.0)),
@@ -433,7 +431,11 @@ class _LeadDetailsState extends State<LeadDetails> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () async {
+                          await leadBloc
+                              .updateCurrentEditLead(leadBloc.currentLead);
+                          Navigator.pushNamed(context, '/create_lead');
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey[300])),

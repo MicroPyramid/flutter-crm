@@ -16,6 +16,28 @@ class LeadBloc {
   List<String> _countries = [];
   List<String> _ledasTitles = [];
   List _usersObjForDropdown = [];
+  Map _currentEditLead = {
+    "first_name": "",
+    "last_name": "",
+    "phone": "",
+    "account_name": "",
+    "title": "",
+    "email": "",
+    "website": "",
+    "description": "",
+    "teams": [],
+    "users": [],
+    "assigned_to": [],
+    "address_line": "",
+    "street": "",
+    "postcode": "",
+    "city": "",
+    "state": "",
+    "country": "",
+    "status": "",
+    "source": "",
+    "tags": List<String>()
+  };
 
   Future fetchLeads() async {
     await CrmService().getLeads().then((response) {
@@ -61,6 +83,59 @@ class LeadBloc {
     }).catchError((onError) {
       print('fetchLeads $onError');
     });
+  }
+
+  updateCurrentEditLead(Lead editLead) {
+    List teams = [];
+    List assignedUsers = [];
+    List<String> tags = [];
+
+    // editLead.teams.forEach((team) {
+    //   Map _team = {};
+    //   _team['id'] = team.id;
+    //   _team['name'] = team.name;
+    //   teams.add(_team);
+    // });
+
+    editLead.assignedTo.forEach((user) {
+      Map _user = {};
+      _user['id'] = user.id;
+      _user['name'] = user.firstName + ' ' + user.lastName;
+      assignedUsers.add(_user);
+    });
+
+    for (var tag in editLead.tags) {
+      tags.add(tag['name']);
+    }
+
+    _currentEditLead['first_name'] = editLead.firstName;
+    _currentEditLead['last_name'] = editLead.lastName;
+    _currentEditLead['phone'] = editLead.phone;
+    _currentEditLead['account_name'] = editLead.accountName;
+    _currentEditLead['title'] = editLead.title;
+    _currentEditLead['email'] = editLead.email;
+    _currentEditLead['website'] = editLead.website;
+    _currentEditLead['description'] = editLead.description;
+    _currentEditLead['teams'] = teams;
+    // _currentEditLead['users'] = editLead.users;
+    _currentEditLead['assigned_to'] = assignedUsers;
+    _currentEditLead['address_line'] = editLead.addressLine;
+    _currentEditLead['street'] = editLead.street;
+    _currentEditLead['postcode'] = editLead.postcode;
+    _currentEditLead['city'] = editLead.city;
+    _currentEditLead['state'] = editLead.state;
+    _currentEditLead['country'] = editLead.country;
+    _currentEditLead['status'] = editLead.status;
+    _currentEditLead['source'] = editLead.source;
+    _currentEditLead['tags'] = tags;
+  }
+
+  Map get currentEditLead {
+    return _currentEditLead;
+  }
+
+  set currentEditLead(Map currentEditLead) {
+    _currentEditLead = currentEditLead;
   }
 
   List<Lead> get openLeads {

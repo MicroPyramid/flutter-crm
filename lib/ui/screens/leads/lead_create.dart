@@ -3,6 +3,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_crm/bloc/contact_bloc.dart';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,19 +19,25 @@ class CreateLead extends StatefulWidget {
 }
 
 class _CreateLeadState extends State<CreateLead> {
-  final GlobalKey<FormState> _createAccountFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _createLeadFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
   List _myActivities;
-  String _selectedStatus = 'Open';
 
   @override
   void initState() {
     super.initState();
   }
 
-  Widget _buildTextField(String _title, bool _required, dynamic _controller,
-      TextInputType _keyboardType) {
+  _saveForm() {
+    if (!_createLeadFormKey.currentState.validate()) {
+      return;
+    }
+    _createLeadFormKey.currentState.save();
+  }
+
+  Widget _buildTextField(String _lable, bool _required, dynamic _controller,
+      TextInputType _keyboardType, _initialValue) {
     return Column(
       children: [
         Container(
@@ -37,7 +45,7 @@ class _CreateLeadState extends State<CreateLead> {
             margin: EdgeInsets.only(bottom: 5.0),
             child: RichText(
               text: TextSpan(
-                text: _title,
+                text: _lable,
                 style: GoogleFonts.robotoSlab(
                     textStyle: TextStyle(
                         color: Theme.of(context).secondaryHeaderColor,
@@ -46,18 +54,20 @@ class _CreateLeadState extends State<CreateLead> {
                 children: <TextSpan>[
                   _required
                       ? TextSpan(
-                          text: '* ',
+                          text: '*',
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(color: Colors.red)))
                       : TextSpan(text: ""),
-                  TextSpan(text: ': ', style: GoogleFonts.robotoSlab())
+                  TextSpan(text: ' :', style: GoogleFonts.robotoSlab())
                 ],
               ),
             )),
         Container(
           margin: EdgeInsets.only(bottom: 10.0),
           child: TextFormField(
+            maxLines: _lable == "Description" ? 5 : 1,
             controller: _controller,
+            initialValue: _initialValue,
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(12.0),
                 enabledBorder: boxBorder(),
@@ -66,18 +76,22 @@ class _CreateLeadState extends State<CreateLead> {
                 errorBorder: boxBorder(),
                 fillColor: Colors.white,
                 filled: true,
-                hintText: 'Enter $_title',
+                hintText: _lable == "Phone"
+                    ? "Enter $_lable (+919876543210)"
+                    : "Enter $_lable",
                 errorStyle: GoogleFonts.robotoSlab(),
                 hintStyle: GoogleFonts.robotoSlab(
                     textStyle: TextStyle(fontSize: 14.0))),
             keyboardType: _keyboardType,
             validator: (value) {
-              if (value.isEmpty) {
+              if (_required && value.isEmpty) {
                 return 'This field is required.';
               }
               return null;
             },
-            onSaved: (value) {},
+            onSaved: (value) {
+              _initialValue = value;
+            },
           ),
         ),
         Divider(color: Colors.grey)
@@ -88,421 +102,25 @@ class _CreateLeadState extends State<CreateLead> {
   Widget _buildForm() {
     return Container(
       child: Form(
-        key: _createAccountFormKey,
+        key: _createLeadFormKey,
         child: Column(
           children: [
-            _buildTextField('First Name', false, null, TextInputType.text),
-            _buildTextField('Last Name', false, null, TextInputType.text),
-            _buildTextField('Account Name', false, null, TextInputType.text),
-            _buildTextField('Title', true, null, TextInputType.text),
-            _buildTextField('Phone', false, null, TextInputType.phone),
-            _buildTextField(
-                'Email Address', false, null, TextInputType.emailAddress),
-            _buildTextField('Website', false, null, TextInputType.url),
-            _buildTextField(
-                'Description', false, null, TextInputType.multiline),
-            _buildTextField('First Name', false, null, TextInputType.text),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        'Source :',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
-                      )),
-                  Container(
-                    height: 48.0,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: DropdownSearch<String>(
-                      mode: Mode.BOTTOM_SHEET,
-                      items: [
-                        "none",
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada',
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada'
-                      ],
-                      onChanged: print,
-                      // selectedItem: "",
-                      hint: 'Select Source',
-                      showSearchBox: true,
-                      showSelectedItem: false,
-                      showClearButton: true,
-                      searchBoxDecoration: InputDecoration(
-                        border: boxBorder(),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        contentPadding: EdgeInsets.all(12),
-                        hintText: "Search for Source",
-                        hintStyle: GoogleFonts.robotoSlab(),
-                      ),
-                      popupTitle: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Source',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    fontSize: screenWidth / 20,
-                                    color: Colors.white)),
-                          ),
-                        ),
-                      ),
-                      popupShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Billing Address',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Address Line',
-                          errorStyle: GoogleFonts.robotoSlab(),
-                          hintStyle: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'This field is required.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {},
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: screenWidth * 0.42,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(12.0),
-                                enabledBorder: boxBorder(),
-                                focusedErrorBorder: boxBorder(),
-                                focusedBorder: boxBorder(),
-                                errorBorder: boxBorder(),
-                                fillColor: Colors.white,
-                                filled: true,
-                                hintText: 'Street',
-                                errorStyle: GoogleFonts.robotoSlab(),
-                                hintStyle: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(fontSize: 14.0))),
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'This field is required.';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {},
-                          ),
-                        ),
-                        Container(
-                          width: screenWidth * 0.42,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(12.0),
-                                enabledBorder: boxBorder(),
-                                focusedErrorBorder: boxBorder(),
-                                focusedBorder: boxBorder(),
-                                errorBorder: boxBorder(),
-                                fillColor: Colors.white,
-                                filled: true,
-                                hintText: 'Postal Code',
-                                errorStyle: GoogleFonts.robotoSlab(),
-                                hintStyle: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(fontSize: 14.0))),
-                            keyboardType: TextInputType.phone,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'This field is required.';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {},
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: screenWidth * 0.42,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(12.0),
-                                enabledBorder: boxBorder(),
-                                focusedErrorBorder: boxBorder(),
-                                focusedBorder: boxBorder(),
-                                errorBorder: boxBorder(),
-                                fillColor: Colors.white,
-                                filled: true,
-                                hintText: 'City',
-                                errorStyle: GoogleFonts.robotoSlab(),
-                                hintStyle: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(fontSize: 14.0))),
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'This field is required.';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {},
-                          ),
-                        ),
-                        Container(
-                          width: screenWidth * 0.42,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(12.0),
-                                enabledBorder: boxBorder(),
-                                focusedErrorBorder: boxBorder(),
-                                focusedBorder: boxBorder(),
-                                errorBorder: boxBorder(),
-                                fillColor: Colors.white,
-                                filled: true,
-                                hintText: 'State',
-                                errorStyle: GoogleFonts.robotoSlab(),
-                                hintStyle: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(fontSize: 14.0))),
-                            keyboardType: TextInputType.text,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'This field is required.';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {},
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 48.0,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: DropdownSearch<String>(
-                      mode: Mode.BOTTOM_SHEET,
-                      items: [
-                        "none",
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada',
-                        "Brazil",
-                        "Italia",
-                        "Tunisia",
-                        'Canada'
-                      ],
-                      onChanged: print,
-                      // selectedItem: "",
-                      hint: 'Select Country',
-                      showSearchBox: true,
-                      showSelectedItem: false,
-                      showClearButton: true,
-                      searchBoxDecoration: InputDecoration(
-                        border: boxBorder(),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        contentPadding: EdgeInsets.all(12),
-                        hintText: "Search a Country",
-                        hintStyle: GoogleFonts.robotoSlab(),
-                        errorStyle: GoogleFonts.robotoSlab(),
-                      ),
-                      popupTitle: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Countries',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    fontSize: screenWidth / 20,
-                                    color: Colors.white)),
-                          ),
-                        ),
-                      ),
-                      popupShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Contacts',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: MultiSelectFormField(
-                      border: boxBorder(),
-                      fillColor: Colors.white,
-                      autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
-                      okButtonLabel: 'OK',
-                      chipLabelStyle: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(color: Colors.black)),
-                      dialogTextStyle: GoogleFonts.robotoSlab(),
-                      cancelButtonLabel: 'CANCEL',
-                      // required: true,
-                      hintWidget: Text(
-                        "Please choose one or more",
-                        style: GoogleFonts.robotoSlab(),
-                      ),
-                      title: Text(
-                        "Contacts",
-                        style: GoogleFonts.robotoSlab(),
-                      ),
-                      initialValue: _myActivities,
-
-                      onSaved: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _myActivities = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
+            _buildTextField('First Name', false, null, TextInputType.text,
+                leadBloc.currentEditLead['first_name']),
+            _buildTextField('Last Name', false, null, TextInputType.text,
+                leadBloc.currentEditLead['last_name']),
+            _buildTextField('Phone', false, null, TextInputType.phone,
+                leadBloc.currentEditLead['phone']),
+            _buildTextField('Account Name', false, null, TextInputType.text,
+                leadBloc.currentEditLead['account_name']),
+            _buildTextField('Title', true, null, TextInputType.text,
+                leadBloc.currentEditLead['title']),
+            _buildTextField('Email Address', false, null,
+                TextInputType.emailAddress, leadBloc.currentEditLead['email']),
+            _buildTextField('Website', false, null, TextInputType.url,
+                leadBloc.currentEditLead['website']),
+            _buildTextField('Description', false, null, TextInputType.multiline,
+                leadBloc.currentEditLead['description']),
             Container(
               child: Column(
                 children: [
@@ -524,49 +142,14 @@ class _CreateLeadState extends State<CreateLead> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: contactBloc.teamsObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       dialogTextStyle: GoogleFonts.robotoSlab(),
                       cancelButtonLabel: 'CANCEL',
-                      // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
                         style: GoogleFonts.robotoSlab(),
@@ -575,8 +158,7 @@ class _CreateLeadState extends State<CreateLead> {
                         "Teams",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
-
+                      initialValue: [],
                       onSaved: (value) {
                         if (value == null) return;
                         setState(() {
@@ -610,49 +192,14 @@ class _CreateLeadState extends State<CreateLead> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: leadBloc.usersObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       dialogTextStyle: GoogleFonts.robotoSlab(),
                       cancelButtonLabel: 'CANCEL',
-                      // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
                         style: GoogleFonts.robotoSlab(),
@@ -661,8 +208,7 @@ class _CreateLeadState extends State<CreateLead> {
                         "Users",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
-
+                      initialValue: [],
                       onSaved: (value) {
                         if (value == null) return;
                         setState(() {
@@ -682,7 +228,7 @@ class _CreateLeadState extends State<CreateLead> {
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: Text(
-                      'Assign To :',
+                      'Assign Users :',
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
@@ -696,43 +242,9 @@ class _CreateLeadState extends State<CreateLead> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null || value.length == 0) {
-                          return 'Please select one or more options';
-                        }
-                      },
-                      dataSource: [
-                        {
-                          "display": "Running",
-                          "value": "Running",
-                        },
-                        {
-                          "display": "Climbing",
-                          "value": "Climbing",
-                        },
-                        {
-                          "display": "Walking",
-                          "value": "Walking",
-                        },
-                        {
-                          "display": "Swimming",
-                          "value": "Swimming",
-                        },
-                        {
-                          "display": "Soccer Practice",
-                          "value": "Soccer Practice",
-                        },
-                        {
-                          "display": "Baseball Practice",
-                          "value": "Baseball Practice",
-                        },
-                        {
-                          "display": "Football Practice",
-                          "value": "Football Practice",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
+                      dataSource: leadBloc.usersObjForDropdown,
+                      textField: 'name',
+                      valueField: 'id',
                       okButtonLabel: 'OK',
                       chipLabelStyle: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
@@ -747,7 +259,7 @@ class _CreateLeadState extends State<CreateLead> {
                         "Assigned To",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: _myActivities,
+                      initialValue: [],
 
                       onSaved: (value) {
                         if (value == null) return;
@@ -764,100 +276,6 @@ class _CreateLeadState extends State<CreateLead> {
                       "Select one or more",
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.grey)),
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: Text(
-                      'Status :',
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 25)),
-                    ),
-                  ),
-                  Container(
-                    height: 48.0,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          border: boxBorder(),
-                          contentPadding: EdgeInsets.all(12.0)),
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(color: Colors.black)),
-                      hint: Text('select Status'),
-                      value: _selectedStatus,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedStatus = value;
-                        });
-                      },
-                      items: ['Open', 'Close'].map((location) {
-                        return DropdownMenuItem(
-                          child: new Text(location),
-                          value: location,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: Text(
-                      'Tags :',
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 25)),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: TextFieldTags(
-                      // initialTags: <String>['Wero', 'baby'],
-                      textFieldStyler: TextFieldStyler(
-                        contentPadding: EdgeInsets.all(12.0),
-                        textFieldBorder: boxBorder(),
-                        textFieldFocusedBorder: boxBorder(),
-                        hintText: 'Enter Tags',
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: 14.0)),
-                        helperText: null,
-                      ),
-                      tagsStyler: TagsStyler(
-                          tagTextPadding: EdgeInsets.symmetric(horizontal: 5.0),
-                          tagTextStyle: GoogleFonts.robotoSlab(),
-                          tagDecoration: BoxDecoration(
-                            color: Colors.lightGreen[300],
-                            borderRadius: BorderRadius.circular(0.0),
-                          ),
-                          tagCancelIcon: Icon(Icons.cancel,
-                              size: 18.0, color: Colors.green[900]),
-                          tagPadding: const EdgeInsets.all(6.0)),
-                      onTag: (tag) {
-                        print('onTag ' + tag);
-                      },
-                      onDelete: (tag) {
-                        print('onDelete ' + tag);
-                      },
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -912,11 +330,353 @@ class _CreateLeadState extends State<CreateLead> {
               ),
             ),
             Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Billing Address',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['address_line'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Address Line',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['address_line'] = value;
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            initialValue: leadBloc.currentEditLead['street'],
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'Street',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.text,
+                            onSaved: (value) {
+                              leadBloc.currentEditLead['street'] = value;
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            initialValue: leadBloc.currentEditLead['postcode'],
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'Postal Code',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.phone,
+                            onSaved: (value) {
+                              leadBloc.currentEditLead['postcode'] = value;
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            initialValue: leadBloc.currentEditLead['city'],
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'City',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.text,
+                            onSaved: (value) {
+                              leadBloc.currentEditLead['city'] = value;
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: screenWidth * 0.42,
+                          child: TextFormField(
+                            initialValue: leadBloc.currentEditLead['state'],
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(12.0),
+                                enabledBorder: boxBorder(),
+                                focusedErrorBorder: boxBorder(),
+                                focusedBorder: boxBorder(),
+                                errorBorder: boxBorder(),
+                                fillColor: Colors.white,
+                                filled: true,
+                                hintText: 'State',
+                                errorStyle: GoogleFonts.robotoSlab(),
+                                hintStyle: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(fontSize: 14.0))),
+                            keyboardType: TextInputType.text,
+                            onSaved: (value) {
+                              leadBloc.currentEditLead['state'] = value;
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 48.0,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: DropdownSearch<String>(
+                      mode: Mode.BOTTOM_SHEET,
+                      items: leadBloc.countries,
+                      onChanged: (value) {
+                        leadBloc.currentEditLead['country'] = value;
+                      },
+                      selectedItem: leadBloc.currentEditLead['country'],
+                      hint: 'Select Country',
+                      showSearchBox: true,
+                      showSelectedItem: false,
+                      showClearButton: true,
+                      searchBoxDecoration: InputDecoration(
+                        border: boxBorder(),
+                        enabledBorder: boxBorder(),
+                        focusedErrorBorder: boxBorder(),
+                        focusedBorder: boxBorder(),
+                        errorBorder: boxBorder(),
+                        contentPadding: EdgeInsets.all(12),
+                        hintText: "Search a Country",
+                        hintStyle: GoogleFonts.robotoSlab(),
+                        errorStyle: GoogleFonts.robotoSlab(),
+                      ),
+                      popupTitle: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Countries',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    fontSize: screenWidth / 20,
+                                    color: Colors.white)),
+                          ),
+                        ),
+                      ),
+                      popupShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Status :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    height: 48.0,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          border: boxBorder(),
+                          contentPadding: EdgeInsets.all(12.0)),
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      hint: Text('Select Status'),
+                      // value: _selectedStatus,
+                      onChanged: (value) {
+                        leadBloc.currentEditLead['status'] = value;
+                      },
+                      items: leadBloc.status.map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location),
+                          value: location,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Source :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    height: 48.0,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          border: boxBorder(),
+                          contentPadding: EdgeInsets.all(12.0)),
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      hint: Text('Select Source'),
+                      // value: _selectedStatus,
+                      onChanged: (value) {
+                        leadBloc.currentEditLead['source'] = value;
+                      },
+                      items: leadBloc.source.map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location),
+                          value: location,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Tags :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: TextFieldTags(
+                      initialTags: leadBloc.currentEditLead['tags'],
+                      textFieldStyler: TextFieldStyler(
+                        contentPadding: EdgeInsets.all(12.0),
+                        textFieldBorder: boxBorder(),
+                        textFieldFocusedBorder: boxBorder(),
+                        hintText: 'Enter Tags',
+                        hintStyle: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(fontSize: 14.0)),
+                        helperText: null,
+                      ),
+                      tagsStyler: TagsStyler(
+                          tagTextPadding: EdgeInsets.symmetric(horizontal: 5.0),
+                          tagTextStyle: GoogleFonts.robotoSlab(),
+                          tagDecoration: BoxDecoration(
+                            color: Colors.lightGreen[300],
+                            borderRadius: BorderRadius.circular(0.0),
+                          ),
+                          tagCancelIcon: Icon(Icons.cancel,
+                              size: 18.0, color: Colors.green[900]),
+                          tagPadding: const EdgeInsets.all(6.0)),
+                      onTag: (tag) {
+                        print('onTag ' + tag);
+                      },
+                      onDelete: (tag) {
+                        print('onDelete ' + tag);
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      _saveForm();
+                    },
                     child: Container(
                       alignment: Alignment.center,
                       height: screenHeight * 0.06,
@@ -929,7 +689,7 @@ class _CreateLeadState extends State<CreateLead> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            'Create Account',
+                            'Create Lead',
                             style: GoogleFonts.robotoSlab(
                                 textStyle: TextStyle(
                                     color: Colors.white,

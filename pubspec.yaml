@@ -17,7 +17,7 @@ dependencies:
   flushbar: ^1.10.4
   http: ^0.12.2
   shared_preferences: ^0.5.12+2
-  fluttertoast: ^7.1.1
+  fluttertoast: ^7.1.5
   dropdown_search: ^0.4.8
   file_picker: ^2.0.12
   textfield_tags: ^1.1.0+1

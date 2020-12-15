@@ -35,10 +35,6 @@ class _LeadsListState extends State<LeadsList> {
   Widget _buildMultiSelectDropdown(data) {
     List _myActivities;
     return Container(
-      // decoration: BoxDecoration(
-      //     border: Border.all(color: Colors.grey),
-      //     borderRadius: BorderRadius.all(Radius.circular(5))),
-      // height: screenHeight * 0.11,
       margin: EdgeInsets.only(bottom: 10.0),
       child: MultiSelectFormField(
         border: boxBorder(),
@@ -460,7 +456,10 @@ class _LeadsListState extends State<LeadsList> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        await leadBloc.updateCurrentEditLead(_leads[index]);
+                        Navigator.pushNamed(context, '/create_lead');
+                      },
                       child: Container(
                         margin: EdgeInsets.only(right: 5.0),
                         decoration: BoxDecoration(
