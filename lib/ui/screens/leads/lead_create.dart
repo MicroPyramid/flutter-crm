@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
@@ -702,7 +703,8 @@ class _CreateLeadState extends State<CreateLead> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      // await leadBloc.updateCurrentEditLead();
                       Navigator.pop(context);
                     },
                     child: Container(

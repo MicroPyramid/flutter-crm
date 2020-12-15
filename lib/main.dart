@@ -7,7 +7,8 @@ import 'package:flutter_crm/ui/screens/authentication/login.dart';
 import 'package:flutter_crm/ui/screens/authentication/register.dart';
 import 'package:flutter_crm/ui/screens/authentication/sub_domain.dart';
 import 'package:flutter_crm/ui/screens/cases/cases_index.dart';
-import 'package:flutter_crm/ui/screens/contacts/contacts_index.dart';
+import 'package:flutter_crm/ui/screens/contacts/contact_create.dart';
+import 'package:flutter_crm/ui/screens/contacts/contacts_list.dart';
 import 'package:flutter_crm/ui/screens/dashboard/dashboard.dart';
 import 'package:flutter_crm/ui/screens/documents/documents_index.dart';
 import 'package:flutter_crm/ui/screens/events/events_index.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         '/create_account': (BuildContext context) => CreateAccount(),
         '/cases': (BuildContext context) => CasesScreen(),
         '/sales_contacts': (BuildContext context) => ContactsScreen(),
+        '/create_contact': (BuildContext context) => CreateContact(),
         '/documents': (BuildContext context) => DocumentsScreen(),
         '/events': (BuildContext context) => EventsScreen(),
         '/invoices': (BuildContext context) => InvoicesScreen(),
