@@ -40,24 +40,17 @@ class _ContactsScreenState extends State<ContactsScreen> {
               child: RichText(
             text: TextSpan(
                 text: 'You have ',
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        color: Colors.grey[600], fontSize: screenWidth / 20)),
                 children: <TextSpan>[
                   TextSpan(
                       text: _contacts.length.toString(),
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          print('Now0');
-                          // open desired screen
-                        }),
-                  TextSpan(text: ' contacts.')
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: submitButtonColor,
+                              fontSize: screenWidth / 20))),
+                  TextSpan(text: ' contacts')
                 ]),
           )),
           GestureDetector(
@@ -87,10 +80,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
   Widget _buildMultiSelectDropdown(data) {
     List _myActivities;
     return Container(
-      // decoration: BoxDecoration(
-      //     border: Border.all(color: Colors.grey),
-      //     borderRadius: BorderRadius.all(Radius.circular(5))),
-      // height: screenHeight * 0.11,
       margin: EdgeInsets.only(bottom: 10.0),
       child: MultiSelectFormField(
         border: boxBorder(),
@@ -104,7 +93,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
             GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.black)),
         dialogTextStyle: GoogleFonts.robotoSlab(),
         cancelButtonLabel: 'CANCEL',
-        // required: true,
         hintWidget: Text(
           "Please choose one or more",
           style:
@@ -117,7 +105,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
               fontSize: screenWidth / 26),
         ),
         initialValue: _myActivities,
-
         onSaved: (value) {
           if (value == null) return;
           setState(() {
@@ -247,61 +234,61 @@ class _ContactsScreenState extends State<ContactsScreen> {
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
                 color: Colors.white,
-                // padding: EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: screenWidth * 0.72,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: screenWidth * 0.32,
-                                  child: Text(
-                                    "${_contacts[index].firstName} ${_contacts[index].lastName}",
-                                    style: GoogleFonts.robotoSlab(
-                                        color: Theme.of(context)
-                                            .secondaryHeaderColor,
-                                        fontSize: screenWidth / 25,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                Container(
-                                  width: screenWidth * 0.20,
-                                  child: Text(
-                                    "${_contacts[index].email}",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.robotoSlab(
-                                      color: Colors.grey,
-                                      fontSize: screenWidth / 30,
-                                      // fontWeight: FontWeight.w600
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: screenWidth * 0.20,
-                                  child: Text(
-                                    _contacts[index].createdOnText,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarTextColor,
-                                        fontSize: screenWidth / 26,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                )
-                              ],
+                            width: screenWidth * 0.43,
+                            child: Text(
+                              "${_contacts[index].firstName} ${_contacts[index].lastName}",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 25,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
                           Container(
+                            alignment: Alignment.centerLeft,
+                            width: screenWidth * 0.20,
+                            child: Text(
+                              _contacts[index].address["city"] != null
+                                  ? "${_contacts[index].address["city"]}"
+                                  : "",
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.robotoSlab(
+                                color: bottomNavBarTextColor,
+                                fontSize: screenWidth / 27,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            width: screenWidth * 0.25,
+                            child: Text(
+                              _contacts[index].createdOnText == ""
+                                  ? _contacts[index].createdOn
+                                  : _contacts[index].createdOnText,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontSize: screenWidth / 27),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
                             margin: EdgeInsets.only(top: 5.0),
-                            // width: screenWidth * 0.72,
                             child: ProfilePicViewWidget([
                               // _contacts[index].assignedTo
                               _contacts[index].createdBy.profileUrl,
@@ -310,55 +297,55 @@ class _ContactsScreenState extends State<ContactsScreen> {
                               _contacts[index].createdBy.profileUrl,
                             ]),
                           ),
+                          Container(
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    await contactBloc.updateCurrentEditContact(
+                                        _contacts[index]);
+                                    Navigator.pushNamed(
+                                        context, '/create_contact');
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 10.0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1.0, color: Colors.grey[300]),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(3.0)),
+                                    ),
+                                    padding: EdgeInsets.all(4.0),
+                                    child: SvgPicture.asset(
+                                      'assets/images/Icon_edit_color.svg',
+                                      width: screenWidth / 23,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDeleteLeadAlertDialog(
+                                        context, _contacts[index], index);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1.0, color: Colors.grey[300]),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(3.0)),
+                                    ),
+                                    padding: EdgeInsets.all(4.0),
+                                    child: SvgPicture.asset(
+                                      'assets/images/icon_delete_color.svg',
+                                      width: screenWidth / 23,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            await contactBloc
-                                .updateCurrentEditContact(_contacts[index]);
-                            Navigator.pushNamed(context, '/create_contact');
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(right: 5.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1.0, color: Colors.grey[300]),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3.0)),
-                            ),
-                            padding: EdgeInsets.all(4.0),
-                            child: SvgPicture.asset(
-                              'assets/images/Icon_edit_color.svg',
-                              width: screenWidth / 23,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            showDeleteLeadAlertDialog(
-                                context, _contacts[index], index);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 1.0, color: Colors.grey[300]),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(3.0)),
-                            ),
-                            padding: EdgeInsets.all(4.0),
-                            child: SvgPicture.asset(
-                              'assets/images/icon_delete_color.svg',
-                              width: screenWidth / 23,
-                            ),
-                          ),
-                        ),
-                      ],
                     )
                   ],
                 ),
@@ -371,38 +358,40 @@ class _ContactsScreenState extends State<ContactsScreen> {
   void showDeleteLeadAlertDialog(BuildContext context, Contact contact, index) {
     showDialog(
         context: context,
-        child: CupertinoAlertDialog(
-          title: Text(
-            contact.firstName,
-            style: GoogleFonts.robotoSlab(
-                color: Theme.of(context).secondaryHeaderColor),
-          ),
-          content: Text(
-            "Are you sure you want to delete this account?",
-            style: GoogleFonts.robotoSlab(fontSize: 15.0),
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                isDefaultAction: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-            CupertinoDialogAction(
-                textStyle: TextStyle(color: Colors.red),
-                isDefaultAction: true,
-                onPressed: () async {
-                  deleteAccount(index, contact);
-                },
-                child: Text(
-                  "Delete",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-          ],
-        ));
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              contact.firstName + ' ' + contact.lastName,
+              style: GoogleFonts.robotoSlab(
+                  color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "Are you sure you want to delete this Contact?",
+              style: GoogleFonts.robotoSlab(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    deleteAccount(index, contact);
+                  },
+                  child: Text(
+                    "Delete",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+            ],
+          );
+        });
   }
 
   deleteAccount(index, contact) {
@@ -420,6 +409,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Contacts", style: GoogleFonts.robotoSlab()),
+          automaticallyImplyLeading: false,
         ),
         body: Container(
           padding: EdgeInsets.all(10.0),

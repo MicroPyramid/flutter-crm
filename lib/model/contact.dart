@@ -1,6 +1,7 @@
 import 'package:flutter_crm/model/company.dart';
 import 'package:flutter_crm/model/profile.dart';
 import 'package:flutter_crm/model/team.dart';
+import 'package:intl/intl.dart';
 
 class Contact {
   int id;
@@ -44,7 +45,7 @@ class Contact {
     this.lastName = contact['last_name'] != null ? contact['last_name'] : '';
     this.email = contact['email'] != null ? contact['email'] : "";
     this.phone = contact['phone'] != null ? contact['phone'] : "";
-    this.address = contact['address'] != null ? contact['address'] : "";
+    this.address = contact['address'] != null ? contact['address'] : {};
     this.description =
         contact['description'] != null ? contact['description'] : "";
     this.assignedTo = contact['assigned_to'] != null
@@ -54,7 +55,10 @@ class Contact {
     this.createdBy = contact['created_by'] != null
         ? Profile.fromJson(contact['created_by'])
         : Profile();
-    this.createdOn = contact['created_on'] != null ? contact['created_on'] : "";
+    this.createdOn = contact['created_on'] != null
+        ? DateFormat("dd-MM-yyyy")
+            .format(DateFormat("yyyy-MM-dd").parse(contact['created_on']))
+        : "";
     this.createdOnText =
         contact['created_on_text'] != null ? contact['created_on_text'] : "";
     this.isActive = contact['is_active'] != null ? contact['is_active'] : false;

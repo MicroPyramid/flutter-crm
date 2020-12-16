@@ -297,7 +297,23 @@ class _MoreOptionsState extends State<MoreOptions> {
                                 fontSize: screenWidth / 25)),
                         children: <TextSpan>[
                           TextSpan(
-                              text: 'Sales And Marketing',
+                              text: authBloc.userProfile.role.toLowerCase() ==
+                                      "admin"
+                                  ? 'Sales And Marketing'
+                                  : authBloc.userProfile.hasSalesAccess &&
+                                          authBloc
+                                              .userProfile.hasMarketingAccess
+                                      ? "Sales And Marketing"
+                                      : authBloc.userProfile.hasSalesAccess &&
+                                              !authBloc.userProfile
+                                                  .hasMarketingAccess
+                                          ? "Sales"
+                                          : !authBloc.userProfile
+                                                      .hasSalesAccess &&
+                                                  authBloc.userProfile
+                                                      .hasMarketingAccess
+                                              ? "Marketing"
+                                              : "",
                               style: GoogleFonts.robotoSlab(
                                   textStyle: TextStyle(
                                       color: Color.fromRGBO(75, 153, 90, 1),
