@@ -1,0 +1,51 @@
+name: flutter_crm
+description: A new Flutter project.
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.0
+  connectivity: ^0.4.9+5
+  flushbar: ^1.10.4
+  http: ^0.12.2
+  shared_preferences: ^0.5.12+2
+  fluttertoast: ^7.1.5
+  dropdown_search: ^0.4.8
+  file_picker: ^2.0.12
+  textfield_tags: ^1.1.0+1
+  json_table: ^1.4.0 
+  google_fonts: ^1.1.1
+  flutter_svg:
+  rxdart: ^0.24.1
+  intl: ^0.16.1
+  random_color: ^1.0.5
+  multiselect_formfield: ^0.1.5
+  smart_select: ^4.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_launcher_icons: "^0.8.0"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/bg_logo.png"
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+   - assets/data/tempdata.json
+   - assets/images/
+
