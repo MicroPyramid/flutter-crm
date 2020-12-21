@@ -1,4 +1,5 @@
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
@@ -30,6 +31,81 @@ class _LeadsListState extends State<LeadsList> {
     setState(() {
       _leads = leadBloc.openLeads;
     });
+  }
+
+  void showErrorMessage(
+      BuildContext context, String errorContent, Lead lead, int index) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          deleteLead(index, lead);
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
+  }
+
+  void showDeleteLeadAlertDialog(BuildContext context, Lead lead, index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              lead.title,
+              style: GoogleFonts.robotoSlab(
+                  color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "Are you sure you want to delete this lead?",
+              style: GoogleFonts.robotoSlab(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    deleteLead(index, lead);
+                  },
+                  child: Text(
+                    "Delete",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+            ],
+          );
+        });
+  }
+
+  deleteLead(index, lead) async {
+    Map result = await leadBloc.deleteLead(lead);
+    if (result['error'] == false) {
+      showToast(result['message']);
+      Navigator.pop(context);
+      setState(() {
+        _leads.removeAt(index);
+      });
+    } else if (result['error'] == true) {
+      Navigator.pop(context);
+    } else {
+      showErrorMessage(context, 'Something went wrong', lead, index);
+    }
   }
 
   Widget _buildMultiSelectDropdown(data) {
@@ -498,51 +574,6 @@ class _LeadsListState extends State<LeadsList> {
             );
           }),
     );
-  }
-
-  void showDeleteLeadAlertDialog(BuildContext context, Lead lead, index) {
-    showDialog(
-        context: context,
-        child: CupertinoAlertDialog(
-          title: Text(
-            lead.title,
-            style: GoogleFonts.robotoSlab(
-                color: Theme.of(context).secondaryHeaderColor),
-          ),
-          content: Text(
-            "Are you sure you want to delete this account?",
-            style: GoogleFonts.robotoSlab(fontSize: 15.0),
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                isDefaultAction: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-            CupertinoDialogAction(
-                textStyle: TextStyle(color: Colors.red),
-                isDefaultAction: true,
-                onPressed: () async {
-                  deleteAccount(index, lead);
-                },
-                child: Text(
-                  "Delete",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-          ],
-        ));
-  }
-
-  deleteAccount(index, account) {
-    setState(() {
-      _leads.removeAt(index);
-    });
-    // accountBloc.deleteAccount(account);
-    Navigator.pop(context);
   }
 
   @override

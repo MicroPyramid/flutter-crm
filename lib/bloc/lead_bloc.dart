@@ -14,8 +14,11 @@ class LeadBloc {
   String _currentLeadType = "Open";
   List<Profile> _users = [];
   List<String> _countries = [];
-  List<String> _ledasTitles = [];
+  List _countriesList = [];
+
+  List<String> _leadsTitles = [];
   List _usersObjForDropdown = [];
+  String _currentEditLeadId;
   Map _currentEditLead = {
     "first_name": "",
     "last_name": "",
@@ -26,7 +29,7 @@ class LeadBloc {
     "website": "",
     "description": "",
     "teams": [],
-    "users": [],
+    // "users": [],
     "assigned_to": [],
     "address_line": "",
     "street": "",
@@ -49,7 +52,7 @@ class LeadBloc {
       });
 
       _openLeads.forEach((Lead lead) {
-        _ledasTitles.add(lead.title);
+        _leadsTitles.add(lead.title);
       });
 
       res['close_leads'].forEach((_lead) {
@@ -77,6 +80,8 @@ class LeadBloc {
         _usersObjForDropdown.add(user);
       });
 
+      _countriesList = res['countries'];
+
       res['countries'].forEach((country) {
         _countries.add(country[1]);
       });
@@ -85,7 +90,95 @@ class LeadBloc {
     });
   }
 
+  editLead() async {
+    print(_currentEditLead);
+    _currentEditLead['status'] = _currentEditLead['status'].toLowerCase();
+    _currentEditLead['source'] = _currentEditLead['source'].toLowerCase();
+    _currentEditLead['teams'] =
+        [_currentEditLead['teams'].map((team) => team.toString())].toString();
+    _currentEditLead['assigned_to'] = (_currentEditLead['assigned_to']
+            .map((assignedTo) => assignedTo.toString())
+            .toList())
+        .toString();
+
+    _currentEditLead['tags'] = _currentEditLead['tags'].toString();
+
+    print(currentEditLead['teams'].runtimeType);
+    print(currentEditLead['assigned_to'].runtimeType);
+
+    print(currentEditLead['tags'].runtimeType);
+
+    _countriesList.forEach((country) {
+      if (country[1] == _currentEditLead['country']) {
+        _currentEditLead['country'] = country[0];
+      }
+    });
+    print('Print before POST');
+    print(_currentEditLead);
+    await CrmService()
+        .editLead(_currentEditLead, _currentEditLeadId)
+        .then((response) {
+      var res = json.decode(response.body);
+      print(res);
+    }).catchError((onError) {
+      print('fetchLeads $onError');
+    });
+  }
+
+  createLead() async {
+    print(_currentEditLead);
+    _currentEditLead['status'] = _currentEditLead['status'].toLowerCase();
+    _currentEditLead['source'] = _currentEditLead['source'].toLowerCase();
+    _currentEditLead['teams'] = [
+      ..._currentEditLead['teams'].map((team) => team.toString())
+    ].toString();
+    _currentEditLead['assigned_to'] = (_currentEditLead['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList();
+
+    _currentEditLead['tags'] = _currentEditLead['tags'];
+
+    _countriesList.forEach((country) {
+      if (country[1] == _currentEditLead['country']) {
+        _currentEditLead['country'] = country[0];
+      }
+    });
+    print('Print before POST');
+    print(_currentEditLead);
+    await CrmService().createLead(_currentEditLead).then((response) {
+      var res = json.decode(response.body);
+      print(res);
+    }).catchError((onError) {
+      print('createLead Error : $onError');
+    });
+  }
+
+  cancelCurrentEditLead() {
+    _currentEditLead = {
+      "first_name": "",
+      "last_name": "",
+      "phone": "",
+      "account_name": "",
+      "title": "",
+      "email": "",
+      "website": "",
+      "description": "",
+      "teams": [],
+      // "users": [],
+      "assigned_to": [],
+      "address_line": "",
+      "street": "",
+      "postcode": "",
+      "city": "",
+      "state": "",
+      "country": "",
+      "status": "",
+      "source": "",
+      "tags": List<String>()
+    };
+  }
+
   updateCurrentEditLead(Lead editLead) {
+    _currentEditLeadId = editLead.id.toString();
     List teams = [];
     List assignedUsers = [];
     List<String> tags = [];
@@ -130,12 +223,34 @@ class LeadBloc {
     _currentEditLead['tags'] = tags;
   }
 
+  Future deleteLead(Lead lead) async {
+    Map result;
+    await CrmService().deleteLead(lead.id).then((response) {
+      var res = (json.decode(response.body));
+      print("deleteLead Response >> $res");
+
+      result = res;
+    }).catchError((onError) {
+      print("deleteLead Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
+    });
+    return result;
+  }
+
   Map get currentEditLead {
     return _currentEditLead;
   }
 
   set currentEditLead(Map currentEditLead) {
     _currentEditLead = currentEditLead;
+  }
+
+  String get currentEditLeadId {
+    return _currentEditLeadId;
+  }
+
+  set currentEditLeadId(String id) {
+    _currentEditLeadId = id;
   }
 
   List<Lead> get openLeads {
@@ -155,7 +270,7 @@ class LeadBloc {
   }
 
   List<String> get leadsTitles {
-    return _ledasTitles;
+    return _leadsTitles;
   }
 
   List<Profile> get users {
@@ -180,6 +295,14 @@ class LeadBloc {
 
   List<String> get countries {
     return _countries;
+  }
+
+  List get countriesList {
+    return _countriesList;
+  }
+
+  set countriesList(List countriesList) {
+    _countriesList = countriesList;
   }
 
   List get usersObjForDropdown {

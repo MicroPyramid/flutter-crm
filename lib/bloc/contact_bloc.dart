@@ -24,7 +24,7 @@ class ContactBloc {
     'assigned_to': [],
     'created_by': Profile(),
     'created_on': "",
-    'created_on_text': "",
+    'created_on_arrow': "",
     'is_active': false,
     'teams': [],
     'company': Company()
@@ -92,7 +92,7 @@ class ContactBloc {
     _currentEditContact['is_active'] = editContact.isActive;
     _currentEditContact['company'] = editContact.company;
 
-    _currentEditContact['created_on_text'] = editContact.createdOnText;
+    _currentEditContact['created_on_arrow'] = editContact.createdOnText;
     _currentEditContact['teams'] = teams;
     _currentEditContact['assigned_to'] = assignedUsers;
   }

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/bloc/team_bloc.dart';
 import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/model/profile.dart';
@@ -38,6 +39,11 @@ class _CreateAccountState extends State<CreateAccount> {
       return;
     }
     _createAccountFormKey.currentState.save();
+    if (accountBloc.currentEditAccountId != null) {
+      accountBloc.editAccount();
+    } else {
+      accountBloc.createAccount();
+    }
   }
 
   Widget _buildForm() {
@@ -177,7 +183,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           errorBorder: boxBorder(),
                           fillColor: Colors.white,
                           filled: true,
-                          hintText: '+919876543210',
+                          hintText: '+91XXXXXXXXXX',
                           errorStyle: GoogleFonts.robotoSlab(),
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(fontSize: 14.0))),
@@ -631,7 +637,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       fillColor: Colors.white,
                       autovalidate: false,
                       validator: (value) {
-                        if (value == null || value.length == 0) {
+                        if (value == null) {
                           return 'Please select one or more options';
                         }
                         return null;
@@ -656,9 +662,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       ),
                       // initialValue: accountBloc.currentEditAccount['contacts'],
                       onSaved: (value) {
-                        setState(() {
-                          accountBloc.currentEditAccount['contacts'] = value;
-                        });
+                        accountBloc.currentEditAccount['contacts'] = value;
                       },
                     ),
                   ),
@@ -666,6 +670,8 @@ class _CreateAccountState extends State<CreateAccount> {
                 ],
               ),
             ),
+
+            // Teams MultiSelectDropDown Field. <disabled> - data not available from backend.
             Container(
               child: Column(
                 children: [
@@ -704,7 +710,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         "Teams",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: [],
+                      // initialValue: accountBloc.currentEditAccount['teams'],
                       onSaved: (value) {
                         setState(() {
                           accountBloc.currentEditAccount['teams'] = value;
@@ -716,6 +722,8 @@ class _CreateAccountState extends State<CreateAccount> {
                 ],
               ),
             ),
+
+            // Users MultiSelectDropDown Field. <disabled> - needs teams data
             Container(
               child: Column(
                 children: [
@@ -735,9 +743,12 @@ class _CreateAccountState extends State<CreateAccount> {
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: MultiSelectFormField(
                       border: boxBorder(),
+                      enabled: false,
                       fillColor: Colors.white,
                       autovalidate: false,
-                      dataSource: leadBloc.usersObjForDropdown,
+                      dataSource: [
+                        {'name': '', 'id': ''}
+                      ],
                       textField: 'name',
                       valueField: 'id',
                       okButtonLabel: 'OK',
@@ -757,7 +768,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       initialValue: accountBloc.currentEditAccount['users'],
                       onSaved: (value) {
                         setState(() {
-                          accountBloc.currentEditAccount['users'] = value;
+                          // accountBloc.currentEditAccount['users'] = value;
                         });
                       },
                     ),
@@ -766,6 +777,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 ],
               ),
             ),
+
             Container(
               child: Column(
                 children: [
@@ -787,7 +799,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      dataSource: leadBloc.usersObjForDropdown,
+                      dataSource: accountBloc.assignedToList,
                       textField: 'name',
                       valueField: 'id',
                       okButtonLabel: 'OK',
@@ -804,8 +816,8 @@ class _CreateAccountState extends State<CreateAccount> {
                         "Assigned To",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue:
-                          accountBloc.currentEditAccount['assigned_to'],
+                      // initialValue:
+                      //     accountBloc.currentEditAccount['assigned_to'],
                       onSaved: (value) {
                         setState(() {
                           accountBloc.currentEditAccount['assigned_to'] = value;
@@ -879,7 +891,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
-                      initialTags: accountBloc.currentEditAccount['tags'],
+                      // initialTags: accountBloc.currentEditAccount['tags'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),
@@ -984,7 +996,9 @@ class _CreateAccountState extends State<CreateAccount> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            'Create Account',
+                            accountBloc.currentEditAccountId == null
+                                ? 'Create Account'
+                                : 'Edit Account',
                             style: GoogleFonts.robotoSlab(
                                 textStyle: TextStyle(
                                     color: Colors.white,

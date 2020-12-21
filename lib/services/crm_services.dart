@@ -56,6 +56,7 @@ class CrmService {
     return await networkService.get(baseUrl + 'dashboard/',
         headers: getFormatedHeaders(_headers));
   }
+  ///////////////////// ACCONUTS-SERVICES ////////////////////////////
 
   Future<Response> getAccounts() async {
     await updateHeaders();
@@ -69,15 +70,51 @@ class CrmService {
         headers: getFormatedHeaders(_headers));
   }
 
+  Future<Response> createAccount(contact) async {
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'accounts/',
+        headers: getFormatedHeaders(_headers), body: contact);
+  }
+
+  ///////////////////// CONTACTS-SERVICES ///////////////////////////////
+
   Future<Response> getContacts() async {
     await updateHeaders();
     return await networkService.get(baseUrl + 'contacts/',
         headers: getFormatedHeaders(_headers));
   }
 
+  ///////////////////// LEADS-SERVICES ///////////////////////////////
+
   Future<Response> getLeads() async {
     await updateHeaders();
     return await networkService.get(baseUrl + 'leads/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createLead(data) async {
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'leads/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
+  Future<Response> editLead(data, id) async {
+    await updateHeaders();
+    return await networkService.put(baseUrl + 'leads/$id/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
+  Future<Response> deleteLead(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'leads/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  ///////////////////// TEAMS-SERVICES ///////////////////////////////
+
+  Future<Response> getTeams() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'users/get-teams-and-users/',
         headers: getFormatedHeaders(_headers));
   }
 }

@@ -7,8 +7,10 @@ import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/create_page_textformfield.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -24,79 +26,81 @@ class _CreateLeadState extends State<CreateLead> {
   FilePickerResult result;
   PlatformFile file;
   List _myActivities;
+  TextEditingController firstNameController;
 
   @override
   void initState() {
     super.initState();
   }
 
-  _saveForm() {
+  _saveForm() async {
     if (!_createLeadFormKey.currentState.validate()) {
       return;
     }
     _createLeadFormKey.currentState.save();
+    if (leadBloc.currentEditLeadId == null) {
+      await leadBloc.createLead();
+    } else {
+      await leadBloc.editLead();
+    }
   }
 
-  Widget _buildTextField(String _lable, bool _required, dynamic _controller,
-      TextInputType _keyboardType, _initialValue) {
-    return Column(
-      children: [
-        Container(
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(bottom: 5.0),
-            child: RichText(
-              text: TextSpan(
-                text: _lable,
-                style: GoogleFonts.robotoSlab(
-                    textStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: screenWidth / 25)),
-                children: <TextSpan>[
-                  _required
-                      ? TextSpan(
-                          text: '*',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(color: Colors.red)))
-                      : TextSpan(text: ""),
-                  TextSpan(text: ' :', style: GoogleFonts.robotoSlab())
-                ],
-              ),
-            )),
-        Container(
-          margin: EdgeInsets.only(bottom: 10.0),
-          child: TextFormField(
-            maxLines: _lable == "Description" ? 5 : 1,
-            controller: _controller,
-            initialValue: _initialValue,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(12.0),
-                enabledBorder: boxBorder(),
-                focusedErrorBorder: boxBorder(),
-                focusedBorder: boxBorder(),
-                errorBorder: boxBorder(),
-                fillColor: Colors.white,
-                filled: true,
-                hintText: _lable == "Phone"
-                    ? "Enter $_lable (+919876543210)"
-                    : "Enter $_lable",
-                errorStyle: GoogleFonts.robotoSlab(),
-                hintStyle: GoogleFonts.robotoSlab(
-                    textStyle: TextStyle(fontSize: 14.0))),
-            keyboardType: _keyboardType,
-            validator: (value) {
-              if (_required && value.isEmpty) {
-                return 'This field is required.';
-              }
-              return null;
-            },
-            onSaved: (value) {
-              _initialValue = value;
-            },
+  Widget createPageTextFormFieldWidget(BuildContext context, String _title,
+      TextInputType _textInputType, String data) {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 5.0),
+              child: RichText(
+                text: TextSpan(
+                  text: _title,
+                  style: GoogleFonts.robotoSlab(
+                      textStyle: TextStyle(
+                          color: Theme.of(context).secondaryHeaderColor,
+                          fontWeight: FontWeight.w500,
+                          fontSize: screenWidth / 25)),
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: '* ',
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.red))),
+                    TextSpan(text: ': ', style: GoogleFonts.robotoSlab())
+                  ],
+                ),
+              )),
+          Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: TextFormField(
+              initialValue: data,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(12.0),
+                  enabledBorder: boxBorder(),
+                  focusedErrorBorder: boxBorder(),
+                  focusedBorder: boxBorder(),
+                  errorBorder: boxBorder(),
+                  fillColor: Colors.white,
+                  filled: true,
+                  hintText: 'Enter $_title',
+                  errorStyle: GoogleFonts.robotoSlab(),
+                  hintStyle: GoogleFonts.robotoSlab(
+                      textStyle: TextStyle(fontSize: 14.0))),
+              keyboardType: _textInputType,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'This field is required.';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                data = value;
+              },
+            ),
           ),
-        ),
-        Divider(color: Colors.grey)
-      ],
+          Divider(color: Colors.grey)
+        ],
+      ),
     );
   }
 
@@ -106,22 +110,378 @@ class _CreateLeadState extends State<CreateLead> {
         key: _createLeadFormKey,
         child: Column(
           children: [
-            _buildTextField('First Name', false, null, TextInputType.text,
-                leadBloc.currentEditLead['first_name']),
-            _buildTextField('Last Name', false, null, TextInputType.text,
-                leadBloc.currentEditLead['last_name']),
-            _buildTextField('Phone', false, null, TextInputType.phone,
-                leadBloc.currentEditLead['phone']),
-            _buildTextField('Account Name', false, null, TextInputType.text,
-                leadBloc.currentEditLead['account_name']),
-            _buildTextField('Title', true, null, TextInputType.text,
-                leadBloc.currentEditLead['title']),
-            _buildTextField('Email Address', false, null,
-                TextInputType.emailAddress, leadBloc.currentEditLead['email']),
-            _buildTextField('Website', false, null, TextInputType.url,
-                leadBloc.currentEditLead['website']),
-            _buildTextField('Description', false, null, TextInputType.multiline,
-                leadBloc.currentEditLead['description']),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'First Name',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['first_name'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter First Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['first_name'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Last Name',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['last_name'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Last Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['last_name'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Phone',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['phone'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Phone Number',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.phone,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['phone'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Account Name',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['account_name'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Account Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['account_name'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Title',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style:
+                                    GoogleFonts.robotoSlab(color: Colors.red)),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['title'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter title',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['title'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Email Address',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['email'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Email Address',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.emailAddress,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['email'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Website',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['website'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Website',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.url,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['website'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Description',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: leadBloc.currentEditLead['description'],
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Description',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                      onSaved: (value) {
+                        leadBloc.currentEditLead['description'] = value;
+                      },
+                    ),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
             Container(
               child: Column(
                 children: [
@@ -162,9 +522,7 @@ class _CreateLeadState extends State<CreateLead> {
                       initialValue: [],
                       onSaved: (value) {
                         if (value == null) return;
-                        setState(() {
-                          _myActivities = value;
-                        });
+                        leadBloc.currentEditLead['teams'] = value;
                       },
                     ),
                   ),
@@ -264,9 +622,7 @@ class _CreateLeadState extends State<CreateLead> {
 
                       onSaved: (value) {
                         if (value == null) return;
-                        setState(() {
-                          _myActivities = value;
-                        });
+                        leadBloc.currentEditLead['assigned_to'] = value;
                       },
                     ),
                   ),
@@ -638,7 +994,7 @@ class _CreateLeadState extends State<CreateLead> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
-                      initialTags: leadBloc.currentEditLead['tags'],
+                      // initialTags: leadBloc.currentEditLead['tags'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),
@@ -660,9 +1016,11 @@ class _CreateLeadState extends State<CreateLead> {
                           tagPadding: const EdgeInsets.all(6.0)),
                       onTag: (tag) {
                         print('onTag ' + tag);
+                        leadBloc.currentEditLead['tags'].add(tag);
                       },
                       onDelete: (tag) {
                         print('onDelete ' + tag);
+                        leadBloc.currentEditLead['tags'].remove(tag);
                       },
                     ),
                   ),
@@ -675,8 +1033,11 @@ class _CreateLeadState extends State<CreateLead> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      _saveForm();
+                    onTap: () async {
+                      await _saveForm();
+                      leadBloc.cancelCurrentEditLead();
+                      Fluttertoast.showToast(msg: 'Processing Form.');
+                      Navigator.pop(context);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -690,7 +1051,9 @@ class _CreateLeadState extends State<CreateLead> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            'Create Lead',
+                            leadBloc.currentEditLeadId != null
+                                ? "Update Lead"
+                                : 'Create Lead',
                             style: GoogleFonts.robotoSlab(
                                 textStyle: TextStyle(
                                     color: Colors.white,
@@ -704,7 +1067,8 @@ class _CreateLeadState extends State<CreateLead> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // await leadBloc.updateCurrentEditLead();
+                      leadBloc.currentEditLeadId = null;
+                      await leadBloc.cancelCurrentEditLead();
                       Navigator.pop(context);
                     },
                     child: Container(

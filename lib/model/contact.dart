@@ -60,7 +60,7 @@ class Contact {
             .format(DateFormat("yyyy-MM-dd").parse(contact['created_on']))
         : "";
     this.createdOnText =
-        contact['created_on_text'] != null ? contact['created_on_text'] : "";
+        contact['created_on_arrow'] != null ? contact['created_on_arrow'] : "";
     this.isActive = contact['is_active'] != null ? contact['is_active'] : false;
     this.teams = contact['teams'] != null
         ? List<Team>.from(contact['teams'].map((x) => Team.fromJson(x)))
@@ -82,6 +82,7 @@ class Contact {
       'assigned_to': assignedTo,
       'created_by': createdBy,
       'created_on': createdOn,
+      'created_on_arrow': createdOnText,
       'is_active': isActive,
       'teams': teams,
       'company': company

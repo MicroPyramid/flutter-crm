@@ -1,8 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/model/account.dart';
-import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/services/crm_services.dart';
 
 class AccountBloc {
@@ -11,25 +10,30 @@ class AccountBloc {
   Account _currentAccount;
   String _currentAccountType = "Open";
   int _currentAccountIndex;
+  String _currentEditAccountId;
   Map _currentEditAccount = {
     "name": "",
     "website": "",
     "phone": "",
     "email": "",
-    "lead": null,
+    "lead": "",
     "billing_address_line": "",
     "billing_street": "",
     "billing_postcode": "",
     "billing_city": "",
     "billing_state": "",
-    "billing_country": null,
+    "billing_country": "",
     "contacts": [],
     "teams": [],
-    "users": [],
+    // "users": [],
     "assigned_to": [],
     "status": "Open",
     "tags": List<String>()
   };
+
+  List<Map> _assignedToList = [];
+
+  List countriesList = List.from(leadBloc.countriesList);
 
   Future fetchAccounts() async {
     await CrmService().getAccounts().then((response) {
@@ -44,21 +48,81 @@ class AccountBloc {
         Account account = Account.fromJson(_account);
         _closedAccounts.add(account);
       });
+
+      res['users'].forEach((_user) {
+        Profile user = Profile.fromJson(_user);
+        _assignedToList.add({"name": user.userName, "id": user.id.toString()});
+      });
+
+      countriesList = leadBloc.countriesList;
     }).catchError((onError) {
       print("fetchAccounts>> $onError");
+    });
+  }
+
+  createAccount() async {
+    _currentEditAccount['contacts'] = (_currentEditAccount['contacts']
+        .map((contact) => contact.toString())).toList().toString();
+    _currentEditAccount['teams'] = (_currentEditAccount['teams']
+        .map((team) => team.toString())).toList().toString();
+    _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
+    _currentEditAccount['tags'] = _currentEditAccount['tags'].toString();
+    _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
+    countriesList.forEach((country) {
+      if (country[1] == _currentEditAccount['billing_country']) {
+        _currentEditAccount['billing_country'] = country[0];
+      }
+    });
+
+    print(_currentEditAccount);
+
+    await CrmService().createAccount(_currentEditAccount).then((response) {
+      var res = json.decode(response.body);
+      print("createAccount Response >> $res");
+    }).catchError((onError) {
+      print("createAccount Error >> $onError");
     });
   }
 
   Future deleteAccount(Account account) async {
     await CrmService().deleteAccount(account.id).then((response) {
       var res = (json.decode(response.body));
-      print('account delete>> $res');
+      print('deleteAccount Response >> $res');
     }).catchError((onError) {
-      print("deleteAccount>> $onError");
+      print("deleteAccount Error >> $onError");
     });
   }
 
+  editAccount() {
+    print(' Edit function in progress.');
+    return;
+  }
+
+  cancelCurrentEditAccount() {
+    Map _currentEditAccount = {
+      "name": "",
+      "website": "",
+      "phone": "",
+      "email": "",
+      "lead": "",
+      "billing_address_line": "",
+      "billing_street": "",
+      "billing_postcode": "",
+      "billing_city": "",
+      "billing_state": "",
+      "billing_country": "",
+      "contacts": [],
+      "teams": [],
+      // "users": [],
+      "assigned_to": [],
+      "status": "Open",
+      "tags": List<String>()
+    };
+  }
+
   updateCurrentEditAccount(Account editAccount) {
+    _currentEditAccountId = editAccount.id.toString();
     List contacts = [];
     List teams = [];
     List assignedUsers = [];
@@ -69,13 +133,6 @@ class AccountBloc {
       _contact['id'] = contact.id;
       _contact['name'] = contact.firstName + ' ' + contact.lastName;
       contacts.add(_contact);
-    });
-
-    editAccount.teams.forEach((team) {
-      Map _team = {};
-      _team['id'] = team.id;
-      _team['name'] = team.name;
-      teams.add(_team);
     });
 
     editAccount.assignedTo.forEach((user) {
@@ -102,11 +159,28 @@ class AccountBloc {
     _currentEditAccount['billing_state'] = editAccount.billingState;
     _currentEditAccount['billing_country'] = editAccount.billingCountry;
     _currentEditAccount['contacts'] = contacts;
-    _currentEditAccount['teams'] = teams;
-    _currentEditAccount['users'] = [];
-    _currentEditAccount['assigned_to'] = assignedUsers;
+    _currentEditAccount['teams'] = [
+      _currentEditAccount['teams'].map((team) => team.toString())
+    ];
+    // _currentEditAccount['users'] = [];
+    _currentEditAccount['assigned_to'] = [
+      _currentEditAccount['assigned_to']
+          .map((assingedTo) => assingedTo.toString())
+    ];
     _currentEditAccount['status'] = editAccount.status;
     _currentEditAccount['tags'] = tags;
+  }
+
+  List<Account> get openAccounts {
+    return _openAccounts;
+  }
+
+  List<Account> get closedAccounts {
+    return _closedAccounts;
+  }
+
+  List<Map> get assignedToList {
+    return _assignedToList;
   }
 
   Map get currentEditAccount {
@@ -117,12 +191,12 @@ class AccountBloc {
     _currentEditAccount = currentEditAccount;
   }
 
-  List<Account> get openAccounts {
-    return _openAccounts;
+  String get currentEditAccountId {
+    return _currentEditAccountId;
   }
 
-  List<Account> get closedAccounts {
-    return _closedAccounts;
+  set currentEditAccountId(String id) {
+    _currentEditAccountId = id;
   }
 
   Account get currentAccount {

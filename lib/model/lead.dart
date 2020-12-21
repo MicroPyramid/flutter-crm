@@ -30,7 +30,7 @@ class Lead {
   List tags;
   List<Contact> contacts;
   bool createdFromSite;
-  // List<int> teams;
+  List<int> teams;
   int company;
 
   Lead({
@@ -60,7 +60,7 @@ class Lead {
     this.tags,
     this.contacts,
     this.createdFromSite,
-    // this.teams,
+    this.teams,
     this.company,
   });
 

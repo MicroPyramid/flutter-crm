@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_crm/model/account.dart';
 import 'package:flutter_crm/model/opportunities.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:flutter_crm/services/crm_services.dart';
 
 class DashboardBloc {
