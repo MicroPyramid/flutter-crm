@@ -28,12 +28,11 @@ class AccountBloc {
     // "users": [],
     "assigned_to": [],
     "status": "Open",
-    "tags": List<String>()
+    "tags": []
   };
 
   List<Map> _assignedToList = [];
-
-  List countriesList = List.from(leadBloc.countriesList);
+  List countriesList;
 
   Future fetchAccounts() async {
     await CrmService().getAccounts().then((response) {
@@ -61,18 +60,25 @@ class AccountBloc {
   }
 
   createAccount() async {
+    countriesList = leadBloc.countriesList;
     _currentEditAccount['contacts'] = (_currentEditAccount['contacts']
         .map((contact) => contact.toString())).toList().toString();
     _currentEditAccount['teams'] = (_currentEditAccount['teams']
         .map((team) => team.toString())).toList().toString();
     _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
         .map((assignedTo) => assignedTo.toString())).toList().toString();
-    _currentEditAccount['tags'] = _currentEditAccount['tags'].toString();
+    _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
+
     _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
     countriesList.forEach((country) {
       if (country[1] == _currentEditAccount['billing_country']) {
         _currentEditAccount['billing_country'] = country[0];
       }
+      leadBloc.openLeads.forEach((lead) {
+        if (lead.title == _currentEditAccount['lead']) {
+          _currentEditAccount['lead'] = lead.id.toString();
+        }
+      });
     });
 
     print(_currentEditAccount);
@@ -80,6 +86,7 @@ class AccountBloc {
     await CrmService().createAccount(_currentEditAccount).then((response) {
       var res = json.decode(response.body);
       print("createAccount Response >> $res");
+      return true;
     }).catchError((onError) {
       print("createAccount Error >> $onError");
     });

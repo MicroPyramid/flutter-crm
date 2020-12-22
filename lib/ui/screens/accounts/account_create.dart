@@ -6,16 +6,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/bloc/team_bloc.dart';
-import 'package:flutter_crm/model/contact.dart';
-import 'package:flutter_crm/model/lead.dart';
-import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -42,7 +39,11 @@ class _CreateAccountState extends State<CreateAccount> {
     if (accountBloc.currentEditAccountId != null) {
       accountBloc.editAccount();
     } else {
-      accountBloc.createAccount();
+      bool res = accountBloc.createAccount();
+      if (res == true) {
+        Fluttertoast.showToast(msg: 'Posting in Process');
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -266,7 +267,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: Text(
-                        'Leads :',
+                        'Lead :',
                         style: GoogleFonts.robotoSlab(
                             textStyle: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor,
@@ -280,6 +281,9 @@ class _CreateAccountState extends State<CreateAccount> {
                       mode: Mode.BOTTOM_SHEET,
                       items: leadBloc.leadsTitles,
                       onChanged: print,
+                      onSaved: (selection) {
+                        accountBloc.currentEditAccount['lead'] = selection;
+                      },
                       selectedItem: accountBloc.currentEditAccount['lead'],
                       hint: 'Select Lead',
                       showSearchBox: true,
@@ -670,8 +674,6 @@ class _CreateAccountState extends State<CreateAccount> {
                 ],
               ),
             ),
-
-            // Teams MultiSelectDropDown Field. <disabled> - data not available from backend.
             Container(
               child: Column(
                 children: [
@@ -723,7 +725,7 @@ class _CreateAccountState extends State<CreateAccount> {
               ),
             ),
 
-            // Users MultiSelectDropDown Field. <disabled> - needs teams data
+            // Users MultiSelectDropDown Field. <disabled> - needs data
             Container(
               child: Column(
                 children: [
@@ -919,7 +921,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       },
                       onDelete: (tag) {
                         setState(() {
-                          accountBloc.currentEditAccount['tags'].remove(tag);
+                          accountBloc.currentEditAccount['tags'].remove({tag});
                         });
                         print(accountBloc.currentEditAccount['tags']);
                       },
@@ -976,6 +978,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 ],
               ),
             ),
+            // Save Form
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1013,6 +1016,8 @@ class _CreateAccountState extends State<CreateAccount> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
+                      // accountBloc.currentEditAccount =
+                      //     accountBloc.cancelCurrentEditAccount();
                     },
                     child: Container(
                       child: Text(
