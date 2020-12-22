@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SquareFloatingActionButton extends StatelessWidget {
-  String _route;
-  String btnTitle;
+  final String _route;
+  final String btnTitle;
+  final String moduleName;
 
-  SquareFloatingActionButton(this._route, this.btnTitle);
+  SquareFloatingActionButton(this._route, this.btnTitle, this.moduleName);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        if (moduleName == "Accounts") {
+          accountBloc.cancelCurrentEditAccount();
+        }
         Navigator.pushNamed(context, _route);
       },
       child: Container(

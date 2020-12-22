@@ -76,6 +76,12 @@ class CrmService {
         headers: getFormatedHeaders(_headers), body: contact);
   }
 
+  Future<Response> editAccount(data, id) async {
+    await updateHeaders();
+    return await networkService.put(baseUrl + 'accounts/$id/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
   ///////////////////// CONTACTS-SERVICES ///////////////////////////////
 
   Future<Response> getContacts() async {

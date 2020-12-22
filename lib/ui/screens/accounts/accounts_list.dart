@@ -495,8 +495,8 @@ class _AccountsListState extends State<AccountsList> {
             ],
           ),
         ),
-        floatingActionButton:
-            SquareFloatingActionButton('/create_account', "Add Account"),
+        floatingActionButton: SquareFloatingActionButton(
+            '/create_account', "Add Account", "Accounts"),
         bottomNavigationBar: BottomNavigationBarWidget(),
       ),
     );

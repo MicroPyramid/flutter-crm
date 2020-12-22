@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,26 +26,116 @@ class _CreateAccountState extends State<CreateAccount> {
   final GlobalKey<FormState> _createAccountFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
+  Map _errors;
+  bool _isLoading = false;
+  FocusNode _focuserr;
+  FocusNode _nameFocusNode = new FocusNode();
+  FocusNode _phoneFocusNode = new FocusNode();
+  FocusNode _emailFocusNode = new FocusNode();
+  FocusNode _addLineFocusNode = new FocusNode();
+  FocusNode _addStreetFocusNode = new FocusNode();
+  FocusNode _addPostalFocusNode = new FocusNode();
+  FocusNode _addCityFocusNode = new FocusNode();
+  FocusNode _addStateFocusNode = new FocusNode();
 
   @override
   void initState() {
     super.initState();
   }
 
-  _saveForm() {
+  @override
+  void dispose() {
+    if (_focuserr != null) {
+      _focuserr.dispose();
+    }
+    _nameFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _addLineFocusNode.dispose();
+    _addStreetFocusNode.dispose();
+    _addPostalFocusNode.dispose();
+    _addCityFocusNode.dispose();
+    _addStateFocusNode.dispose();
+    super.dispose();
+  }
+
+  focusError() {
+    setState(() {
+      FocusManager.instance.primaryFocus.unfocus();
+      FocusScope.of(context).requestFocus(_focuserr);
+    });
+  }
+
+  _saveForm() async {
+    _focuserr = null;
+    setState(() {
+      _errors = null;
+    });
     if (!_createAccountFormKey.currentState.validate()) {
+      focusError();
       return;
     }
     _createAccountFormKey.currentState.save();
+    Map result;
+    setState(() {
+      _isLoading = true;
+    });
     if (accountBloc.currentEditAccountId != null) {
-      accountBloc.editAccount();
+      result = await accountBloc.editAccount();
     } else {
-      bool res = accountBloc.createAccount();
-      if (res == true) {
-        Fluttertoast.showToast(msg: 'Posting in Process');
-        Navigator.pop(context);
-      }
+      result = await accountBloc.createAccount();
     }
+    setState(() {
+      _isLoading = false;
+    });
+    if (result['error'] == false) {
+      setState(() {
+        _errors = null;
+      });
+      showToast(result['message']);
+      Navigator.pushReplacementNamed(context, '/account_list');
+    } else if (result['error'] == true) {
+      setState(() {
+        _errors = result['errors'];
+      });
+      if (_errors['name'] != null && _focuserr == null) {
+        _focuserr = _nameFocusNode;
+        focusError();
+      }
+      if (_errors['phone'] != null && _focuserr == null) {
+        _focuserr = _phoneFocusNode;
+        focusError();
+      }
+      if (_errors['email'] != null && _focuserr == null) {
+        _focuserr = _emailFocusNode;
+        focusError();
+      }
+    } else {
+      setState(() {
+        _errors = null;
+      });
+      showErrorMessage(context, 'Something went wrong');
+    }
+  }
+
+  void showErrorMessage(BuildContext context, String errorContent) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          _saveForm();
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
   }
 
   Widget _buildForm() {
@@ -80,6 +171,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      focusNode: _nameFocusNode,
                       initialValue: accountBloc.currentEditAccount['name'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -96,6 +188,9 @@ class _CreateAccountState extends State<CreateAccount> {
                       keyboardType: TextInputType.text,
                       validator: (value) {
                         if (value.isEmpty) {
+                          if (_focuserr == null) {
+                            _focuserr = _nameFocusNode;
+                          }
                           return 'This field is required.';
                         }
                         return null;
@@ -105,6 +200,17 @@ class _CreateAccountState extends State<CreateAccount> {
                       },
                     ),
                   ),
+                  _errors != null && _errors['name'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['name'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -175,6 +281,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      focusNode: _phoneFocusNode,
                       initialValue: accountBloc.currentEditAccount['phone'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -191,6 +298,9 @@ class _CreateAccountState extends State<CreateAccount> {
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value.isEmpty) {
+                          if (_focuserr == null) {
+                            _focuserr = _phoneFocusNode;
+                          }
                           return 'This field is required.';
                         }
                         return null;
@@ -200,6 +310,17 @@ class _CreateAccountState extends State<CreateAccount> {
                       },
                     ),
                   ),
+                  _errors != null && _errors['phone'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['phone'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -231,6 +352,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      focusNode: _emailFocusNode,
                       initialValue: accountBloc.currentEditAccount['email'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -247,7 +369,18 @@ class _CreateAccountState extends State<CreateAccount> {
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value.isEmpty) {
+                          if (_focuserr == null) {
+                            _focuserr = _emailFocusNode;
+                          }
                           return 'This field is required.';
+                        }
+                        if (!RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                          if (_focuserr == null) {
+                            _focuserr = _emailFocusNode;
+                          }
+                          return 'Enter valid email address.';
                         }
                         return null;
                       },
@@ -256,6 +389,17 @@ class _CreateAccountState extends State<CreateAccount> {
                       },
                     ),
                   ),
+                  _errors != null && _errors['email'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['email'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -282,7 +426,11 @@ class _CreateAccountState extends State<CreateAccount> {
                       items: leadBloc.leadsTitles,
                       onChanged: print,
                       onSaved: (selection) {
-                        accountBloc.currentEditAccount['lead'] = selection;
+                        if (selection == null) {
+                          accountBloc.currentEditAccount['lead'] = "";
+                        } else {
+                          accountBloc.currentEditAccount['lead'] = selection;
+                        }
                       },
                       selectedItem: accountBloc.currentEditAccount['lead'],
                       hint: 'Select Lead',
@@ -369,6 +517,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      focusNode: _addLineFocusNode,
                       initialValue: accountBloc
                           .currentEditAccount['billing_address_line'],
                       decoration: InputDecoration(
@@ -386,6 +535,9 @@ class _CreateAccountState extends State<CreateAccount> {
                       keyboardType: TextInputType.text,
                       validator: (value) {
                         if (value.isEmpty) {
+                          if (_focuserr == null) {
+                            _focuserr = _addLineFocusNode;
+                          }
                           return 'This field is required.';
                         }
                         return null;
@@ -404,6 +556,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            focusNode: _addStreetFocusNode,
                             initialValue: accountBloc
                                 .currentEditAccount['billing_street'],
                             decoration: InputDecoration(
@@ -421,6 +574,9 @@ class _CreateAccountState extends State<CreateAccount> {
                             keyboardType: TextInputType.text,
                             validator: (value) {
                               if (value.isEmpty) {
+                                if (_focuserr == null) {
+                                  _focuserr = _addStreetFocusNode;
+                                }
                                 return 'This field is required.';
                               }
                               return null;
@@ -434,6 +590,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            focusNode: _addPostalFocusNode,
                             initialValue: accountBloc
                                 .currentEditAccount['billing_postcode'],
                             decoration: InputDecoration(
@@ -451,6 +608,9 @@ class _CreateAccountState extends State<CreateAccount> {
                             keyboardType: TextInputType.phone,
                             validator: (value) {
                               if (value.isEmpty) {
+                                if (_focuserr == null) {
+                                  _focuserr = _addPostalFocusNode;
+                                }
                                 return 'This field is required.';
                               }
                               return null;
@@ -473,6 +633,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            focusNode: _addCityFocusNode,
                             initialValue:
                                 accountBloc.currentEditAccount['billing_city'],
                             decoration: InputDecoration(
@@ -490,6 +651,9 @@ class _CreateAccountState extends State<CreateAccount> {
                             keyboardType: TextInputType.text,
                             validator: (value) {
                               if (value.isEmpty) {
+                                if (_focuserr == null) {
+                                  _focuserr = _addCityFocusNode;
+                                }
                                 return 'This field is required.';
                               }
                               return null;
@@ -503,6 +667,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         Container(
                           width: screenWidth * 0.42,
                           child: TextFormField(
+                            focusNode: _addStateFocusNode,
                             initialValue:
                                 accountBloc.currentEditAccount['billing_state'],
                             decoration: InputDecoration(
@@ -520,6 +685,9 @@ class _CreateAccountState extends State<CreateAccount> {
                             keyboardType: TextInputType.text,
                             validator: (value) {
                               if (value.isEmpty) {
+                                if (_focuserr == null) {
+                                  _focuserr = _addStateFocusNode;
+                                }
                                 return 'This field is required.';
                               }
                               return null;
@@ -666,6 +834,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       ),
                       // initialValue: accountBloc.currentEditAccount['contacts'],
                       onSaved: (value) {
+                        if (value == null) return;
                         accountBloc.currentEditAccount['contacts'] = value;
                       },
                     ),
@@ -714,9 +883,11 @@ class _CreateAccountState extends State<CreateAccount> {
                       ),
                       // initialValue: accountBloc.currentEditAccount['teams'],
                       onSaved: (value) {
-                        setState(() {
+                        if (value == null) {
+                          accountBloc.currentEditAccount['teams'] = [];
+                        } else {
                           accountBloc.currentEditAccount['teams'] = value;
-                        });
+                        }
                       },
                     ),
                   ),
@@ -769,9 +940,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       ),
                       initialValue: accountBloc.currentEditAccount['users'],
                       onSaved: (value) {
-                        setState(() {
-                          // accountBloc.currentEditAccount['users'] = value;
-                        });
+                        // accountBloc.currentEditAccount['users'] = value;
                       },
                     ),
                   ),
@@ -821,9 +990,11 @@ class _CreateAccountState extends State<CreateAccount> {
                       // initialValue:
                       //     accountBloc.currentEditAccount['assigned_to'],
                       onSaved: (value) {
-                        setState(() {
+                        if (value == null) {
+                          accountBloc.currentEditAccount['assigned_to'] = [];
+                        } else {
                           accountBloc.currentEditAccount['assigned_to'] = value;
-                        });
+                        }
                       },
                     ),
                   ),
@@ -985,6 +1156,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      FocusScope.of(context).unfocus();
                       _saveForm();
                     },
                     child: Container(
@@ -1016,8 +1188,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
-                      // accountBloc.currentEditAccount =
-                      //     accountBloc.cancelCurrentEditAccount();
+                      accountBloc.cancelCurrentEditAccount();
                     },
                     child: Container(
                       child: Text(
@@ -1041,25 +1212,43 @@ class _CreateAccountState extends State<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Create Account",
-          style: GoogleFonts.robotoSlab(),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: Container(
-          color: Colors.white,
-          child: Container(
-            padding: EdgeInsets.all(10.0),
-            child: _buildForm(),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            "Create Account",
+            style: GoogleFonts.robotoSlab(),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBarWidget(),
-    );
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            SingleChildScrollView(
+              padding: EdgeInsets.all(10.0),
+              child: Container(
+                color: Colors.white,
+                child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: _buildForm(),
+                ),
+              ),
+            ),
+            new Align(
+              child: loadingIndicator,
+              alignment: FractionalOffset.center,
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBarWidget());
   }
 }

@@ -603,7 +603,7 @@ class _LeadsListState extends State<LeadsList> {
           ),
         ),
         floatingActionButton:
-            SquareFloatingActionButton('/create_lead', "Add Lead"),
+            SquareFloatingActionButton('/create_lead', "Add Lead", "Leads"),
         bottomNavigationBar: BottomNavigationBarWidget(),
       ),
     );

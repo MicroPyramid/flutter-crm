@@ -404,35 +404,32 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: onWillPop,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Contacts", style: GoogleFonts.robotoSlab()),
-          automaticallyImplyLeading: false,
-        ),
-        body: Container(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              _buildTabBar(_contacts.length),
-              _buildFilterWidget(),
-              _contacts.length > 0
-                  ? Expanded(child: _buildContactList())
-                  : Container(
-                      margin: EdgeInsets.only(top: 30.0),
-                      child: Text(
-                        "No Contacts Found",
-                        style: GoogleFonts.robotoSlab(),
-                      ),
-                    )
-            ],
-          ),
-        ),
-        floatingActionButton:
-            SquareFloatingActionButton('/create_contact', "Add Contact"),
-        bottomNavigationBar: BottomNavigationBarWidget(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Contacts", style: GoogleFonts.robotoSlab()),
+        automaticallyImplyLeading: false,
       ),
+      body: Container(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            _buildTabBar(_contacts.length),
+            _buildFilterWidget(),
+            _contacts.length > 0
+                ? Expanded(child: _buildContactList())
+                : Container(
+                    margin: EdgeInsets.only(top: 30.0),
+                    child: Text(
+                      "No Contacts Found",
+                      style: GoogleFonts.robotoSlab(),
+                    ),
+                  )
+          ],
+        ),
+      ),
+      floatingActionButton: SquareFloatingActionButton(
+          '/create_contact', "Add Contact", "Contacts"),
+      bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }
 }

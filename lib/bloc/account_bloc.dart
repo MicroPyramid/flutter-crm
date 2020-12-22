@@ -16,13 +16,13 @@ class AccountBloc {
     "website": "",
     "phone": "",
     "email": "",
-    "lead": "",
+    "lead": null,
     "billing_address_line": "",
     "billing_street": "",
     "billing_postcode": "",
     "billing_city": "",
     "billing_state": "",
-    "billing_country": "",
+    "billing_country": null,
     "contacts": [],
     "teams": [],
     // "users": [],
@@ -35,6 +35,8 @@ class AccountBloc {
   List countriesList;
 
   Future fetchAccounts() async {
+    _openAccounts.clear();
+    _closedAccounts.clear();
     await CrmService().getAccounts().then((response) {
       var res = (json.decode(response.body));
 
@@ -59,7 +61,8 @@ class AccountBloc {
     });
   }
 
-  createAccount() async {
+  Future createAccount() async {
+    Map result;
     countriesList = leadBloc.countriesList;
     _currentEditAccount['contacts'] = (_currentEditAccount['contacts']
         .map((contact) => contact.toString())).toList().toString();
@@ -68,7 +71,6 @@ class AccountBloc {
     _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
         .map((assignedTo) => assignedTo.toString())).toList().toString();
     _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
-
     _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
     countriesList.forEach((country) {
       if (country[1] == _currentEditAccount['billing_country']) {
@@ -80,16 +82,63 @@ class AccountBloc {
         }
       });
     });
-
-    print(_currentEditAccount);
-
-    await CrmService().createAccount(_currentEditAccount).then((response) {
+    await CrmService()
+        .createAccount(_currentEditAccount)
+        .then((response) async {
       var res = json.decode(response.body);
+      if (res["errors"] != null) {
+        cancelCurrentEditAccount();
+        res["error"] = true;
+      } else {
+        await fetchAccounts();
+      }
+      result = res;
       print("createAccount Response >> $res");
-      return true;
     }).catchError((onError) {
       print("createAccount Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
     });
+    return result;
+  }
+
+  Future editAccount() async {
+    Map result;
+    countriesList = leadBloc.countriesList;
+    _currentEditAccount['contacts'] = (_currentEditAccount['contacts']
+        .map((contact) => contact.toString())).toList().toString();
+    _currentEditAccount['teams'] = (_currentEditAccount['teams']
+        .map((team) => team.toString())).toList().toString();
+    _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
+    _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
+    _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
+    countriesList.forEach((country) {
+      if (country[1] == _currentEditAccount['billing_country']) {
+        _currentEditAccount['billing_country'] = country[0];
+      }
+      leadBloc.openLeads.forEach((lead) {
+        if (lead.title == _currentEditAccount['lead']) {
+          _currentEditAccount['lead'] = lead.id.toString();
+        }
+      });
+    });
+    await CrmService()
+        .editAccount(_currentEditAccount, _currentEditAccountId)
+        .then((response) async {
+      var res = json.decode(response.body);
+      if (res["errors"] != null) {
+        cancelCurrentEditAccount();
+        res["error"] = true;
+      } else {
+        await fetchAccounts();
+      }
+      result = res;
+      print("editAccount Response >> $res");
+    }).catchError((onError) {
+      print("editAccount Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
+    });
+    return result;
   }
 
   Future deleteAccount(Account account) async {
@@ -101,24 +150,20 @@ class AccountBloc {
     });
   }
 
-  editAccount() {
-    print(' Edit function in progress.');
-    return;
-  }
-
   cancelCurrentEditAccount() {
-    Map _currentEditAccount = {
+    _currentEditAccountId = null;
+    _currentEditAccount = {
       "name": "",
       "website": "",
       "phone": "",
       "email": "",
-      "lead": "",
+      "lead": null,
       "billing_address_line": "",
       "billing_street": "",
       "billing_postcode": "",
       "billing_city": "",
       "billing_state": "",
-      "billing_country": "",
+      "billing_country": null,
       "contacts": [],
       "teams": [],
       // "users": [],
@@ -167,12 +212,11 @@ class AccountBloc {
     _currentEditAccount['billing_country'] = editAccount.billingCountry;
     _currentEditAccount['contacts'] = contacts;
     _currentEditAccount['teams'] = [
-      _currentEditAccount['teams'].map((team) => team.toString())
+      editAccount.teams.map((team) => team.toString())
     ];
     // _currentEditAccount['users'] = [];
     _currentEditAccount['assigned_to'] = [
-      _currentEditAccount['assigned_to']
-          .map((assingedTo) => assingedTo.toString())
+      editAccount.assignedTo.map((assingedTo) => assingedTo.toString())
     ];
     _currentEditAccount['status'] = editAccount.status;
     _currentEditAccount['tags'] = tags;

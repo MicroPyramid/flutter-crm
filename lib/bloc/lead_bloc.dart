@@ -91,7 +91,6 @@ class LeadBloc {
   }
 
   editLead() async {
-    print(_currentEditLead);
     _currentEditLead['status'] = _currentEditLead['status'].toLowerCase();
     _currentEditLead['source'] = _currentEditLead['source'].toLowerCase();
     _currentEditLead['teams'] =
@@ -102,19 +101,11 @@ class LeadBloc {
         .toString();
 
     _currentEditLead['tags'] = _currentEditLead['tags'].toString();
-
-    print(currentEditLead['teams'].runtimeType);
-    print(currentEditLead['assigned_to'].runtimeType);
-
-    print(currentEditLead['tags'].runtimeType);
-
     _countriesList.forEach((country) {
       if (country[1] == _currentEditLead['country']) {
         _currentEditLead['country'] = country[0];
       }
     });
-    print('Print before POST');
-    print(_currentEditLead);
     await CrmService()
         .editLead(_currentEditLead, _currentEditLeadId)
         .then((response) {
