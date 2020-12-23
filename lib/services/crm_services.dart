@@ -58,10 +58,18 @@ class CrmService {
   }
   ///////////////////// ACCONUTS-SERVICES ////////////////////////////
 
-  Future<Response> getAccounts() async {
+  Future<Response> getAccounts({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'accounts/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'accounts/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'accounts/';
+    }
+
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
   }
 
   Future<Response> deleteAccount(id) async {

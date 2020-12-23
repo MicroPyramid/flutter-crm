@@ -101,7 +101,7 @@ class ContactBloc {
     return _currentEditContact;
   }
 
-  set currentEditContact(Map currentEditContact) {
+  set currentEditContact(currentEditContact) {
     _currentEditContact = currentEditContact;
   }
 
@@ -113,7 +113,7 @@ class ContactBloc {
     return _currentContact;
   }
 
-  set currentContact(Contact contact) {
+  set currentContact(contact) {
     _currentContact = contact;
   }
 

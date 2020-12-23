@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_crm/ui/widgets/tags_widget.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 class AccountsList extends StatefulWidget {
   AccountsList();
@@ -20,6 +24,9 @@ class _AccountsListState extends State<AccountsList> {
   int _currentTabIndex = 0;
   List<Account> _accounts = [];
   bool _isFilter = false;
+  final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
+  Map _filtersFormData = {"name": "", "city": "", "tags": ""};
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -27,6 +34,31 @@ class _AccountsListState extends State<AccountsList> {
       _accounts = accountBloc.openAccounts;
     });
     super.initState();
+  }
+
+  _saveForm() async {
+    if (_isFilter) {
+      _filtersFormKey.currentState.save();
+    }
+    _filtersFormData['tags'] = _filtersFormData['tags'].length > 0
+        ? jsonEncode(_filtersFormData['tags'])
+        : "";
+    if (_isFilter &&
+        _filtersFormData['name'] == "" &&
+        _filtersFormData['city'] == "" &&
+        _filtersFormData['tags'] == "") {
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+    await accountBloc.fetchAccounts(
+        filtersData: _isFilter ? _filtersFormData : null);
+    setState(() {
+      _isLoading = false;
+      _currentTabIndex = 0;
+    });
+    accountBloc.currentAccountType = "Open";
   }
 
   Widget _buildTabs() {
@@ -42,7 +74,7 @@ class _AccountsListState extends State<AccountsList> {
                     setState(() {
                       _currentTabIndex = 0;
                       _accounts = accountBloc.openAccounts;
-                      _isFilter = false;
+                      // _isFilter = false;
                     });
                     accountBloc.currentAccountType = "Open";
                   }
@@ -94,7 +126,7 @@ class _AccountsListState extends State<AccountsList> {
                     setState(() {
                       _currentTabIndex = 1;
                       _accounts = accountBloc.closedAccounts;
-                      _isFilter = false;
+                      // _isFilter = false;
                     });
                     accountBloc.currentAccountType = "Closed";
                   }
@@ -173,115 +205,151 @@ class _AccountsListState extends State<AccountsList> {
             padding: EdgeInsets.all(10.0),
             margin: EdgeInsets.only(top: 10.0),
             color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(12.0),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter Account Name',
-                        errorStyle: GoogleFonts.robotoSlab(),
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: 14.0))),
-                    keyboardType: TextInputType.text,
+            child: Form(
+              key: _filtersFormKey,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: _filtersFormData['name'],
+                      onSaved: (newValue) {
+                        _filtersFormData['name'] = newValue;
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter Account Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(12.0),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter City',
-                        errorStyle: GoogleFonts.robotoSlab(),
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: 14.0))),
-                    keyboardType: TextInputType.text,
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: _filtersFormData['city'],
+                      onSaved: (newValue) {
+                        _filtersFormData['city'] = newValue;
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter City',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(fontSize: 14.0))),
+                      keyboardType: TextInputType.text,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(12.0),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Tags',
-                        errorStyle: GoogleFonts.robotoSlab(),
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: 14.0))),
-                    keyboardType: TextInputType.text,
-                  ),
-                ),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: screenHeight * 0.05,
-                          width: screenWidth * 0.3,
-                          decoration: BoxDecoration(
-                            color: submitButtonColor,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(3.0)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'Filter',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: screenWidth / 24)),
-                              ),
-                              SvgPicture.asset(
-                                  'assets/images/arrow_forward.svg')
-                            ],
-                          ),
-                        ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: MultiSelectFormField(
+                      border: boxBorder(),
+                      fillColor: Colors.white,
+                      autovalidate: false,
+                      dataSource: accountBloc.tags,
+                      textField: 'name',
+                      valueField: 'id',
+                      okButtonLabel: 'OK',
+                      chipLabelStyle: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      dialogTextStyle: GoogleFonts.robotoSlab(),
+                      cancelButtonLabel: 'CANCEL',
+                      hintWidget: Text(
+                        "Please choose one or more",
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.grey)),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isFilter = false;
-                          });
-                        },
-                        child: Container(
-                          child: Text(
-                            "Reset",
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: bottomNavBarTextColor,
-                                    fontSize: screenWidth / 24)),
+                      title: Text(
+                        "Tags",
+                        style: GoogleFonts.robotoSlab(),
+                      ),
+                      // initialValue:
+                      //     accountBloc.currentEditAccount['assigned_to'],
+                      onSaved: (value) {
+                        if (value == null) return;
+                        _filtersFormData['tags'] = value;
+                      },
+                    ),
+                  ),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            _saveForm();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.05,
+                            width: screenWidth * 0.3,
+                            decoration: BoxDecoration(
+                              color: submitButtonColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(3.0)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'Filter',
+                                  style: GoogleFonts.robotoSlab(
+                                      textStyle: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: screenWidth / 24)),
+                                ),
+                                SvgPicture.asset(
+                                    'assets/images/arrow_forward.svg')
+                              ],
+                            ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isFilter = false;
+                            });
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              _filtersFormData = {
+                                "name": "",
+                                "city": "",
+                                "tags": ""
+                              };
+                            });
+                            _saveForm();
+                          },
+                          child: Container(
+                            child: Text(
+                              "Reset",
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: bottomNavBarTextColor,
+                                      fontSize: screenWidth / 24)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         : Container();
@@ -457,43 +525,91 @@ class _AccountsListState extends State<AccountsList> {
         });
   }
 
-  deleteAccount(index, account) {
-    setState(() {
-      _accounts.removeAt(index);
-    });
-    // accountBloc.deleteAccount(account);
-    Navigator.pop(context);
+  deleteAccount(index, account) async {
+    Map result = await accountBloc.deleteAccount(account);
+    if (result['error'] == false) {
+      showToast(result['message']);
+      Navigator.pop(context);
+      setState(() {
+        _accounts.removeAt(index);
+      });
+    } else if (result['error'] == true) {
+      Navigator.pop(context);
+    } else {
+      showErrorMessage(context, 'Something went wrong', account, index);
+    }
+  }
+
+  void showErrorMessage(
+      BuildContext context, String errorContent, Account account, int index) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          deleteAccount(index, account);
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
             title: Text(
           "Accounts",
           style: GoogleFonts.robotoSlab(),
         )),
-        body: Container(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              _buildTabs(),
-              _buildFilterWidget(),
-              _accounts.length > 0
-                  ? Expanded(child: _buildAccountList())
-                  : Container(
-                      margin: EdgeInsets.only(top: 30.0),
-                      child: Center(
-                        child: Text(
-                          "No Accounts Found",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
-                      ),
-                    )
-            ],
-          ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  _buildTabs(),
+                  _buildFilterWidget(),
+                  _accounts.length > 0
+                      ? Expanded(child: _buildAccountList())
+                      : Container(
+                          margin: EdgeInsets.only(top: 30.0),
+                          child: Center(
+                            child: Text(
+                              "No Accounts Found",
+                              style: GoogleFonts.robotoSlab(),
+                            ),
+                          ),
+                        )
+                ],
+              ),
+            ),
+            new Align(
+              child: loadingIndicator,
+              alignment: FractionalOffset.center,
+            )
+          ],
         ),
         floatingActionButton: SquareFloatingActionButton(
             '/create_account', "Add Account", "Accounts"),

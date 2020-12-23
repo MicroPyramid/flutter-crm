@@ -232,7 +232,7 @@ class LeadBloc {
     return _currentEditLead;
   }
 
-  set currentEditLead(Map currentEditLead) {
+  set currentEditLead(currentEditLead) {
     _currentEditLead = currentEditLead;
   }
 
@@ -240,7 +240,7 @@ class LeadBloc {
     return _currentEditLeadId;
   }
 
-  set currentEditLeadId(String id) {
+  set currentEditLeadId(id) {
     _currentEditLeadId = id;
   }
 
@@ -272,7 +272,7 @@ class LeadBloc {
     return _currentLead;
   }
 
-  set currentLead(Lead lead) {
+  set currentLead(lead) {
     _currentLead = lead;
   }
 
@@ -280,7 +280,7 @@ class LeadBloc {
     return _currentLeadType;
   }
 
-  set currentLeadType(String type) {
+  set currentLeadType(type) {
     _currentLeadType = type;
   }
 
@@ -292,7 +292,7 @@ class LeadBloc {
     return _countriesList;
   }
 
-  set countriesList(List countriesList) {
+  set countriesList(countriesList) {
     _countriesList = countriesList;
   }
 

@@ -25,7 +25,6 @@ class AccountBloc {
     "billing_country": null,
     "contacts": [],
     "teams": [],
-    // "users": [],
     "assigned_to": [],
     "status": "Open",
     "tags": []
@@ -33,12 +32,15 @@ class AccountBloc {
 
   List<Map> _assignedToList = [];
   List countriesList;
+  List _tags = [];
 
-  Future fetchAccounts() async {
-    _openAccounts.clear();
-    _closedAccounts.clear();
-    await CrmService().getAccounts().then((response) {
+  Future fetchAccounts({filtersData}) async {
+    await CrmService().getAccounts(queryParams: filtersData).then((response) {
       var res = (json.decode(response.body));
+
+      _openAccounts.clear();
+      _closedAccounts.clear();
+      _assignedToList.clear();
 
       res['open_accounts'].forEach((_account) {
         Account account = Account.fromJson(_account);
@@ -54,6 +56,8 @@ class AccountBloc {
         Profile user = Profile.fromJson(_user);
         _assignedToList.add({"name": user.userName, "id": user.id.toString()});
       });
+
+      _tags = res['tags'];
 
       countriesList = leadBloc.countriesList;
     }).catchError((onError) {
@@ -142,12 +146,17 @@ class AccountBloc {
   }
 
   Future deleteAccount(Account account) async {
-    await CrmService().deleteAccount(account.id).then((response) {
+    Map result;
+    await CrmService().deleteAccount(account.id).then((response) async {
       var res = (json.decode(response.body));
       print('deleteAccount Response >> $res');
+      await fetchAccounts();
+      result = res;
     }).catchError((onError) {
       print("deleteAccount Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
     });
+    return result;
   }
 
   cancelCurrentEditAccount() {
@@ -166,7 +175,6 @@ class AccountBloc {
       "billing_country": null,
       "contacts": [],
       "teams": [],
-      // "users": [],
       "assigned_to": [],
       "status": "Open",
       "tags": List<String>()
@@ -176,7 +184,6 @@ class AccountBloc {
   updateCurrentEditAccount(Account editAccount) {
     _currentEditAccountId = editAccount.id.toString();
     List contacts = [];
-    List teams = [];
     List assignedUsers = [];
     List<String> tags = [];
 
@@ -214,7 +221,6 @@ class AccountBloc {
     _currentEditAccount['teams'] = [
       editAccount.teams.map((team) => team.toString())
     ];
-    // _currentEditAccount['users'] = [];
     _currentEditAccount['assigned_to'] = [
       editAccount.assignedTo.map((assingedTo) => assingedTo.toString())
     ];
@@ -238,15 +244,19 @@ class AccountBloc {
     return _currentEditAccount;
   }
 
-  set currentEditAccount(Map currentEditAccount) {
+  set currentEditAccount(currentEditAccount) {
     _currentEditAccount = currentEditAccount;
+  }
+
+  List get tags {
+    return _tags;
   }
 
   String get currentEditAccountId {
     return _currentEditAccountId;
   }
 
-  set currentEditAccountId(String id) {
+  set currentEditAccountId(id) {
     _currentEditAccountId = id;
   }
 
@@ -254,7 +264,7 @@ class AccountBloc {
     return _currentAccount;
   }
 
-  set currentAccount(Account account) {
+  set currentAccount(account) {
     _currentAccount = account;
   }
 
@@ -262,7 +272,7 @@ class AccountBloc {
     return _currentAccountIndex;
   }
 
-  set currentAccountIndex(int index) {
+  set currentAccountIndex(index) {
     _currentAccountIndex = index;
   }
 
@@ -270,7 +280,7 @@ class AccountBloc {
     return _currentAccountType;
   }
 
-  set currentAccountType(String type) {
+  set currentAccountType(type) {
     _currentAccountType = type;
   }
 }

@@ -10,10 +10,8 @@ import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -702,7 +700,6 @@ class _CreateAccountState extends State<CreateAccount> {
                     ),
                   ),
                   Container(
-                    // height: 48.0,
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: DropdownSearch<String>(
                       mode: Mode.BOTTOM_SHEET,

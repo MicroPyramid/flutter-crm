@@ -9,7 +9,7 @@ class NetworkService {
   http.Response response;
   var client = http.Client();
 
-  Future<http.Response> get(String url, {Map headers}) async {
+  Future<http.Response> get(var url, {Map headers}) async {
     return client.get(url, headers: headers).then((http.Response response) {
       return handleResponse(response);
     });
