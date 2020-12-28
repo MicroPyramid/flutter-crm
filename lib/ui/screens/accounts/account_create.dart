@@ -244,8 +244,10 @@ class _CreateAccountState extends State<CreateAccount> {
                           errorStyle: GoogleFonts.robotoSlab(),
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.text,
-                      onSaved: (value) {},
+                      keyboardType: TextInputType.url,
+                      onSaved: (value) {
+                        accountBloc.currentEditAccount['website'] = value;
+                      },
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -829,7 +831,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         "Contacts",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      // initialValue: accountBloc.currentEditAccount['contacts'],
+                      initialValue: accountBloc.currentEditAccount['contacts'],
                       onSaved: (value) {
                         if (value == null) return;
                         accountBloc.currentEditAccount['contacts'] = value;
@@ -878,7 +880,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         "Teams",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      // initialValue: accountBloc.currentEditAccount['teams'],
+                      initialValue: accountBloc.currentEditAccount['teams'],
                       onSaved: (value) {
                         if (value == null) {
                           accountBloc.currentEditAccount['teams'] = [];
@@ -935,7 +937,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         "Users",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: accountBloc.currentEditAccount['users'],
+                      // initialValue: accountBloc.currentEditAccount['users'],
                       onSaved: (value) {
                         // accountBloc.currentEditAccount['users'] = value;
                       },
@@ -984,13 +986,15 @@ class _CreateAccountState extends State<CreateAccount> {
                         "Assigned To",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      // initialValue:
-                      //     accountBloc.currentEditAccount['assigned_to'],
+                      initialValue:
+                          accountBloc.currentEditAccount['assigned_to'],
                       onSaved: (value) {
                         if (value == null) {
                           accountBloc.currentEditAccount['assigned_to'] = [];
                         } else {
                           accountBloc.currentEditAccount['assigned_to'] = value;
+                          print('Assigned Users:');
+                          print(value);
                         }
                       },
                     ),
@@ -1025,7 +1029,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       hint: Text('select Status'),
-                      value: "Open",
+                      value: accountBloc.currentEditAccount['status'],
                       onChanged: (value) {
                         setState(() {
                           accountBloc.currentEditAccount['status'] = value;
@@ -1061,7 +1065,8 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
-                      // initialTags: accountBloc.currentEditAccount['tags'],
+                      initialTags: accountBloc.currentEditAccount['tags'],
+                      // initialTags: ['add', 'tags', 'here'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),

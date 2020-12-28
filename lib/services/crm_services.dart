@@ -90,6 +90,12 @@ class CrmService {
         headers: getFormatedHeaders(_headers), body: data);
   }
 
+  Future<Response> getToEditAccount(id) async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'accounts/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
   ///////////////////// CONTACTS-SERVICES ///////////////////////////////
 
   Future<Response> getContacts() async {
@@ -103,6 +109,12 @@ class CrmService {
   Future<Response> getLeads() async {
     await updateHeaders();
     return await networkService.get(baseUrl + 'leads/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> getLeadToUpdate(leadId) async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'leads/$leadId/',
         headers: getFormatedHeaders(_headers));
   }
 

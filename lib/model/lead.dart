@@ -1,4 +1,5 @@
 import 'package:flutter_crm/model/profile.dart';
+import 'package:flutter_crm/model/team.dart';
 import 'package:intl/intl.dart';
 
 import 'contact.dart';
@@ -30,7 +31,7 @@ class Lead {
   List tags;
   List<Contact> contacts;
   bool createdFromSite;
-  List<int> teams;
+  List teams;
   int company;
 
   Lead({

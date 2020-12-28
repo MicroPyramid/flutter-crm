@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/model/account.dart';
 import 'package:flutter_crm/model/profile.dart';
+import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/services/crm_services.dart';
+import 'package:flutter_crm/utils/utils.dart';
 
 class AccountBloc {
   List<Account> _openAccounts = [];
@@ -54,7 +56,7 @@ class AccountBloc {
 
       res['users'].forEach((_user) {
         Profile user = Profile.fromJson(_user);
-        _assignedToList.add({"name": user.userName, "id": user.id.toString()});
+        _assignedToList.add({"name": user.userName, "id": user.id});
       });
 
       _tags = res['tags'];
@@ -86,6 +88,8 @@ class AccountBloc {
         }
       });
     });
+
+    print(_currentEditAccount);
     await CrmService()
         .createAccount(_currentEditAccount)
         .then((response) async {
@@ -177,33 +181,34 @@ class AccountBloc {
       "teams": [],
       "assigned_to": [],
       "status": "Open",
-      "tags": List<String>()
+      "tags": <String>[]
     };
   }
 
   updateCurrentEditAccount(Account editAccount) {
     _currentEditAccountId = editAccount.id.toString();
+    print('Update Account Entries');
+    print(_currentEditAccountId);
     List contacts = [];
+    List teams = [];
     List assignedUsers = [];
     List<String> tags = [];
 
     editAccount.contacts.forEach((contact) {
-      Map _contact = {};
-      _contact['id'] = contact.id;
-      _contact['name'] = contact.firstName + ' ' + contact.lastName;
-      contacts.add(_contact);
+      contacts.add(contact.id);
     });
 
-    editAccount.assignedTo.forEach((user) {
-      Map _user = {};
-      _user['id'] = user.id;
-      _user['name'] = user.firstName + ' ' + user.lastName;
-      assignedUsers.add(_user);
+    editAccount.assignedTo.forEach((assignedAccount) {
+      assignedUsers.add(assignedAccount.id);
     });
 
-    for (var tag in editAccount.tags) {
+    editAccount.teams.forEach((team) {
+      teams.add(team.id);
+    });
+
+    editAccount.tags.forEach((tag) {
       tags.add(tag['name']);
-    }
+    });
 
     _currentEditAccount['name'] = editAccount.name;
     _currentEditAccount['website'] = editAccount.website;
@@ -218,14 +223,12 @@ class AccountBloc {
     _currentEditAccount['billing_state'] = editAccount.billingState;
     _currentEditAccount['billing_country'] = editAccount.billingCountry;
     _currentEditAccount['contacts'] = contacts;
-    _currentEditAccount['teams'] = [
-      editAccount.teams.map((team) => team.toString())
-    ];
-    _currentEditAccount['assigned_to'] = [
-      editAccount.assignedTo.map((assingedTo) => assingedTo.toString())
-    ];
-    _currentEditAccount['status'] = editAccount.status;
+    _currentEditAccount['teams'] = teams;
+    _currentEditAccount['assigned_to'] = assignedUsers;
+    _currentEditAccount['status'] = editAccount.status.capitalizeFirstofEach();
     _currentEditAccount['tags'] = tags;
+
+    print(_currentEditAccount);
   }
 
   List<Account> get openAccounts {

@@ -518,7 +518,7 @@ class _CreateLeadState extends State<CreateLead> {
                         "Teams",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: [],
+                      initialValue: leadBloc.currentEditLead['teams'],
                       onSaved: (value) {
                         if (value == null) return;
                         leadBloc.currentEditLead['teams'] = value;
@@ -548,7 +548,8 @@ class _CreateLeadState extends State<CreateLead> {
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: MultiSelectFormField(
                       border: boxBorder(),
-                      fillColor: Colors.white,
+                      enabled: false,
+                      fillColor: Colors.grey[300],
                       autovalidate: false,
                       dataSource: leadBloc.usersObjForDropdown,
                       textField: 'name',
@@ -617,7 +618,7 @@ class _CreateLeadState extends State<CreateLead> {
                         "Assigned To",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue: [],
+                      initialValue: leadBloc.currentEditLead['assigned_to'],
 
                       onSaved: (value) {
                         if (value == null) return;
@@ -917,7 +918,9 @@ class _CreateLeadState extends State<CreateLead> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       hint: Text('Select Status'),
-                      // value: _selectedStatus,
+                      value: (leadBloc.currentEditLead['status'] != "")
+                          ? leadBloc.currentEditLead['status']
+                          : null,
                       onChanged: (value) {
                         leadBloc.currentEditLead['status'] = value;
                       },
@@ -959,7 +962,9 @@ class _CreateLeadState extends State<CreateLead> {
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
                       hint: Text('Select Source'),
-                      // value: _selectedStatus,
+                      value: (leadBloc.currentEditLead['source'] != "")
+                          ? leadBloc.currentEditLead['source']
+                          : null,
                       onChanged: (value) {
                         leadBloc.currentEditLead['source'] = value;
                       },
@@ -993,7 +998,7 @@ class _CreateLeadState extends State<CreateLead> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
-                      // initialTags: leadBloc.currentEditLead['tags'],
+                      initialTags: leadBloc.currentEditLead['tags'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),

@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/model/profile.dart';
+import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/services/crm_services.dart';
+import 'package:flutter_crm/utils/utils.dart';
 
 class LeadBloc {
   List<Lead> _openLeads = [];
@@ -39,7 +41,7 @@ class LeadBloc {
     "country": "",
     "status": "",
     "source": "",
-    "tags": List<String>()
+    "tags": <String>[]
   };
 
   Future fetchLeads() async {
@@ -93,14 +95,12 @@ class LeadBloc {
   editLead() async {
     _currentEditLead['status'] = _currentEditLead['status'].toLowerCase();
     _currentEditLead['source'] = _currentEditLead['source'].toLowerCase();
-    _currentEditLead['teams'] =
-        [_currentEditLead['teams'].map((team) => team.toString())].toString();
+    _currentEditLead['teams'] = (_currentEditLead['teams']
+        .map((team) => team.toString())).toList().toString();
     _currentEditLead['assigned_to'] = (_currentEditLead['assigned_to']
-            .map((assignedTo) => assignedTo.toString())
-            .toList())
-        .toString();
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
 
-    _currentEditLead['tags'] = _currentEditLead['tags'].toString();
+    _currentEditLead['tags'] = jsonEncode(_currentEditLead['tags']);
     _countriesList.forEach((country) {
       if (country[1] == _currentEditLead['country']) {
         _currentEditLead['country'] = country[0];
@@ -168,24 +168,26 @@ class LeadBloc {
     };
   }
 
-  updateCurrentEditLead(Lead editLead) {
+  updateCurrentEditLead(Lead editLead) async {
     _currentEditLeadId = editLead.id.toString();
+    print(_currentEditLeadId);
+
     List teams = [];
     List assignedUsers = [];
     List<String> tags = [];
 
-    // editLead.teams.forEach((team) {
-    //   Map _team = {};
-    //   _team['id'] = team.id;
-    //   _team['name'] = team.name;
-    //   teams.add(_team);
-    // });
+    await CrmService().getLeadToUpdate(editLead.id).then((response) {
+      var res = json.decode(response.body);
+      print("Update Current Edit Lead Teams, >>");
+      teams.clear();
+      res['teams'].forEach((team) {
+        teams.add(team['id']);
+      });
+      print(teams);
+    });
 
     editLead.assignedTo.forEach((user) {
-      Map _user = {};
-      _user['id'] = user.id;
-      _user['name'] = user.firstName + ' ' + user.lastName;
-      assignedUsers.add(_user);
+      assignedUsers.add(user.id);
     });
 
     for (var tag in editLead.tags) {
@@ -209,8 +211,8 @@ class LeadBloc {
     _currentEditLead['city'] = editLead.city;
     _currentEditLead['state'] = editLead.state;
     _currentEditLead['country'] = editLead.country;
-    _currentEditLead['status'] = editLead.status;
-    _currentEditLead['source'] = editLead.source;
+    _currentEditLead['status'] = editLead.status.capitalizeFirstofEach();
+    _currentEditLead['source'] = editLead.source.capitalizeFirstofEach();
     _currentEditLead['tags'] = tags;
   }
 
