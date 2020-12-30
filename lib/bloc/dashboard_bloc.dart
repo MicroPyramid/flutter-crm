@@ -34,7 +34,7 @@ class DashboardBloc {
 
       // _dashboardFetcher.sink.add(_dashboardData);
     }).catchError((onError) {
-      print("fetchDashboardDetails>> $onError");
+      print("fetchDashboardDetails Error >> $onError");
     });
   }
 

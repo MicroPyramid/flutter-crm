@@ -229,7 +229,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
             return GestureDetector(
               onTap: () {
                 contactBloc.currentContact = _contacts[index];
-                Navigator.pushNamed(context, '/lead_details');
+                Navigator.pushNamed(context, '');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),

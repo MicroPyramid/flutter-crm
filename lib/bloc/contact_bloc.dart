@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/model/company.dart';
 import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/profile.dart';
@@ -10,24 +11,28 @@ class ContactBloc {
   List _contactsObjForDropdown = [];
   List<Team> _teams = [];
   List _teamsObjForDropdown = [];
+  String _currentEditContactId;
 
   Contact _currentContact;
 
+  List countriesList = leadBloc.countriesList;
+
   Map _currentEditContact = {
-    'id': 0,
     'first_name': "",
     'last_name': "",
     'email': "",
     'phone': "",
-    'address': {},
+    'address': {
+      "address_line": "",
+      "street": "",
+      "city": "",
+      "state": "",
+      "postcode": "",
+      "country": ""
+    },
     'description': "",
     'assigned_to': [],
-    'created_by': Profile(),
-    'created_on': "",
-    'created_on_arrow': "",
-    'is_active': false,
     'teams': [],
-    'company': Company()
   };
 
   Future fetchContacts() async {
@@ -58,11 +63,33 @@ class ContactBloc {
         _teamsObjForDropdown.add(team);
       });
     }).catchError((onError) {
-      print("fetchContacts>> $onError");
+      print("fetchContacts Error>> $onError");
     });
   }
 
+  cancelCurrentEditContact() {
+    _currentEditContactId = null;
+    _currentEditContact = {
+      'first_name': "",
+      'last_name': "",
+      'email': "",
+      'phone': "",
+      'address': {
+        "address_line": "",
+        "street": "",
+        "city": "",
+        "state": "",
+        "postcode": "",
+        "country": ""
+      },
+      'description': "",
+      'assigned_to': [],
+      'teams': [],
+    };
+  }
+
   updateCurrentEditContact(Contact editContact) {
+    _currentEditContactId = editContact.id.toString();
     List teams = [];
     List assignedUsers = [];
     // List<String> profilePicList = [];
@@ -91,10 +118,36 @@ class ContactBloc {
     _currentEditContact['created_on'] = editContact.createdOn;
     _currentEditContact['is_active'] = editContact.isActive;
     _currentEditContact['company'] = editContact.company;
+    _currentEditContact['address'] = editContact.address;
+    countriesList.forEach((country) {
+      if (country[0] == editContact.address['country']) {
+        _currentEditContact['address']['country'] = country[1];
+      }
+    });
 
     _currentEditContact['created_on_arrow'] = editContact.createdOnText;
     _currentEditContact['teams'] = teams;
     _currentEditContact['assigned_to'] = assignedUsers;
+
+    print(_currentEditContact);
+  }
+
+  createContact() async {
+    print(currentEditContact);
+
+    currentEditContact['address'] = json.encode(currentEditContact['address']);
+
+    currentEditContact['teams'] = (currentEditContact['teams']
+        .map((team) => team.toString())).toList().toString();
+    currentEditContact['assigned_to'] = (currentEditContact['assigned_to']
+        .map((team) => team.toString())).toList().toString();
+
+    await CrmService().createContact(currentEditContact).then((response) {
+      var res = json.decode(response.body);
+      print("createContact Response >> \n $res");
+    }).catchError((onError) {
+      print('createContact Error >> $onError');
+    });
   }
 
   Map get currentEditContact {
@@ -125,9 +178,15 @@ class ContactBloc {
     return _contactsObjForDropdown;
   }
 
+  String get currentEditContactId {
+    return _currentEditContactId;
+  }
+
   List get teamsObjForDropdown {
     return _teamsObjForDropdown;
   }
+
+  editContact() {}
 }
 
 final contactBloc = ContactBloc();

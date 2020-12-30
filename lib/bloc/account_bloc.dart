@@ -63,7 +63,7 @@ class AccountBloc {
 
       countriesList = leadBloc.countriesList;
     }).catchError((onError) {
-      print("fetchAccounts>> $onError");
+      print("fetchAccounts Error>> $onError");
     });
   }
 

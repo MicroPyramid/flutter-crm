@@ -104,6 +104,12 @@ class CrmService {
         headers: getFormatedHeaders(_headers));
   }
 
+  Future<Response> createContact(data) async {
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'contacts/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
   ///////////////////// LEADS-SERVICES ///////////////////////////////
 
   Future<Response> getLeads() async {

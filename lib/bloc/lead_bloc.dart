@@ -88,7 +88,7 @@ class LeadBloc {
         _countries.add(country[1]);
       });
     }).catchError((onError) {
-      print('fetchLeads $onError');
+      print('fetchLeads Error >> $onError');
     });
   }
 
@@ -137,9 +137,9 @@ class LeadBloc {
     print(_currentEditLead);
     await CrmService().createLead(_currentEditLead).then((response) {
       var res = json.decode(response.body);
-      print(res);
+      print("createLead Response >> \n $res");
     }).catchError((onError) {
-      print('createLead Error : $onError');
+      print('createLead Error >> $onError');
     });
   }
 
