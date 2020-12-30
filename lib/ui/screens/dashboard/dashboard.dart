@@ -86,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _buildRecentAccounts(BuildContext context) {
     return ListView.builder(
-        itemCount: 5,
+        itemCount: dashboardBloc.dashboardData['accounts'].length,
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
@@ -105,7 +105,7 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _buildRecentOpportunities(BuildContext context) {
     return ListView.builder(
-        itemCount: 5,
+        itemCount: dashboardBloc.dashboardData['opportunities'].length,
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {

@@ -28,7 +28,7 @@ class AccountBloc {
     "contacts": [],
     "teams": [],
     "assigned_to": [],
-    "status": "Open",
+    "status": "open",
     "tags": []
   };
 
@@ -69,33 +69,36 @@ class AccountBloc {
 
   Future createAccount() async {
     Map result;
+    Map _copyCurrentEditAccount = new Map.from(_currentEditAccount);
     countriesList = leadBloc.countriesList;
-    _currentEditAccount['contacts'] = (_currentEditAccount['contacts']
+    _copyCurrentEditAccount['contacts'] = (_copyCurrentEditAccount['contacts']
         .map((contact) => contact.toString())).toList().toString();
-    _currentEditAccount['teams'] = (_currentEditAccount['teams']
+    _copyCurrentEditAccount['teams'] = (_copyCurrentEditAccount['teams']
         .map((team) => team.toString())).toList().toString();
-    _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
-        .map((assignedTo) => assignedTo.toString())).toList().toString();
-    _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
-    _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
+    _copyCurrentEditAccount['assigned_to'] =
+        (_copyCurrentEditAccount['assigned_to']
+            .map((assignedTo) => assignedTo.toString())).toList().toString();
+    _copyCurrentEditAccount['status'] =
+        _copyCurrentEditAccount['status'].toLowerCase();
     countriesList.forEach((country) {
-      if (country[1] == _currentEditAccount['billing_country']) {
-        _currentEditAccount['billing_country'] = country[0];
+      if (country[1] == _copyCurrentEditAccount['billing_country']) {
+        _copyCurrentEditAccount['billing_country'] = country[0];
       }
       leadBloc.openLeads.forEach((lead) {
-        if (lead.title == _currentEditAccount['lead']) {
-          _currentEditAccount['lead'] = lead.id.toString();
+        if (lead.title == _copyCurrentEditAccount['lead']) {
+          _copyCurrentEditAccount['lead'] = lead.id.toString();
         }
       });
     });
-
-    print(_currentEditAccount);
+    _copyCurrentEditAccount['tags'] =
+        jsonEncode(_copyCurrentEditAccount['tags']);
+    print(_copyCurrentEditAccount);
     await CrmService()
-        .createAccount(_currentEditAccount)
+        .createAccount(_copyCurrentEditAccount)
         .then((response) async {
       var res = json.decode(response.body);
       if (res["errors"] != null) {
-        cancelCurrentEditAccount();
+        // cancelCurrentEditAccount();
         res["error"] = true;
       } else {
         await fetchAccounts();
@@ -118,7 +121,6 @@ class AccountBloc {
         .map((team) => team.toString())).toList().toString();
     _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
         .map((assignedTo) => assignedTo.toString())).toList().toString();
-    _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
     _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
     countriesList.forEach((country) {
       if (country[1] == _currentEditAccount['billing_country']) {
@@ -130,6 +132,7 @@ class AccountBloc {
         }
       });
     });
+    _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
     await CrmService()
         .editAccount(_currentEditAccount, _currentEditAccountId)
         .then((response) async {
@@ -180,7 +183,7 @@ class AccountBloc {
       "contacts": [],
       "teams": [],
       "assigned_to": [],
-      "status": "Open",
+      "status": "open",
       "tags": <String>[]
     };
   }
@@ -225,10 +228,8 @@ class AccountBloc {
     _currentEditAccount['contacts'] = contacts;
     _currentEditAccount['teams'] = teams;
     _currentEditAccount['assigned_to'] = assignedUsers;
-    _currentEditAccount['status'] = editAccount.status.capitalizeFirstofEach();
+    _currentEditAccount['status'] = editAccount.status;
     _currentEditAccount['tags'] = tags;
-
-    print(_currentEditAccount);
   }
 
   List<Account> get openAccounts {

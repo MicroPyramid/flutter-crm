@@ -32,7 +32,7 @@ class Lead {
   List<Contact> contacts;
   bool createdFromSite;
   List teams;
-  int company;
+  // int company;
 
   Lead({
     this.id,
@@ -62,7 +62,7 @@ class Lead {
     this.contacts,
     this.createdFromSite,
     this.teams,
-    this.company,
+    // this.company,
   });
 
   factory Lead.fromJson(Map<String, dynamic> lead) => Lead(
@@ -108,7 +108,7 @@ class Lead {
             ? lead["created_from_site"]
             : false,
         // teams: List<int>.from(lead["teams"].map((x) => x)),
-        company: lead["company"] != null ? lead["company"] : 0,
+        // company: lead["company"] != null ? lead["company"] : 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -139,6 +139,6 @@ class Lead {
         "contacts": List<dynamic>.from(contacts.map((x) => x)),
         "created_from_site": createdFromSite,
         // "teams": List<dynamic>.from(teams.map((x) => x)),
-        "company": company,
+        // "company": company,
       };
 }

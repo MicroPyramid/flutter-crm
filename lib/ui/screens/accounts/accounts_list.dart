@@ -74,7 +74,6 @@ class _AccountsListState extends State<AccountsList> {
                     setState(() {
                       _currentTabIndex = 0;
                       _accounts = accountBloc.openAccounts;
-                      // _isFilter = false;
                     });
                     accountBloc.currentAccountType = "Open";
                   }
@@ -126,7 +125,6 @@ class _AccountsListState extends State<AccountsList> {
                     setState(() {
                       _currentTabIndex = 1;
                       _accounts = accountBloc.closedAccounts;
-                      // _isFilter = false;
                     });
                     accountBloc.currentAccountType = "Closed";
                   }
@@ -514,6 +512,7 @@ class _AccountsListState extends State<AccountsList> {
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
                   onPressed: () async {
+                    Navigator.pop(context);
                     deleteAccount(index, account);
                   },
                   child: Text(
@@ -526,15 +525,20 @@ class _AccountsListState extends State<AccountsList> {
   }
 
   deleteAccount(index, account) async {
+    setState(() {
+      _isLoading = true;
+    });
     Map result = await accountBloc.deleteAccount(account);
+    setState(() {
+      _isLoading = false;
+    });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pop(context);
       setState(() {
         _accounts.removeAt(index);
       });
     } else if (result['error'] == true) {
-      Navigator.pop(context);
+      showToast(result['message']);
     } else {
       showErrorMessage(context, 'Something went wrong', account, index);
     }

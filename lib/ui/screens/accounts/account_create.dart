@@ -30,6 +30,7 @@ class _CreateAccountState extends State<CreateAccount> {
   FocusNode _nameFocusNode = new FocusNode();
   FocusNode _phoneFocusNode = new FocusNode();
   FocusNode _emailFocusNode = new FocusNode();
+  FocusNode _websiteFocusNode = new FocusNode();
   FocusNode _addLineFocusNode = new FocusNode();
   FocusNode _addStreetFocusNode = new FocusNode();
   FocusNode _addPostalFocusNode = new FocusNode();
@@ -49,6 +50,7 @@ class _CreateAccountState extends State<CreateAccount> {
     _nameFocusNode.dispose();
     _phoneFocusNode.dispose();
     _emailFocusNode.dispose();
+    _websiteFocusNode.dispose();
     _addLineFocusNode.dispose();
     _addStreetFocusNode.dispose();
     _addPostalFocusNode.dispose();
@@ -106,6 +108,10 @@ class _CreateAccountState extends State<CreateAccount> {
       }
       if (_errors['email'] != null && _focuserr == null) {
         _focuserr = _emailFocusNode;
+        focusError();
+      }
+      if (_errors['website'] != null && _focuserr == null) {
+        _focuserr = _websiteFocusNode;
         focusError();
       }
     } else {
@@ -230,6 +236,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      focusNode: _websiteFocusNode,
                       initialValue: accountBloc.currentEditAccount['website'],
                       controller: null,
                       decoration: InputDecoration(
@@ -250,6 +257,17 @@ class _CreateAccountState extends State<CreateAccount> {
                       },
                     ),
                   ),
+                  _errors != null && _errors['website'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['website'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -993,8 +1011,6 @@ class _CreateAccountState extends State<CreateAccount> {
                           accountBloc.currentEditAccount['assigned_to'] = [];
                         } else {
                           accountBloc.currentEditAccount['assigned_to'] = value;
-                          print('Assigned Users:');
-                          print(value);
                         }
                       },
                     ),
@@ -1031,14 +1047,12 @@ class _CreateAccountState extends State<CreateAccount> {
                       hint: Text('select Status'),
                       value: accountBloc.currentEditAccount['status'],
                       onChanged: (value) {
-                        setState(() {
-                          accountBloc.currentEditAccount['status'] = value;
-                        });
+                        accountBloc.currentEditAccount['status'] = value;
                       },
-                      items: ['Open', 'Close'].map((location) {
+                      items: ['open', 'close'].map((item) {
                         return DropdownMenuItem(
-                          child: new Text(location),
-                          value: location,
+                          child: new Text(item),
+                          value: item,
                         );
                       }).toList(),
                     ),
@@ -1066,7 +1080,6 @@ class _CreateAccountState extends State<CreateAccount> {
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
                       initialTags: accountBloc.currentEditAccount['tags'],
-                      // initialTags: ['add', 'tags', 'here'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),
@@ -1090,13 +1103,11 @@ class _CreateAccountState extends State<CreateAccount> {
                         setState(() {
                           accountBloc.currentEditAccount['tags'].add(tag);
                         });
-                        print(accountBloc.currentEditAccount['tags']);
                       },
                       onDelete: (tag) {
                         setState(() {
-                          accountBloc.currentEditAccount['tags'].remove({tag});
+                          accountBloc.currentEditAccount['tags'].remove(tag);
                         });
-                        print(accountBloc.currentEditAccount['tags']);
                       },
                     ),
                   ),

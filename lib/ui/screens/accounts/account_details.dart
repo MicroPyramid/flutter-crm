@@ -73,6 +73,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
                   onPressed: () async {
+                    Navigator.pop(context);
                     deleteAccount();
                   },
                   child: Text(
@@ -94,10 +95,9 @@ class _AccountDetailsState extends State<AccountDetails> {
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pop(context);
       Navigator.pushReplacementNamed(context, "/account_list");
     } else if (result['error'] == true) {
-      Navigator.pop(context);
+      showToast(result['message']);
     } else {
       showErrorMessage(context, 'Something went wrong');
     }
