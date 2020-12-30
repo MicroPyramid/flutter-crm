@@ -114,27 +114,31 @@ class AccountBloc {
 
   Future editAccount() async {
     Map result;
+    Map _copyCurrentEditAccount = new Map.from(_currentEditAccount);
     countriesList = leadBloc.countriesList;
-    _currentEditAccount['contacts'] = (_currentEditAccount['contacts']
+    _copyCurrentEditAccount['contacts'] = (_copyCurrentEditAccount['contacts']
         .map((contact) => contact.toString())).toList().toString();
-    _currentEditAccount['teams'] = (_currentEditAccount['teams']
+    _copyCurrentEditAccount['teams'] = (_copyCurrentEditAccount['teams']
         .map((team) => team.toString())).toList().toString();
-    _currentEditAccount['assigned_to'] = (_currentEditAccount['assigned_to']
-        .map((assignedTo) => assignedTo.toString())).toList().toString();
-    _currentEditAccount['status'] = _currentEditAccount['status'].toLowerCase();
+    _copyCurrentEditAccount['assigned_to'] =
+        (_copyCurrentEditAccount['assigned_to']
+            .map((assignedTo) => assignedTo.toString())).toList().toString();
+    _copyCurrentEditAccount['status'] =
+        _copyCurrentEditAccount['status'].toLowerCase();
     countriesList.forEach((country) {
-      if (country[1] == _currentEditAccount['billing_country']) {
-        _currentEditAccount['billing_country'] = country[0];
+      if (country[1] == _copyCurrentEditAccount['billing_country']) {
+        _copyCurrentEditAccount['billing_country'] = country[0];
       }
       leadBloc.openLeads.forEach((lead) {
-        if (lead.title == _currentEditAccount['lead']) {
-          _currentEditAccount['lead'] = lead.id.toString();
+        if (lead.title == _copyCurrentEditAccount['lead']) {
+          _copyCurrentEditAccount['lead'] = lead.id.toString();
         }
       });
     });
-    _currentEditAccount['tags'] = jsonEncode(_currentEditAccount['tags']);
+    _copyCurrentEditAccount['tags'] =
+        jsonEncode(_copyCurrentEditAccount['tags']);
     await CrmService()
-        .editAccount(_currentEditAccount, _currentEditAccountId)
+        .editAccount(_copyCurrentEditAccount, _currentEditAccountId)
         .then((response) async {
       var res = json.decode(response.body);
       if (res["errors"] != null) {
