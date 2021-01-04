@@ -76,27 +76,27 @@ class _CreateAccountState extends State<CreateAccount> {
       return;
     }
     _createAccountFormKey.currentState.save();
-    Map result;
+    Map _result;
     setState(() {
       _isLoading = true;
     });
     if (accountBloc.currentEditAccountId != null) {
-      result = await accountBloc.editAccount();
+      _result = await accountBloc.editAccount();
     } else {
-      result = await accountBloc.createAccount();
+      _result = await accountBloc.createAccount();
     }
     setState(() {
       _isLoading = false;
     });
-    if (result['error'] == false) {
+    if (_result['error'] == false) {
       setState(() {
         _errors = null;
       });
-      showToast(result['message']);
+      showToast(_result['message']);
       Navigator.pushReplacementNamed(context, '/account_list');
-    } else if (result['error'] == true) {
+    } else if (_result['error'] == true) {
       setState(() {
-        _errors = result['errors'];
+        _errors = _result['errors'];
       });
       if (_errors['name'] != null && _focuserr == null) {
         _focuserr = _nameFocusNode;

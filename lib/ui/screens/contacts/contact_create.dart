@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,62 +27,101 @@ class _CreateContactState extends State<CreateContact> {
   String _selectedStatus = 'Open';
   List countiresForDropDown = leadBloc.countries;
 
+  FocusNode _focusErr;
+  FocusNode _firstNameFocusNode = FocusNode();
+  FocusNode _lastNameFocusNode = FocusNode();
+  FocusNode _phoneFocusNode = FocusNode();
+  FocusNode _emailAddressFocusNode = FocusNode();
+  Map _errors;
+
   @override
   void initState() {
     super.initState();
   }
 
+  focusError() {
+    setState(() {
+      FocusManager.instance.primaryFocus.unfocus();
+      Focus.of(context).requestFocus(_focusErr);
+    });
+  }
+
+  void showErrorMessage(BuildContext context, String errorContent) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          _saveForm();
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
+  }
+
   _saveForm() async {
+    _focusErr = null;
+    setState(() {
+      _errors = null;
+    });
+
     if (!_createContactFormKey.currentState.validate()) {
+      focusError();
       return;
     }
     _createContactFormKey.currentState.save();
+    Map _result;
+
     if (contactBloc.currentEditContactId == null) {
-      await contactBloc.createContact();
+      _result = await contactBloc.createContact();
     } else {
-      // await contactBloc.editContact();
-      await contactBloc.createContact();
+      _result = await contactBloc.editContact();
     }
-  }
 
-  Widget _buildMultiSelectDropdown(String _title, data, _initialValue) {
-    List _myActivities;
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
-      child: MultiSelectFormField(
-        border: boxBorder(),
-        fillColor: Colors.white,
-        autovalidate: false,
-        dataSource: data,
-        textField: 'name',
-        valueField: 'id',
-        okButtonLabel: 'OK',
-        chipLabelStyle:
-            GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.black)),
-        dialogTextStyle: GoogleFonts.robotoSlab(),
-        cancelButtonLabel: 'CANCEL',
-        // required: true,
-        hintWidget: Text(
-          "Please choose one or more",
-          style:
-              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.grey)),
-        ),
-        title: Text(
-          _title,
-          style: GoogleFonts.robotoSlab(
-              textStyle: TextStyle(color: Colors.grey[700]),
-              fontSize: screenWidth / 26),
-        ),
-        initialValue: _initialValue,
+    if (_result['error'] == false) {
+      setState(() {
+        _errors = null;
+      });
+      showToast(_result['message']);
+      Navigator.pushReplacementNamed(context, '/sales_contacts');
+    } else if (_result['error'] == true) {
+      setState(() {
+        _errors = _result['contact_errors'];
+      });
 
-        onSaved: (value) {
-          if (value == null) return;
-          setState(() {
-            _myActivities = value;
-          });
-        },
-      ),
-    );
+      if (_errors['first_name'] != null && _focusErr == null) {
+        _focusErr = _firstNameFocusNode;
+        focusError();
+      }
+
+      if (_errors['last_name'] != null && _focusErr == null) {
+        _focusErr = _lastNameFocusNode;
+        focusError();
+      }
+
+      if (_errors['phone'] != null && _focusErr == null) {
+        _focusErr = _phoneFocusNode;
+        focusError();
+      }
+
+      if (_errors['email_address'] != null && _focusErr == null) {
+        _focusErr = _emailAddressFocusNode;
+        focusError();
+      }
+    } else {
+      setState(() {
+        _errors = null;
+      });
+
+      showErrorMessage(context, "Something went wrong.");
+    }
   }
 
   Widget _buildForm() {
@@ -117,6 +157,7 @@ class _CreateContactState extends State<CreateContact> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
+                        focusNode: _firstNameFocusNode,
                         maxLines: 1,
                         initialValue:
                             contactBloc.currentEditContact['first_name'],
@@ -165,6 +206,10 @@ class _CreateContactState extends State<CreateContact> {
                                     fontSize: screenWidth / 25)),
                             children: <TextSpan>[
                               TextSpan(
+                                  text: '*',
+                                  style: GoogleFonts.robotoSlab(
+                                      textStyle: TextStyle(color: Colors.red))),
+                              TextSpan(
                                   text: ' :', style: GoogleFonts.robotoSlab())
                             ],
                           ),
@@ -172,6 +217,7 @@ class _CreateContactState extends State<CreateContact> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
+                        focusNode: _lastNameFocusNode,
                         maxLines: 1,
                         initialValue:
                             contactBloc.currentEditContact['last_name'],
@@ -231,6 +277,7 @@ class _CreateContactState extends State<CreateContact> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
+                        focusNode: _phoneFocusNode,
                         maxLines: 1,
                         initialValue: contactBloc.currentEditContact['phone'],
                         decoration: InputDecoration(
@@ -289,6 +336,7 @@ class _CreateContactState extends State<CreateContact> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
+                        focusNode: _emailAddressFocusNode,
                         maxLines: 1,
                         initialValue: contactBloc.currentEditContact['email'],
                         decoration: InputDecoration(
@@ -357,7 +405,7 @@ class _CreateContactState extends State<CreateContact> {
                           "Teams",
                           style: GoogleFonts.robotoSlab(),
                         ),
-                        initialValue: leadBloc.currentEditLead['teams'],
+                        initialValue: contactBloc.currentEditContact['teams'],
                         onSaved: (value) {
                           if (value == null) return;
                           contactBloc.currentEditContact['teams'] = value;
@@ -457,7 +505,8 @@ class _CreateContactState extends State<CreateContact> {
                           "Assigned To",
                           style: GoogleFonts.robotoSlab(),
                         ),
-                        initialValue: leadBloc.currentEditLead['assigned_to'],
+                        initialValue:
+                            contactBloc.currentEditContact['assigned_to'],
 
                         onSaved: (value) {
                           if (value == null) return;
@@ -688,7 +737,10 @@ class _CreateContactState extends State<CreateContact> {
                             child: DropdownSearch<String>(
                               mode: Mode.BOTTOM_SHEET,
                               items: countiresForDropDown,
-                              onChanged: print,
+                              onChanged: (value) {
+                                contactBloc.currentEditContact['address']
+                                    ['country'] = value;
+                              },
                               selectedItem: contactBloc
                                   .currentEditContact['address']['country'],
                               // hint: 'Country',
@@ -850,7 +902,7 @@ class _CreateContactState extends State<CreateContact> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        print('Create Contact clicked.');
+                        FocusScope.of(context).unfocus();
                         _saveForm();
                       },
                       child: Container(
@@ -865,7 +917,9 @@ class _CreateContactState extends State<CreateContact> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              'Create Contact',
+                              contactBloc.currentEditContactId != null
+                                  ? 'Update Contact'
+                                  : 'Create Contact',
                               style: GoogleFonts.robotoSlab(
                                   textStyle: TextStyle(
                                       color: Colors.white,
