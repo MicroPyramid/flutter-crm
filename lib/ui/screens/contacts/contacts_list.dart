@@ -405,6 +405,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Contacts", style: GoogleFonts.robotoSlab()),
         automaticallyImplyLeading: false,

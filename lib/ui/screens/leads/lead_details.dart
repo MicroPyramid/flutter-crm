@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';

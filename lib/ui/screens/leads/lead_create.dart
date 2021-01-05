@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,7 +23,6 @@ class _CreateLeadState extends State<CreateLead> {
   final GlobalKey<FormState> _createLeadFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
-  List _myActivities;
   TextEditingController firstNameController;
 
   @override
@@ -568,12 +566,7 @@ class _CreateLeadState extends State<CreateLead> {
                         style: GoogleFonts.robotoSlab(),
                       ),
                       initialValue: [],
-                      onSaved: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _myActivities = value;
-                        });
-                      },
+                      onSaved: (value) {},
                     ),
                   ),
                   Divider(color: Colors.grey)

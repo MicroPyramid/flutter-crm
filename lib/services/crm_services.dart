@@ -68,7 +68,6 @@ class CrmService {
     } else {
       url = baseUrl + 'accounts/';
     }
-
     return await networkService.get(url, headers: getFormatedHeaders(_headers));
   }
 
@@ -106,10 +105,17 @@ class CrmService {
 
   ///////////////////// LEADS-SERVICES ///////////////////////////////
 
-  Future<Response> getLeads() async {
+  Future<Response> getLeads({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'leads/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'leads/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'leads/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
   }
 
   Future<Response> getLeadToUpdate(leadId) async {

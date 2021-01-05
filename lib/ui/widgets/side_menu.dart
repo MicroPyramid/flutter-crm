@@ -81,43 +81,45 @@ class _SideMenuState extends State<SideMenuDrawer> {
   void showAlertDialog(BuildContext context) {
     showDialog(
         context: context,
-        child: CupertinoAlertDialog(
-          title: Text(
-            "Logout?",
-            style: GoogleFonts.robotoSlab(
-                color: Theme.of(context).secondaryHeaderColor),
-          ),
-          content: Text(
-            "Are you sure you want to logout?",
-            style: GoogleFonts.robotoSlab(fontSize: 15.0),
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                isDefaultAction: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-            CupertinoDialogAction(
-                textStyle: TextStyle(color: Colors.red),
-                isDefaultAction: true,
-                onPressed: () async {
-                  Navigator.pop(context);
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.remove('authToken');
-                  prefs.remove('subdomain');
-                  Navigator.pushReplacementNamed(context, "/sub_domain");
-                },
-                child: Text(
-                  "Logout",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-          ],
-        ));
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              "Logout?",
+              style: GoogleFonts.robotoSlab(
+                  color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "Are you sure you want to logout?",
+              style: GoogleFonts.robotoSlab(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('authToken');
+                    prefs.remove('subdomain');
+                    Navigator.pushReplacementNamed(context, "/sub_domain");
+                  },
+                  child: Text(
+                    "Logout",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+            ],
+          );
+        });
   }
 
   Widget _buildMenuItems(BuildContext context) {

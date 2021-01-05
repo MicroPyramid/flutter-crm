@@ -4,7 +4,6 @@ import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/bloc/team_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 

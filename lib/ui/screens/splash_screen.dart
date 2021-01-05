@@ -8,7 +8,6 @@ import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/bloc/team_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';

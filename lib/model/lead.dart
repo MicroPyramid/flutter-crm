@@ -1,5 +1,4 @@
 import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/model/team.dart';
 import 'package:intl/intl.dart';
 
 import 'contact.dart';
