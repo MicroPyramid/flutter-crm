@@ -43,12 +43,12 @@ class _AccountsListState extends State<AccountsList> {
     _filtersFormData['tags'] = _filtersFormData['tags'].length > 0
         ? jsonEncode(_filtersFormData['tags'])
         : "";
-    if (_isFilter &&
-        _filtersFormData['name'] == "" &&
-        _filtersFormData['city'] == "" &&
-        _filtersFormData['tags'] == "") {
-      return;
-    }
+    // if (_isFilter &&
+    //     _filtersFormData['name'] == "" &&
+    //     _filtersFormData['city'] == "" &&
+    //     _filtersFormData['tags'] == "") {
+    //   return;
+    // }
     setState(() {
       _isLoading = true;
     });
@@ -175,11 +175,9 @@ class _AccountsListState extends State<AccountsList> {
           ),
           GestureDetector(
               onTap: () {
-                if (_accounts.length > 0) {
-                  setState(() {
-                    _isFilter = !_isFilter;
-                  });
-                }
+                setState(() {
+                  _isFilter = !_isFilter;
+                });
               },
               child: Container(
                   padding: EdgeInsets.all(5.0),

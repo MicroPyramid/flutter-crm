@@ -742,7 +742,12 @@ class _CreateContactState extends State<CreateContact> {
                                     ['country'] = value;
                               },
                               selectedItem: contactBloc
-                                  .currentEditContact['address']['country'],
+                                              .currentEditContact['address']
+                                          ['country'] ==
+                                      ""
+                                  ? null
+                                  : contactBloc.currentEditContact['address']
+                                      ['country'],
                               // hint: 'Country',
                               label: "Country",
                               showSearchBox: true,

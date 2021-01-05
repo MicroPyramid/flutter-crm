@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -25,7 +23,6 @@ class _CreateLeadState extends State<CreateLead> {
   final GlobalKey<FormState> _createLeadFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
-  List _myActivities;
 
   Map _errors;
   bool _isLoading = false;
@@ -657,12 +654,7 @@ class _CreateLeadState extends State<CreateLead> {
                         style: GoogleFonts.robotoSlab(),
                       ),
                       initialValue: [],
-                      onSaved: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _myActivities = value;
-                        });
-                      },
+                      onSaved: (value) {},
                     ),
                   ),
                   Divider(color: Colors.grey)
@@ -1185,6 +1177,16 @@ class _CreateLeadState extends State<CreateLead> {
 
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -1193,15 +1195,24 @@ class _CreateLeadState extends State<CreateLead> {
           style: GoogleFonts.robotoSlab(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: Container(
-          color: Colors.white,
-          child: Container(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          SingleChildScrollView(
             padding: EdgeInsets.all(10.0),
-            child: _buildForm(),
+            child: Container(
+              color: Colors.white,
+              child: Container(
+                padding: EdgeInsets.all(10.0),
+                child: _buildForm(),
+              ),
+            ),
           ),
-        ),
+          new Align(
+            child: loadingIndicator,
+            alignment: FractionalOffset.center,
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );

@@ -46,6 +46,5 @@ flutter:
   uses-material-design: true
 
   assets:
-   - assets/data/tempdata.json
    - assets/images/
 

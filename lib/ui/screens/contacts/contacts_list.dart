@@ -229,7 +229,8 @@ class _ContactsListState extends State<ContactsList> {
             return GestureDetector(
               onTap: () {
                 contactBloc.currentContact = _contacts[index];
-                Navigator.pushNamed(context, '');
+                contactBloc.currentContactIndex = index;
+                Navigator.pushNamed(context, '/contact_details');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -402,6 +403,7 @@ class _ContactsListState extends State<ContactsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Contacts", style: GoogleFonts.robotoSlab()),
         automaticallyImplyLeading: false,

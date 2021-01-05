@@ -85,43 +85,65 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Widget _buildRecentAccounts(BuildContext context) {
-    return ListView.builder(
-        itemCount: dashboardBloc.dashboardData['accounts'].length,
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {},
-            child: RecentCardWidget(
-              source: 'accounts',
-              name: dashboardBloc.dashboardData['accounts'][index].name,
-              date: dashboardBloc.dashboardData['accounts'][index].createdOn,
-              city: dashboardBloc.dashboardData['accounts'][index].billingCity,
-              email: dashboardBloc.dashboardData['accounts'][index].email,
-            ),
+    return dashboardBloc.dashboardData['accounts'].length > 0
+        ? ListView.builder(
+            itemCount: dashboardBloc.dashboardData['accounts'].length,
+            physics: const AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {},
+                child: RecentCardWidget(
+                  source: 'accounts',
+                  name: dashboardBloc.dashboardData['accounts'][index].name,
+                  date:
+                      dashboardBloc.dashboardData['accounts'][index].createdOn,
+                  city: dashboardBloc
+                      .dashboardData['accounts'][index].billingCity,
+                  email: dashboardBloc.dashboardData['accounts'][index].email,
+                ),
+              );
+            })
+        : Container(
+            margin: EdgeInsets.only(top: 10.0),
+            child: Text("No Data Found",
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        fontSize: screenWidth / 25,
+                        color: Theme.of(context).secondaryHeaderColor))),
           );
-        });
   }
 
   Widget _buildRecentOpportunities(BuildContext context) {
-    return ListView.builder(
-        itemCount: dashboardBloc.dashboardData['opportunities'].length,
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {},
-            child: RecentCardWidget(
-              source: 'opportunities',
-              name: dashboardBloc.dashboardData['opportunities'][index].name,
-              date:
-                  dashboardBloc.dashboardData['opportunities'][index].createdOn,
-              city: dashboardBloc
-                  .dashboardData['opportunities'][index].leadSource,
-              email: dashboardBloc.dashboardData['opportunities'][index].amount,
-            ),
+    return dashboardBloc.dashboardData['opportunities'].length > 0
+        ? ListView.builder(
+            itemCount: dashboardBloc.dashboardData['opportunities'].length,
+            physics: const AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {},
+                child: RecentCardWidget(
+                  source: 'opportunities',
+                  name:
+                      dashboardBloc.dashboardData['opportunities'][index].name,
+                  date: dashboardBloc
+                      .dashboardData['opportunities'][index].createdOn,
+                  city: dashboardBloc
+                      .dashboardData['opportunities'][index].leadSource,
+                  email: dashboardBloc
+                      .dashboardData['opportunities'][index].amount,
+                ),
+              );
+            })
+        : Container(
+            margin: EdgeInsets.only(top: 10.0),
+            child: Text("No Data Found",
+                style: GoogleFonts.robotoSlab(
+                    textStyle: TextStyle(
+                        fontSize: screenWidth / 25,
+                        color: Theme.of(context).secondaryHeaderColor))),
           );
-        });
   }
 
   Widget _recentTabWidget(context) {

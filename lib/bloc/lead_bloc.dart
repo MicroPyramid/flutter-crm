@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_crm/model/lead.dart';
 import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/services/crm_services.dart';
 import 'package:flutter_crm/utils/utils.dart';
 
@@ -11,6 +10,7 @@ class LeadBloc {
   List<Lead> _closedLeads = [];
   List<String> _source = [];
   List<String> _status = [];
+  List _tags = [];
 
   Lead _currentLead;
   String _currentLeadType = "Open";
@@ -44,79 +44,114 @@ class LeadBloc {
     "tags": <String>[]
   };
 
-  Future fetchLeads() async {
-    _openLeads.clear();
-    _closedLeads.clear();
-    await CrmService().getLeads().then((response) {
+  Future fetchLeads({filtersData}) async {
+    Map _copyFiltersData =
+        filtersData != null ? new Map.from(filtersData) : null;
+    if (filtersData != null) {
+      _copyFiltersData['tags'] = _copyFiltersData['tags'].length > 0
+          ? jsonEncode(_copyFiltersData['tags'])
+          : "";
+      _copyFiltersData['assigned_to'] =
+          _copyFiltersData['assigned_to'].length > 0
+              ? jsonEncode(_copyFiltersData['assigned_to'])
+              : "";
+      _copyFiltersData['source'] =
+          _copyFiltersData['source'] != null ? _copyFiltersData['source'] : "";
+      _copyFiltersData['status'] =
+          _copyFiltersData['status'] != null ? _copyFiltersData['status'] : "";
+    }
+    await CrmService().getLeads(queryParams: _copyFiltersData).then((response) {
       var res = json.decode(response.body);
 
-      res['open_leads'].forEach((_lead) {
-        Lead lead = Lead.fromJson(_lead);
-        _openLeads.add(lead);
-      });
+      if (res['open_leads'] != null) {
+        _openLeads.clear();
+        _leadsTitles.clear();
+        res['open_leads'].forEach((_lead) {
+          Lead lead = Lead.fromJson(_lead);
+          _openLeads.add(lead);
+        });
 
-      _openLeads.forEach((Lead lead) {
-        _leadsTitles.add(lead.title);
-      });
+        _openLeads.forEach((Lead lead) {
+          _leadsTitles.add(lead.title);
+        });
+      }
 
-      res['close_leads'].forEach((_lead) {
-        Lead lead = Lead.fromJson(_lead);
-        _closedLeads.add(lead);
-      });
+      if (res['close_leads'] != null) {
+        _closedLeads.clear();
+        res['close_leads'].forEach((_lead) {
+          Lead lead = Lead.fromJson(_lead);
+          _closedLeads.add(lead);
+        });
+      }
 
-      res['source'].forEach((_leadsource) {
-        _source.add(_leadsource[1]);
-      });
+      if (res['source'] != null) {
+        _source.clear();
+        res['source'].forEach((_leadsource) {
+          _source.add(_leadsource[1]);
+        });
+      }
 
-      res['status'].forEach((_leadstatus) {
-        _status.add(_leadstatus[1]);
-      });
+      if (res['status'] != null) {
+        _status.clear();
+        res['status'].forEach((_leadstatus) {
+          _status.add(_leadstatus[1]);
+        });
+      }
 
-      res['users'].forEach((_user) {
-        Profile user = Profile.fromJson(_user);
-        _users.add(user);
-      });
+      if (res['tags'] != null) {
+        _tags = res['tags'];
+      }
 
-      _users.forEach((_user) {
-        Map user = {};
-        user['id'] = _user.id;
-        user['name'] = _user.firstName + ' ' + _user.lastName;
-        _usersObjForDropdown.add(user);
-      });
+      if (res['users'] != null) {
+        _users.clear();
+        res['users'].forEach((_user) {
+          Profile user = Profile.fromJson(_user);
+          _users.add(user);
+        });
+        _usersObjForDropdown.clear();
+        _users.forEach((_user) {
+          Map user = {};
+          user['id'] = _user.id;
+          user['name'] = _user.firstName + ' ' + _user.lastName;
+          _usersObjForDropdown.add(user);
+        });
+      }
 
-      _countriesList = res['countries'];
-
-      res['countries'].forEach((country) {
-        _countries.add(country[1]);
-      });
+      if (res['countries'] != null) {
+        _countries.clear();
+        _countriesList = res['countries'];
+        res['countries'].forEach((country) {
+          _countries.add(country[1]);
+        });
+      }
     }).catchError((onError) {
-      print('fetchLeads Error >> $onError');
+      print('fetchLeads error $onError');
     });
   }
 
   editLead() async {
-    Map _copyOfCurrentEditLead = Map.from(_currentEditLead);
-    print(_copyOfCurrentEditLead);
     Map result;
-    _copyOfCurrentEditLead['status'] =
-        _copyOfCurrentEditLead['status'].toLowerCase();
-    _copyOfCurrentEditLead['source'] =
-        _copyOfCurrentEditLead['source'].toLowerCase();
-    _copyOfCurrentEditLead['teams'] = (_copyOfCurrentEditLead['teams']
+    Map _copyCurrentEditLead = new Map.from(_currentEditLead);
+    _copyCurrentEditLead['status'] =
+        _copyCurrentEditLead['status'].toLowerCase();
+    _copyCurrentEditLead['source'] =
+        _copyCurrentEditLead['source'].toLowerCase();
+    _copyCurrentEditLead['teams'] = (_copyCurrentEditLead['teams']
         .map((team) => team.toString())).toList().toString();
-    _copyOfCurrentEditLead['assigned_to'] =
-        (_copyOfCurrentEditLead['assigned_to']
-            .map((assignedTo) => assignedTo.toString())).toList().toString();
+    _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
+
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
     _countriesList.forEach((country) {
-      if (country[1] == _copyOfCurrentEditLead['country']) {
-        _copyOfCurrentEditLead['country'] = country[0];
+      if (country[1] == _copyCurrentEditLead['country']) {
+        _copyCurrentEditLead['country'] = country[0];
       }
     });
 
-    _copyOfCurrentEditLead['tags'] = jsonEncode(_copyOfCurrentEditLead['tags']);
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
     print('_copyOfCurrentEditLead');
     await CrmService()
-        .editLead(_copyOfCurrentEditLead, _currentEditLeadId)
+        .editLead(_copyCurrentEditLead, _currentEditLeadId)
         .then((response) async {
       var res = json.decode(response.body);
 
@@ -136,32 +171,28 @@ class LeadBloc {
   }
 
   createLead() async {
-    Map _copyOfCurrentEditLead = Map.from(_currentEditLead);
     Map result;
-    print(_copyOfCurrentEditLead);
-    _copyOfCurrentEditLead['status'] =
-        _copyOfCurrentEditLead['status'].toLowerCase();
-    _copyOfCurrentEditLead['source'] =
-        _copyOfCurrentEditLead['source'].toLowerCase();
-    _copyOfCurrentEditLead['teams'] = [
-      ..._copyOfCurrentEditLead['teams'].map((team) => team.toString())
+    Map _copyCurrentEditLead = new Map.from(_currentEditLead);
+    _copyCurrentEditLead['status'] =
+        _copyCurrentEditLead['status'].toLowerCase();
+    _copyCurrentEditLead['source'] =
+        _copyCurrentEditLead['source'].toLowerCase();
+    _copyCurrentEditLead['teams'] = [
+      ..._copyCurrentEditLead['teams'].map((team) => team.toString())
     ].toString();
-    _copyOfCurrentEditLead['assigned_to'] =
-        (_copyOfCurrentEditLead['assigned_to']
-            .map((assignedTo) => assignedTo.toString())).toList().toString();
+    _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList();
 
-    _copyOfCurrentEditLead['tags'] = jsonEncode(_copyOfCurrentEditLead['tags']);
+    _copyCurrentEditLead['tags'] = _copyCurrentEditLead['tags'];
 
     _countriesList.forEach((country) {
-      if (country[1] == _copyOfCurrentEditLead['country']) {
-        _copyOfCurrentEditLead['country'] = country[0];
+      if (country[1] == _copyCurrentEditLead['country']) {
+        _copyCurrentEditLead['country'] = country[0];
       }
     });
     print('Print before POST');
-    print(_copyOfCurrentEditLead);
-    await CrmService()
-        .createLead(_copyOfCurrentEditLead)
-        .then((response) async {
+    print(_copyCurrentEditLead);
+    await CrmService().createLead(_copyCurrentEditLead).then((response) async {
       var res = json.decode(response.body);
       if (res["error"] != null || res["error"] != "") {
         if (res['error'] == false) {
@@ -269,6 +300,10 @@ class LeadBloc {
       result = {"status": "error", "message": "Something went wrong."};
     });
     return result;
+  }
+
+  List get tags {
+    return _tags;
   }
 
   Map get currentEditLead {

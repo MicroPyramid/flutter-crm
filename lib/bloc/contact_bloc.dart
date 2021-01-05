@@ -14,6 +14,7 @@ class ContactBloc {
   String _currentEditContactId;
 
   Contact _currentContact;
+  int _currentContactIndex;
 
   List countriesList = leadBloc.countriesList;
 
@@ -226,6 +227,20 @@ class ContactBloc {
     return _result;
   }
 
+  Future deleteContact(Contact contact) async {
+    Map result;
+    await CrmService().deleteContact(contact.id).then((response) async {
+      var res = (json.decode(response.body));
+      print('deleteContact Response >> $res');
+      await fetchContacts();
+      result = res;
+    }).catchError((onError) {
+      print("deleteContact Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
+    });
+    return result;
+  }
+
   Map get currentEditContact {
     return _currentEditContact;
   }
@@ -244,6 +259,14 @@ class ContactBloc {
 
   set currentContact(contact) {
     _currentContact = contact;
+  }
+
+  int get currentContactIndex {
+    return _currentContactIndex;
+  }
+
+  set currentContactIndex(int currentContactIndex) {
+    _currentContactIndex = currentContactIndex;
   }
 
   List<Team> get teams {
