@@ -1,6 +1,7 @@
 import 'package:flutter_crm/model/profile.dart';
 import 'package:intl/intl.dart';
 
+import 'company.dart';
 import 'contact.dart';
 
 class Lead {
@@ -31,7 +32,7 @@ class Lead {
   List<Contact> contacts;
   bool createdFromSite;
   List teams;
-  // int company;
+  // Company company;
 
   Lead({
     this.id,
@@ -107,7 +108,7 @@ class Lead {
             ? lead["created_from_site"]
             : false,
         // teams: List<int>.from(lead["teams"].map((x) => x)),
-        // company: lead["company"] != null ? lead["company"] : 0,
+        // company: lead["company"] != null ? lead["company"] : Company(),
       );
 
   Map<String, dynamic> toJson() => {

@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -23,23 +23,101 @@ class _CreateLeadState extends State<CreateLead> {
   final GlobalKey<FormState> _createLeadFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
-  TextEditingController firstNameController;
+
+  Map _errors;
+  bool _isLoading = false;
+
+  FocusNode _focusErr;
+  FocusNode _titleFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    if (_focusErr != null) {
+      _focusErr.dispose();
+    }
+
+    _titleFocusNode.dispose();
+    super.dispose();
+  }
+
+  focusError() {
+    setState(() {
+      FocusManager.instance.primaryFocus.unfocus();
+      FocusScope.of(context).requestFocus(_focusErr);
+    });
+  }
+
   _saveForm() async {
+    _focusErr = null;
+    setState(() {
+      _errors = null;
+    });
     if (!_createLeadFormKey.currentState.validate()) {
+      focusError();
       return;
     }
     _createLeadFormKey.currentState.save();
+    Map _result;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     if (leadBloc.currentEditLeadId == null) {
-      await leadBloc.createLead();
+      _result = await leadBloc.createLead();
     } else {
-      await leadBloc.editLead();
+      _result = await leadBloc.editLead();
     }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (_result['error'] == false) {
+      setState(() {
+        _errors = null;
+      });
+      showToast(_result['message']);
+      Navigator.pushReplacementNamed(context, '/leads_list');
+    } else if (_result['error'] == true) {
+      setState(() {
+        _errors = _result['errors'];
+      });
+      if (_errors['title'] != null && _focusErr == null) {
+        _focusErr = _titleFocusNode;
+        focusError();
+      }
+    } else {
+      setState(() {
+        _errors = null;
+      });
+      showErrorMessage(context, 'Something went wrong');
+    }
+  }
+
+  void showErrorMessage(BuildContext context, String errorContent) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          _saveForm();
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
   }
 
   Widget createPageTextFormFieldWidget(BuildContext context, String _title,
@@ -318,6 +396,7 @@ class _CreateLeadState extends State<CreateLead> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      focusNode: _titleFocusNode,
                       initialValue: leadBloc.currentEditLead['title'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -332,6 +411,15 @@ class _CreateLeadState extends State<CreateLead> {
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(fontSize: 14.0))),
                       keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          if (_focusErr == null) {
+                            _focusErr = _titleFocusNode;
+                          }
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
                       onSaved: (value) {
                         leadBloc.currentEditLead['title'] = value;
                       },
@@ -695,10 +783,6 @@ class _CreateLeadState extends State<CreateLead> {
                                   fontSize: screenWidth / 25)),
                           children: <TextSpan>[
                             TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
                                 text: ': ', style: GoogleFonts.robotoSlab())
                           ],
                         ),
@@ -914,6 +998,9 @@ class _CreateLeadState extends State<CreateLead> {
                       value: (leadBloc.currentEditLead['status'] != "")
                           ? leadBloc.currentEditLead['status']
                           : null,
+                      // onSaved: (value) {
+                      //   leadBloc.currentEditLead['status'] = value;
+                      // },
                       onChanged: (value) {
                         leadBloc.currentEditLead['status'] = value;
                       },
@@ -1025,16 +1112,16 @@ class _CreateLeadState extends State<CreateLead> {
                 ],
               ),
             ),
+            // Save Form
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () async {
-                      await _saveForm();
-                      leadBloc.cancelCurrentEditLead();
-                      Fluttertoast.showToast(msg: 'Processing Form.');
-                      Navigator.pop(context);
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      _saveForm();
+                      // leadBloc.cancelCurrentEditLead();
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -1063,9 +1150,9 @@ class _CreateLeadState extends State<CreateLead> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () async {
+                    onTap: () {
                       leadBloc.currentEditLeadId = null;
-                      await leadBloc.cancelCurrentEditLead();
+                      leadBloc.cancelCurrentEditLead();
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -1090,6 +1177,16 @@ class _CreateLeadState extends State<CreateLead> {
 
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -1098,15 +1195,24 @@ class _CreateLeadState extends State<CreateLead> {
           style: GoogleFonts.robotoSlab(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: Container(
-          color: Colors.white,
-          child: Container(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          SingleChildScrollView(
             padding: EdgeInsets.all(10.0),
-            child: _buildForm(),
+            child: Container(
+              color: Colors.white,
+              child: Container(
+                padding: EdgeInsets.all(10.0),
+                child: _buildForm(),
+              ),
+            ),
           ),
-        ),
+          new Align(
+            child: loadingIndicator,
+            alignment: FractionalOffset.center,
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );

@@ -131,6 +131,7 @@ class LeadBloc {
   }
 
   editLead() async {
+    Map result;
     Map _copyCurrentEditLead = new Map.from(_currentEditLead);
     _copyCurrentEditLead['status'] =
         _copyCurrentEditLead['status'].toLowerCase();
@@ -147,18 +148,31 @@ class LeadBloc {
         _copyCurrentEditLead['country'] = country[0];
       }
     });
+
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
+    print('_copyOfCurrentEditLead');
     await CrmService()
         .editLead(_copyCurrentEditLead, _currentEditLeadId)
-        .then((response) {
+        .then((response) async {
       var res = json.decode(response.body);
-      print(res);
+
+      if (res["error"] != null) {
+        cancelCurrentEditLead();
+        res["error"] = true;
+      } else {
+        await fetchLeads();
+      }
+      result = res;
+      print("editLead Response >> $res");
     }).catchError((onError) {
-      print('fetchLeads $onError');
+      print('editLead Error >> $onError');
+      result = {"status": "error", "message": "Something went wrong."};
     });
+    return result;
   }
 
   createLead() async {
-    print(_currentEditLead);
+    Map result;
     Map _copyCurrentEditLead = new Map.from(_currentEditLead);
     _copyCurrentEditLead['status'] =
         _copyCurrentEditLead['status'].toLowerCase();
@@ -179,12 +193,21 @@ class LeadBloc {
     });
     print('Print before POST');
     print(_copyCurrentEditLead);
-    await CrmService().createLead(_copyCurrentEditLead).then((response) {
+    await CrmService().createLead(_copyCurrentEditLead).then((response) async {
       var res = json.decode(response.body);
-      print(res);
+      if (res["error"] != null || res["error"] != "") {
+        if (res['error'] == false) {
+          await fetchLeads();
+          cancelCurrentEditLead();
+        }
+      }
+      result = res;
+      print("createLead Response >> $res");
     }).catchError((onError) {
-      print('createLead Error : $onError');
+      print('createLead Error >> $onError');
+      result = {"status": "error", "message": "Something went wrong"};
     });
+    return result;
   }
 
   cancelCurrentEditLead() {
@@ -208,7 +231,7 @@ class LeadBloc {
       "country": "",
       "status": "",
       "source": "",
-      "tags": List<String>()
+      "tags": <String>[]
     };
   }
 
@@ -237,6 +260,12 @@ class LeadBloc {
     for (var tag in editLead.tags) {
       tags.add(tag['name']);
     }
+
+    _countriesList.forEach((country) {
+      if (country[0] == editLead.country) {
+        editLead.country = country[1];
+      }
+    });
 
     _currentEditLead['first_name'] = editLead.firstName;
     _currentEditLead['last_name'] = editLead.lastName;

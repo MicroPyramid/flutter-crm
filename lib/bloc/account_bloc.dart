@@ -61,7 +61,7 @@ class AccountBloc {
 
       countriesList = leadBloc.countriesList;
     }).catchError((onError) {
-      print("fetchAccounts>> $onError");
+      print("fetchAccounts Error>> $onError");
     });
   }
 
@@ -95,7 +95,7 @@ class AccountBloc {
         .createAccount(_copyCurrentEditAccount)
         .then((response) async {
       var res = json.decode(response.body);
-      if (res["errors"] != null) {
+      if (res["error"] != null) {
         // cancelCurrentEditAccount();
         res["error"] = true;
       } else {

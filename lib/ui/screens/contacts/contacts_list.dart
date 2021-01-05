@@ -12,13 +12,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
-class ContactsScreen extends StatefulWidget {
-  ContactsScreen();
+class ContactsList extends StatefulWidget {
+  ContactsList();
   @override
-  State createState() => _ContactsScreenState();
+  State createState() => _ContactsListState();
 }
 
-class _ContactsScreenState extends State<ContactsScreen> {
+class _ContactsListState extends State<ContactsList> {
   bool _isFilter = false;
 
   List<Contact> _contacts = [];
@@ -229,7 +229,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
             return GestureDetector(
               onTap: () {
                 contactBloc.currentContact = _contacts[index];
-                Navigator.pushNamed(context, '/lead_details');
+                Navigator.pushNamed(context, '');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -289,13 +289,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         children: [
                           Container(
                             margin: EdgeInsets.only(top: 5.0),
-                            child: ProfilePicViewWidget([
-                              // _contacts[index].assignedTo
-                              _contacts[index].createdBy.profileUrl,
-                              _contacts[index].createdBy.profileUrl,
-                              _contacts[index].createdBy.profileUrl,
-                              _contacts[index].createdBy.profileUrl,
-                            ]),
+                            child: ProfilePicViewWidget(_contacts[index]
+                                .assignedTo
+                                .map((assignedUser) => assignedUser.profileUrl)
+                                .toList()),
                           ),
                           Container(
                             child: Row(
