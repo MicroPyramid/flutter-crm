@@ -97,10 +97,17 @@ class CrmService {
 
   ///////////////////// CONTACTS-SERVICES ///////////////////////////////
 
-  Future<Response> getContacts() async {
+  Future<Response> getContacts({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'contacts/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'contacts/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'contacts/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
   }
 
   Future<Response> createContact(data) async {

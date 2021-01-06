@@ -25,7 +25,7 @@ class _AccountsListState extends State<AccountsList> {
   List<Account> _accounts = [];
   bool _isFilter = false;
   final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
-  Map _filtersFormData = {"name": "", "city": "", "tags": ""};
+  Map _filtersFormData = {"name": "", "city": "", "tags": []};
   bool _isLoading = false;
 
   @override
@@ -40,9 +40,6 @@ class _AccountsListState extends State<AccountsList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    _filtersFormData['tags'] = _filtersFormData['tags'].length > 0
-        ? jsonEncode(_filtersFormData['tags'])
-        : "";
     // if (_isFilter &&
     //     _filtersFormData['name'] == "" &&
     //     _filtersFormData['city'] == "" &&
@@ -272,8 +269,7 @@ class _AccountsListState extends State<AccountsList> {
                         "Tags",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      // initialValue:
-                      //     accountBloc.currentEditAccount['assigned_to'],
+                      initialValue: _filtersFormData['tags'],
                       onSaved: (value) {
                         if (value == null) return;
                         _filtersFormData['tags'] = value;

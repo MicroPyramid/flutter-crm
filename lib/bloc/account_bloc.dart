@@ -35,7 +35,16 @@ class AccountBloc {
   List _tags = [];
 
   Future fetchAccounts({filtersData}) async {
-    await CrmService().getAccounts(queryParams: filtersData).then((response) {
+    Map _copyFiltersData =
+        filtersData != null ? new Map.from(filtersData) : null;
+    if (filtersData != null) {
+      _copyFiltersData['tags'] = _copyFiltersData['tags'].length > 0
+          ? jsonEncode(_copyFiltersData['tags'])
+          : "";
+    }
+    await CrmService()
+        .getAccounts(queryParams: _copyFiltersData)
+        .then((response) {
       var res = (json.decode(response.body));
 
       _openAccounts.clear();

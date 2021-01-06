@@ -36,11 +36,20 @@ class ContactBloc {
     'teams': [],
   };
 
-  Future fetchContacts() async {
-    _contacts.clear();
-    await CrmService().getContacts().then((response) {
+  Future fetchContacts({filtersData}) async {
+    Map _copyFiltersData =
+        filtersData != null ? new Map.from(filtersData) : null;
+    if (filtersData != null) {
+      _copyFiltersData['assigned_to'] =
+          _copyFiltersData['assigned_to'].length > 0
+              ? jsonEncode(_copyFiltersData['assigned_to'])
+              : "";
+    }
+    await CrmService()
+        .getContacts(queryParams: _copyFiltersData)
+        .then((response) {
       var res = (json.decode(response.body));
-
+      _contacts.clear();
       res['contact_obj_list'].forEach((_contact) {
         Contact contact = Contact.fromJson(_contact);
         _contacts.add(contact);

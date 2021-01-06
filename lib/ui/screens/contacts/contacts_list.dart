@@ -1,6 +1,6 @@
-import 'package:dropdown_search/dropdown_search.dart';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/model/contact.dart';
@@ -20,6 +20,9 @@ class ContactsList extends StatefulWidget {
 
 class _ContactsListState extends State<ContactsList> {
   bool _isFilter = false;
+  final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
+  Map _filtersFormData = {"name": "", "city": "", "assigned_to": []};
+  bool _isLoading = false;
 
   List<Contact> _contacts = [];
 
@@ -28,6 +31,26 @@ class _ContactsListState extends State<ContactsList> {
     super.initState();
     setState(() {
       _contacts = contactBloc.contacts;
+    });
+  }
+
+  _saveForm() async {
+    if (_isFilter) {
+      _filtersFormKey.currentState.save();
+    }
+    // if (_isFilter &&
+    //     _filtersFormData['name'] == "" &&
+    //     _filtersFormData['city'] == "" &&
+    //     _filtersFormData['tags'] == "") {
+    //   return;
+    // }
+    setState(() {
+      _isLoading = true;
+    });
+    await contactBloc.fetchContacts(
+        filtersData: _isFilter ? _filtersFormData : null);
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -55,11 +78,9 @@ class _ContactsListState extends State<ContactsList> {
           )),
           GestureDetector(
               onTap: () {
-                if (_contacts.length > 0) {
-                  setState(() {
-                    _isFilter = !_isFilter;
-                  });
-                }
+                setState(() {
+                  _isFilter = !_isFilter;
+                });
               },
               child: Container(
                   padding: EdgeInsets.all(5.0),
@@ -78,7 +99,6 @@ class _ContactsListState extends State<ContactsList> {
   }
 
   Widget _buildMultiSelectDropdown(data) {
-    List _myActivities;
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
       child: MultiSelectFormField(
@@ -104,11 +124,11 @@ class _ContactsListState extends State<ContactsList> {
               textStyle: TextStyle(color: Colors.grey[700]),
               fontSize: screenWidth / 26),
         ),
-        initialValue: _myActivities,
+        initialValue: _filtersFormData["assigned_to"],
         onSaved: (value) {
           if (value == null) return;
           setState(() {
-            _myActivities = value;
+            _filtersFormData["assigned_to"] = value;
           });
         },
       ),
@@ -121,98 +141,123 @@ class _ContactsListState extends State<ContactsList> {
             padding: EdgeInsets.all(10.0),
             margin: EdgeInsets.only(top: 10.0),
             color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(12.0),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter First Name',
-                        errorStyle: GoogleFonts.robotoSlab(),
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: screenWidth / 26))),
-                    keyboardType: TextInputType.text,
+            child: Form(
+              key: _filtersFormKey,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: _filtersFormData["name"],
+                      onSaved: (newValue) {
+                        _filtersFormData["name"] = newValue;
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter First Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle:
+                                  TextStyle(fontSize: screenWidth / 26))),
+                      keyboardType: TextInputType.text,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(12.0),
-                        enabledBorder: boxBorder(),
-                        focusedErrorBorder: boxBorder(),
-                        focusedBorder: boxBorder(),
-                        errorBorder: boxBorder(),
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter City',
-                        errorStyle: GoogleFonts.robotoSlab(),
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: screenWidth / 26))),
-                    keyboardType: TextInputType.text,
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: _filtersFormData["city"],
+                      onSaved: (newValue) {
+                        _filtersFormData["city"] = newValue;
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter City',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle:
+                                  TextStyle(fontSize: screenWidth / 26))),
+                      keyboardType: TextInputType.text,
+                    ),
                   ),
-                ),
-                _buildMultiSelectDropdown(contactBloc.contactsObjForDropdown),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: screenHeight * 0.05,
-                          width: screenWidth * 0.3,
-                          decoration: BoxDecoration(
-                            color: submitButtonColor,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(3.0)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'Filter',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: screenWidth / 24)),
-                              ),
-                              SvgPicture.asset(
-                                  'assets/images/arrow_forward.svg')
-                            ],
+                  _buildMultiSelectDropdown(contactBloc.contactsObjForDropdown),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            _saveForm();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.05,
+                            width: screenWidth * 0.3,
+                            decoration: BoxDecoration(
+                              color: submitButtonColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(3.0)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'Filter',
+                                  style: GoogleFonts.robotoSlab(
+                                      textStyle: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: screenWidth / 24)),
+                                ),
+                                SvgPicture.asset(
+                                    'assets/images/arrow_forward.svg')
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isFilter = false;
-                          });
-                        },
-                        child: Container(
-                          child: Text(
-                            "Reset",
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: bottomNavBarTextColor,
-                                    fontSize: screenWidth / 24)),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isFilter = false;
+                            });
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              _filtersFormData = {
+                                "name": "",
+                                "city": "",
+                                "assigned_to": ""
+                              };
+                            });
+                            _saveForm();
+                          },
+                          child: Container(
+                            child: Text(
+                              "Reset",
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: bottomNavBarTextColor,
+                                      fontSize: screenWidth / 24)),
+                            ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         : Container();
@@ -402,29 +447,48 @@ class _ContactsListState extends State<ContactsList> {
 
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Contacts", style: GoogleFonts.robotoSlab()),
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            _buildTabBar(_contacts.length),
-            _buildFilterWidget(),
-            _contacts.length > 0
-                ? Expanded(child: _buildContactList())
-                : Container(
-                    margin: EdgeInsets.only(top: 30.0),
-                    child: Text(
-                      "No Contacts Found",
-                      style: GoogleFonts.robotoSlab(),
-                    ),
-                  )
-          ],
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                _buildTabBar(_contacts.length),
+                _buildFilterWidget(),
+                _contacts.length > 0
+                    ? Expanded(child: _buildContactList())
+                    : Container(
+                        margin: EdgeInsets.only(top: 30.0),
+                        child: Text(
+                          "No Contacts Found",
+                          style: GoogleFonts.robotoSlab(),
+                        ),
+                      )
+              ],
+            ),
+          ),
+          new Align(
+            child: loadingIndicator,
+            alignment: FractionalOffset.center,
+          )
+        ],
       ),
       floatingActionButton: SquareFloatingActionButton(
           '/create_contact', "Add Contact", "Contacts"),

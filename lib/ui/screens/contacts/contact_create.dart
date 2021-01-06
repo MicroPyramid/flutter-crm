@@ -548,11 +548,6 @@ class _CreateContactState extends State<CreateContact> {
                                           fontSize: screenWidth / 25)),
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: '* ',
-                                        style: GoogleFonts.robotoSlab(
-                                            textStyle:
-                                                TextStyle(color: Colors.red))),
-                                    TextSpan(
                                         text: ': ',
                                         style: GoogleFonts.robotoSlab())
                                   ],
@@ -577,12 +572,6 @@ class _CreateContactState extends State<CreateContact> {
                               initialValue:
                                   contactBloc.currentEditContact['address']
                                       ['address_line'],
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'This field is required.';
-                                }
-                                return null;
-                              },
                               onSaved: (value) {
                                 contactBloc.currentEditContact['address']
                                     ['address_line'] = value;
@@ -614,12 +603,6 @@ class _CreateContactState extends State<CreateContact> {
                                     initialValue: contactBloc
                                             .currentEditContact['address']
                                         ['street'],
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
                                     onSaved: (value) {
                                       contactBloc.currentEditContact['address']
                                           ['street'] = value;
@@ -646,12 +629,6 @@ class _CreateContactState extends State<CreateContact> {
                                     initialValue: contactBloc
                                             .currentEditContact['address']
                                         ['postcode'],
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
                                     onSaved: (value) {
                                       contactBloc.currentEditContact['address']
                                           ['postcode'] = value;
@@ -685,12 +662,6 @@ class _CreateContactState extends State<CreateContact> {
                                     keyboardType: TextInputType.text,
                                     initialValue: contactBloc
                                         .currentEditContact['address']['city'],
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
                                     onSaved: (value) {
                                       contactBloc.currentEditContact['address']
                                           ['city'] = value;
@@ -716,12 +687,6 @@ class _CreateContactState extends State<CreateContact> {
                                     keyboardType: TextInputType.text,
                                     initialValue: contactBloc
                                         .currentEditContact['address']['state'],
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'This field is required.';
-                                      }
-                                      return null;
-                                    },
                                     onSaved: (value) {
                                       contactBloc.currentEditContact['address']
                                           ['state'] = value;
