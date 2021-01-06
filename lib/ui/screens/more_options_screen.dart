@@ -62,7 +62,7 @@ class _MoreOptionsState extends State<MoreOptions> {
   final List _bottomOptionsList = [
     {
       'title': 'Users',
-      'route': '/sales_contacts',
+      'route': '/users_list',
       'icon': 'assets/images/users.svg'
     },
     {

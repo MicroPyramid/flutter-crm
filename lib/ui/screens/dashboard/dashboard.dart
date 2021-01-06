@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
+import 'package:flutter_crm/bloc/user_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/ui/widgets/dashboard_count_card.dart';
 import 'package:flutter_crm/ui/widgets/recent_card_widget.dart';
@@ -17,8 +18,13 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    loadAdditonalData();
     // dashboardBloc.fetchDashboardDetails();
     super.initState();
+  }
+
+  loadAdditonalData() async {
+    await userBloc.fetchUsers();
   }
 
   OutlineInputBorder boxBorder(Color color) {

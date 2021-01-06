@@ -167,6 +167,26 @@ class CrmService {
         headers: getFormatedHeaders(_headers));
   }
 
+  ///////////////////// USERS-SERVICES ///////////////////////////////
+
+  Future<Response> getUsers() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'users/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> deleteUser(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'users/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createUser(user) async {
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'users/',
+        headers: getFormatedHeaders(_headers), body: user);
+  }
+
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
   Future<Response> getTeams() async {

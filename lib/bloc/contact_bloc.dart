@@ -180,6 +180,7 @@ class ContactBloc {
       print("createContact Response >> \n $res");
     }).catchError((onError) {
       print('createContact Error >> $onError');
+      result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
   }

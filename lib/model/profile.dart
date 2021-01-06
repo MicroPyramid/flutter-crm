@@ -32,22 +32,29 @@ class Profile {
       this.isAdmin,
       this.isStaff});
 
-  Profile.fromJson(Map account) {
-    this.id = account['id'] != null  ? account['id'] : 0;
-    this.userName = account['username'] != null  ?account['username'] : "";
-    this.appName = account['get_app_name'] != null  ?account['get_app_name'] : "";
-    this.companyId = account['company'] != null  ?account['company'] : 0;
-    this.role = account['role'] != null ? account['role'] : "";
-    this.profileUrl = account['profile_pic'] != null ? account['profile_pic'] : "";
-    this.dateOfJoin = account['date_joined'] != null ? account['date_joined'] : "";
-    this.email = account['email'] != null ? account['email'] : "";
-    this.firstName = account['first_name'] != null ? account['first_name'] : "";
-    this.hasMarketingAccess = account['has_marketing_access'] != null  ?account['has_marketing_access']  : false;
-    this.hasSalesAccess = account['has_sales_access'] != null  ? account['has_sales_access']  : false;
-    this.isActive = account['is_active'] != null  ? account['is_active'] : false;
-    this.isAdmin = account['is_admin'] != null  ? account['is_admin']: false;
-    this.isStaff = account['is_staff'] != null  ? account['is_staff']: false ;
-    this.lastName = account['last_name'] != null ? account['last_name'] : "";
+  Profile.fromJson(Map profile) {
+    this.id = profile['id'] != null ? profile['id'] : 0;
+    this.userName = profile['username'] != null ? profile['username'] : "";
+    this.appName =
+        profile['get_app_name'] != null ? profile['get_app_name'] : "";
+    this.companyId = profile['company'] != null ? profile['company'] : 0;
+    this.role = profile['role'] != null ? profile['role'] : "";
+    this.profileUrl =
+        profile['profile_pic'] != null ? profile['profile_pic'] : "";
+    this.dateOfJoin =
+        profile['date_joined'] != null ? profile['date_joined'] : "";
+    this.email = profile['email'] != null ? profile['email'] : "";
+    this.firstName = profile['first_name'] != null ? profile['first_name'] : "";
+    this.hasMarketingAccess = profile['has_marketing_access'] != null
+        ? profile['has_marketing_access']
+        : false;
+    this.hasSalesAccess = profile['has_sales_access'] != null
+        ? profile['has_sales_access']
+        : false;
+    this.isActive = profile['is_active'] != null ? profile['is_active'] : false;
+    this.isAdmin = profile['is_admin'] != null ? profile['is_admin'] : false;
+    this.isStaff = profile['is_staff'] != null ? profile['is_staff'] : false;
+    this.lastName = profile['last_name'] != null ? profile['last_name'] : "";
   }
 
   toJson() {
