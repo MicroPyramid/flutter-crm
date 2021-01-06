@@ -29,6 +29,7 @@ import 'package:flutter_crm/ui/screens/splash_screen.dart';
 import 'package:flutter_crm/ui/screens/tasks/tasks_index.dart';
 import 'package:flutter_crm/ui/screens/teams/teams_index.dart';
 import 'package:flutter_crm/ui/screens/users/user_create.dart';
+import 'package:flutter_crm/ui/screens/users/user_details.dart';
 import 'package:flutter_crm/ui/screens/users/users_list.dart';
 
 void main() {
@@ -83,6 +84,7 @@ class MyApp extends StatelessWidget {
         '/profile_details': (BuildContext context) => ProfileDetails(),
         '/users_list': (BuildContext context) => UsersList(),
         '/create_user': (BuildContext context) => CreateUser(),
+        '/user_details': (BuildContext context) => UserDetails(),
         '/more_options': (BuildContext context) => MoreOptions()
       },
     );

@@ -365,6 +365,7 @@ class _UsersListState extends State<UsersList> {
                 userBloc.currentUser = _users[index];
                 userBloc.currentUserIndex = index;
                 Navigator.pushNamed(context, '/user_details');
+                print(userBloc.currentUser);
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -453,7 +454,7 @@ class _UsersListState extends State<UsersList> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        showDeleteAccountAlertDialog(
+                        showDeleteUserAlertDialog(
                             context, _users[index], index);
                       },
                       child: Container(
@@ -477,7 +478,7 @@ class _UsersListState extends State<UsersList> {
     );
   }
 
-  void showDeleteAccountAlertDialog(BuildContext context, Profile user, index) {
+  void showDeleteUserAlertDialog(BuildContext context, Profile user, index) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -521,17 +522,19 @@ class _UsersListState extends State<UsersList> {
     setState(() {
       _isLoading = true;
     });
-    Map result = await userBloc.deleteUser(user);
+    Map _result = await userBloc.deleteUser(user);
     setState(() {
       _isLoading = false;
     });
-    if (result['error'] == false) {
-      showToast(result['message']);
+    if (_result['status'] == "success") {
+      showToast((_result['message'] != null)
+          ? _result['message']
+          : "Successfully Deleted.");
       setState(() {
         _users.removeAt(index);
       });
-    } else if (result['error'] == true) {
-      showToast(result['message']);
+    } else if (_result['error'] == true) {
+      showToast(_result['message']);
     } else {
       showErrorMessage(context, 'Something went wrong', user, index);
     }
