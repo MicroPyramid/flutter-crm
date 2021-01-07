@@ -28,8 +28,11 @@ class UserBloc {
     'is_admin': "USER",
   };
 
-  Future fetchUsers() async {
-    await CrmService().getUsers().then((response) {
+  Future fetchUsers({filtersData}) async {
+    Map _copyFiltersData =
+        filtersData != null ? new Map.from(filtersData) : null;
+
+    await CrmService().getUsers(queryParams: _copyFiltersData).then((response) {
       _activeUsers.clear();
       _inActiveUsers.clear();
 
@@ -99,6 +102,7 @@ class UserBloc {
   }
 
   cancelCurrentEditUser() {
+    _currentEditUserId = null;
     _currentEditUser = {
       'username': "",
       'role': "",
@@ -113,6 +117,63 @@ class UserBloc {
       'is_active': "True",
       'is_admin': "USER",
     };
+  }
+
+  updateCurrentEditUser(Profile user) {
+    _currentEditUserId = user.id.toString();
+
+    _currentEditUser['username'] = user.userName;
+    _currentEditUser['role'] = user.role;
+    _currentEditUser['profile_pic'] = user.profileUrl;
+    _currentEditUser['date_joined'] = user.dateOfJoin;
+    _currentEditUser['email'] = user.email;
+    _currentEditUser['first_name'] = user.firstName;
+    _currentEditUser['last_name'] = user.lastName;
+    _currentEditUser['has_marketing_access'] = user.hasMarketingAccess;
+    _currentEditUser['has_sales_access'] = user.hasSalesAccess;
+
+    if (user.isActive == true) {
+      _currentEditUser['is_active'] = "True";
+    } else {
+      _currentEditUser['is_active'] = "False";
+    }
+    if (user.isAdmin == true) {
+      _currentEditUser['is_admin'] = "ADMIN";
+    } else {
+      _currentEditUser['is_admin'] = "USER";
+    }
+  }
+
+  editUser() async {
+    Map _result;
+    Map _copyOfCurrentEditUser = Map.from(_currentEditUser);
+    _copyOfCurrentEditUser['has_marketing_access'] =
+        json.encode(_copyOfCurrentEditUser['has_marketing_access']);
+    _copyOfCurrentEditUser['has_sales_access'] =
+        json.encode(_copyOfCurrentEditUser['has_sales_access']);
+
+    _copyOfCurrentEditUser['role'] = _copyOfCurrentEditUser['is_admin'];
+    _copyOfCurrentEditUser['status'] = _copyOfCurrentEditUser['is_active'];
+
+    print(_copyOfCurrentEditUser);
+
+    await CrmService()
+        .editUser(_copyOfCurrentEditUser, _currentEditUserId)
+        .then((response) async {
+      var res = json.decode(response.body);
+      if (res["error"] != null || res["error"] != "") {
+        if (res['error'] == false) {
+          await fetchUsers();
+          cancelCurrentEditUser();
+        }
+      }
+      _result = res;
+      print("editUser Response >> \n $res");
+    }).catchError((onError) {
+      print("editUser Error >> \n $onError");
+      _result = {"status": "error", "message": "Something went wrong."};
+    });
+    return _result;
   }
 
   List<Profile> get activeUsers {

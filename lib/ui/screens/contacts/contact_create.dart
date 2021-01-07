@@ -26,6 +26,7 @@ class _CreateContactState extends State<CreateContact> {
   List _myActivities;
   String _selectedStatus = 'Open';
   List countiresForDropDown = leadBloc.countries;
+  bool _isLoading = false;
 
   FocusNode _focusErr;
   FocusNode _firstNameFocusNode = FocusNode();
@@ -79,11 +80,19 @@ class _CreateContactState extends State<CreateContact> {
     _createContactFormKey.currentState.save();
     Map _result;
 
+    setState(() {
+      _isLoading = true;
+    });
+
     if (contactBloc.currentEditContactId == null) {
       _result = await contactBloc.createContact();
     } else {
       _result = await contactBloc.editContact();
     }
+
+    setState(() {
+      _isLoading = false;
+    });
 
     if (_result['error'] == false) {
       setState(() {
@@ -925,6 +934,16 @@ class _CreateContactState extends State<CreateContact> {
 
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -933,15 +952,24 @@ class _CreateContactState extends State<CreateContact> {
           style: GoogleFonts.robotoSlab(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: Container(
-          color: Colors.white,
-          child: Container(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          SingleChildScrollView(
             padding: EdgeInsets.all(10.0),
-            child: _buildForm(),
+            child: Container(
+              color: Colors.white,
+              child: Container(
+                padding: EdgeInsets.all(10.0),
+                child: _buildForm(),
+              ),
+            ),
           ),
-        ),
+          new Align(
+            child: loadingIndicator,
+            alignment: FractionalOffset.center,
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );

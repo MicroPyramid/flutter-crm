@@ -28,6 +28,7 @@ class _CreateUserState extends State<CreateUser> {
   FocusNode _usernameFocusNode = new FocusNode();
   FocusNode _passwordFocusNode = new FocusNode();
   FocusNode _emailFocusNode = new FocusNode();
+  bool accessError = false;
 
   @override
   void initState() {
@@ -65,12 +66,18 @@ class _CreateUserState extends State<CreateUser> {
     _createUserFormKey.currentState.save();
     Map _result;
 
+    setState(() {
+      _isLoading = true;
+    });
     if (userBloc.currentEditUserId != null) {
-      // _result = await userBloc.editUser();
+      _result = await userBloc.editUser();
       // _result = await userBloc.createUser();
     } else {
       _result = await userBloc.createUser();
     }
+    setState(() {
+      _isLoading = false;
+    });
 
     if (_result['error'] == false) {
       setState(() {
@@ -483,7 +490,19 @@ class _CreateUserState extends State<CreateUser> {
                       //   leadBloc.currentEditLead['status'] = value;
                       // },
                       onChanged: (value) {
-                        userBloc.currentEditUser['is_admin'] = value;
+                        setState(() {
+                          userBloc.currentEditUser['is_admin'] = value;
+                          if (value == "ADMIN") {
+                            userBloc.currentEditUser['has_marketing_access'] =
+                                true;
+                            userBloc.currentEditUser['has_sales_access'] = true;
+                          } else {
+                            userBloc.currentEditUser['has_marketing_access'] =
+                                false;
+                            userBloc.currentEditUser['has_sales_access'] =
+                                false;
+                          }
+                        });
                       },
                       items: userBloc.rolesObjForDropdown.map((location) {
                         return DropdownMenuItem(
@@ -518,14 +537,20 @@ class _CreateUserState extends State<CreateUser> {
                       Container(
                           margin: EdgeInsets.only(bottom: 5.0),
                           child: Checkbox(
-                            value: userBloc
-                                .currentEditUser['has_marketing_access'],
-                            onChanged: (bool value) {
-                              setState(() {
-                                userBloc.currentEditUser[
-                                    'has_marketing_access'] = value;
-                              });
-                            },
+                            value: (userBloc.currentEditUser['is_admin'] !=
+                                    "ADMIN")
+                                ? userBloc
+                                    .currentEditUser['has_marketing_access']
+                                : true,
+                            onChanged: (userBloc.currentEditUser['is_admin'] !=
+                                    "ADMIN")
+                                ? (bool value) {
+                                    setState(() {
+                                      userBloc.currentEditUser[
+                                          'has_marketing_access'] = value;
+                                    });
+                                  }
+                                : null,
                           )),
                       Container(
                         alignment: Alignment.centerLeft,
@@ -542,16 +567,33 @@ class _CreateUserState extends State<CreateUser> {
                       Container(
                           margin: EdgeInsets.only(bottom: 5.0),
                           child: Checkbox(
-                            value: userBloc.currentEditUser['has_sales_access'],
-                            onChanged: (bool value) {
-                              setState(() {
-                                userBloc.currentEditUser['has_sales_access'] =
-                                    value;
-                              });
-                            },
+                            value: (userBloc.currentEditUser['is_admin'] !=
+                                    "ADMIN")
+                                ? userBloc.currentEditUser['has_sales_access']
+                                : true,
+                            onChanged: (userBloc.currentEditUser['is_admin'] !=
+                                    "ADMIN")
+                                ? (bool value) {
+                                    setState(() {
+                                      userBloc.currentEditUser[
+                                          'has_sales_access'] = value;
+                                    });
+                                  }
+                                : null,
                           )),
                     ],
                   ),
+                  (accessError == true)
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Please choose one or more.",
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -666,7 +708,19 @@ class _CreateUserState extends State<CreateUser> {
                   GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      _saveForm();
+                      if (userBloc.currentEditUser['has_marketing_access'] ==
+                              false &&
+                          userBloc.currentEditUser['has_sales_access'] ==
+                              false) {
+                        setState(() {
+                          accessError = true;
+                        });
+                      } else {
+                        setState(() {
+                          accessError = false;
+                          _saveForm();
+                        });
+                      }
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -697,7 +751,7 @@ class _CreateUserState extends State<CreateUser> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
-                      // accountBloc.cancelCurrentEditAccount();
+                      userBloc.cancelCurrentEditUser();
                     },
                     child: Container(
                       child: Text(

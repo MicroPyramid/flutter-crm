@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
@@ -367,7 +368,7 @@ class _ContactsListState extends State<ContactsList> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    showDeleteLeadAlertDialog(
+                                    showDeleteContactAlertDialog(
                                         context, _contacts[index], index);
                                   },
                                   child: Container(
@@ -398,7 +399,8 @@ class _ContactsListState extends State<ContactsList> {
     );
   }
 
-  void showDeleteLeadAlertDialog(BuildContext context, Contact contact, index) {
+  void showDeleteContactAlertDialog(
+      BuildContext context, Contact contact, index) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -426,7 +428,7 @@ class _ContactsListState extends State<ContactsList> {
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
                   onPressed: () async {
-                    deleteAccount(index, contact);
+                    deleteContact(index, contact);
                   },
                   child: Text(
                     "Delete",
@@ -437,12 +439,46 @@ class _ContactsListState extends State<ContactsList> {
         });
   }
 
-  deleteAccount(index, contact) {
+  deleteContact(index, contact) async {
+    // setState(() {
+    //   _contacts.removeAt(index);
+    // });
     setState(() {
-      _contacts.removeAt(index);
+      _isLoading = true;
     });
-    // contactBloc.deleteAccount(contact);
-    Navigator.pop(context);
+    Map _result = await contactBloc.deleteContact(contact);
+    setState(() {
+      _isLoading = false;
+    });
+    if (_result['error'] == false) {
+      showToast(_result['message']);
+      Navigator.pushReplacementNamed(context, "/sales_contacts");
+    } else if (_result['error'] == true) {
+      showToast(_result['message']);
+    } else {
+      showErrorMessage(context, 'Something went wrong', index, contact);
+    }
+  }
+
+  void showErrorMessage(
+      BuildContext context, String errorContent, int index, Contact contact) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          deleteContact(index, contact);
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
   }
 
   @override

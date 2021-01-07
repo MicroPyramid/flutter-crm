@@ -175,6 +175,25 @@ class _UsersListState extends State<UsersList> {
     );
   }
 
+  _saveForm() async {
+    if (_isFilter) {
+      _filtersFormKey.currentState.save();
+    }
+    // if (_isFilter &&
+    //     _filtersFormData['name'] == "" &&
+    //     _filtersFormData['city'] == "" &&
+    //     _filtersFormData['tags'] == "") {
+    //   return;
+    // }
+    setState(() {
+      _isLoading = true;
+    });
+    await userBloc.fetchUsers(filtersData: _isFilter ? _filtersFormData : null);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   Widget _buildFilterWidget() {
     return _isFilter
         ? Container(
@@ -241,9 +260,6 @@ class _UsersListState extends State<UsersList> {
                       value: (_filtersFormData['role'] != "")
                           ? _filtersFormData['role']
                           : null,
-                      // onSaved: (value) {
-                      //   leadBloc.currentEditLead['status'] = value;
-                      // },
                       onChanged: (value) {
                         _filtersFormData['role'] = value;
                       },
@@ -267,9 +283,6 @@ class _UsersListState extends State<UsersList> {
                       value: (_filtersFormData['status'] != "")
                           ? _filtersFormData['status']
                           : null,
-                      // onSaved: (value) {
-                      //   leadBloc.currentEditLead['status'] = value;
-                      // },
                       onChanged: (value) {
                         _filtersFormData['status'] = value;
                       },
@@ -288,6 +301,7 @@ class _UsersListState extends State<UsersList> {
                         GestureDetector(
                           onTap: () {
                             FocusScope.of(context).unfocus();
+                            _saveForm();
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -329,7 +343,7 @@ class _UsersListState extends State<UsersList> {
                                 "status": ""
                               };
                             });
-                            // _saveForm();
+                            _saveForm();
                           },
                           child: Container(
                             child: Text(
@@ -434,9 +448,8 @@ class _UsersListState extends State<UsersList> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        // await userBloc
-                        //     .updateCurrentEditUser(_users[index]);
-                        // Navigator.pushNamed(context, '/create_account');
+                        await userBloc.updateCurrentEditUser(_users[index]);
+                        Navigator.pushNamed(context, '/create_user');
                       },
                       child: Container(
                         margin: EdgeInsets.only(right: 5.0),

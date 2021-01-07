@@ -169,10 +169,17 @@ class CrmService {
 
   ///////////////////// USERS-SERVICES ///////////////////////////////
 
-  Future<Response> getUsers() async {
+  Future<Response> getUsers({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'users/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'users/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'users/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
   }
 
   Future<Response> deleteUser(id) async {
@@ -184,6 +191,12 @@ class CrmService {
   Future<Response> createUser(user) async {
     await updateHeaders();
     return await networkService.post(baseUrl + 'users/',
+        headers: getFormatedHeaders(_headers), body: user);
+  }
+
+  Future<Response> editUser(user, id) async {
+    await updateHeaders();
+    return await networkService.put(baseUrl + 'users/$id/',
         headers: getFormatedHeaders(_headers), body: user);
   }
 

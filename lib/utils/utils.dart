@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crm/model/contact.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:random_color/random_color.dart';
 
 var screenWidth;

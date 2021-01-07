@@ -7,6 +7,7 @@ import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class UserDetails extends StatefulWidget {
   UserDetails();
@@ -284,7 +285,7 @@ class _UserDetailsState extends State<UserDetails> {
                         (userBloc.currentUser.hasSalesAccess == true ||
                                 userBloc.currentUser.isAdmin == true)
                             ? Container(
-                                child: Text('o Sales',
+                                child: Text(' o Sales',
                                     style: GoogleFonts.robotoSlab(
                                         color: bottomNavBarTextColor,
                                         fontSize: screenWidth / 24)),
@@ -293,7 +294,7 @@ class _UserDetailsState extends State<UserDetails> {
                         (userBloc.currentUser.hasMarketingAccess == true ||
                                 userBloc.currentUser.isAdmin == true)
                             ? Container(
-                                child: Text('o Marketing',
+                                child: Text(' o Marketing',
                                     style: GoogleFonts.robotoSlab(
                                         color: bottomNavBarTextColor,
                                         fontSize: screenWidth / 24)),
@@ -301,7 +302,37 @@ class _UserDetailsState extends State<UserDetails> {
                             : Container(),
                         Container(
                             margin: EdgeInsets.symmetric(vertical: 5.0),
-                            child: Divider(color: Colors.grey))
+                            child: Divider(color: Colors.grey)),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(bottom: 5.0),
+                                child: Text(
+                                  "Created On :",
+                                  style: GoogleFonts.robotoSlab(
+                                      color: Theme.of(context)
+                                          .secondaryHeaderColor,
+                                      fontSize: screenWidth / 24),
+                                ),
+                              ),
+                              Container(
+                                child: Text(
+                                  DateFormat("dd-MM-yyyy").format(
+                                      DateFormat("yyyy-MM-dd").parse(
+                                          userBloc.currentUser.dateOfJoin)),
+                                  style: GoogleFonts.robotoSlab(
+                                      color: bottomNavBarTextColor,
+                                      fontSize: screenWidth / 24),
+                                ),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.symmetric(vertical: 5.0),
+                                  child: Divider(color: Colors.grey))
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -311,9 +342,9 @@ class _UserDetailsState extends State<UserDetails> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            // await userBloc.updateCurrentEditUser(
-                            //     userBloc.currentUser);
-                            // Navigator.pushNamed(context, '/create_user');
+                            await userBloc
+                                .updateCurrentEditUser(userBloc.currentUser);
+                            Navigator.pushNamed(context, '/create_user');
                           },
                           child: Container(
                             decoration: BoxDecoration(
