@@ -79,7 +79,9 @@ class UserBloc {
 
     print(_copyOfCurrentEditUser);
 
-    CrmService().createUser(_copyOfCurrentEditUser).then((response) async {
+    await CrmService()
+        .createUser(_copyOfCurrentEditUser)
+        .then((response) async {
       var res = json.decode(response.body);
       if (res["error"] != null || res["error"] != "") {
         if (res['error'] == false) {

@@ -19,7 +19,7 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
-  final GlobalKey<FormState> _CreateUserFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _createUserFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
   Map _errors;
@@ -58,16 +58,16 @@ class _CreateUserState extends State<CreateUser> {
     setState(() {
       _errors = null;
     });
-    if (!_CreateUserFormKey.currentState.validate()) {
+    if (!_createUserFormKey.currentState.validate()) {
       focusError();
       return;
     }
-    _CreateUserFormKey.currentState.save();
+    _createUserFormKey.currentState.save();
     Map _result;
 
     if (userBloc.currentEditUserId != null) {
       // _result = await userBloc.editUser();
-      _result = await userBloc.createUser();
+      // _result = await userBloc.createUser();
     } else {
       _result = await userBloc.createUser();
     }
@@ -121,7 +121,7 @@ class _CreateUserState extends State<CreateUser> {
   Widget _buildForm() {
     return Container(
       child: Form(
-        key: _CreateUserFormKey,
+        key: _createUserFormKey,
         child: Column(
           children: [
             Container(
