@@ -1,7 +1,6 @@
 import 'package:flutter_crm/model/profile.dart';
 import 'package:intl/intl.dart';
 
-import 'company.dart';
 import 'contact.dart';
 
 class Lead {

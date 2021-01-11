@@ -200,6 +200,14 @@ class CrmService {
         headers: getFormatedHeaders(_headers), body: user);
   }
 
+  ///////////////////// DOCUMENTS-SERVICES ///////////////////////////////
+
+  Future<Response> getDocuments() async {
+    await updateHeaders();
+    return await networkService.get(baseUrl + 'documents/',
+        headers: getFormatedHeaders(_headers));
+  }
+
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
   Future<Response> getTeams() async {

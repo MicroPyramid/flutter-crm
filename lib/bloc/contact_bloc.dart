@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/model/company.dart';
 import 'package:flutter_crm/model/contact.dart';
-import 'package:flutter_crm/model/profile.dart';
 import 'package:flutter_crm/model/team.dart';
 import 'package:flutter_crm/services/crm_services.dart';
 

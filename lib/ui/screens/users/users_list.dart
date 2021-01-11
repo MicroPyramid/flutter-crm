@@ -271,29 +271,29 @@ class _UsersListState extends State<UsersList> {
                       }).toList(),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          border: boxBorder(),
-                          contentPadding: EdgeInsets.all(12.0)),
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(color: Colors.black)),
-                      hint: Text('Select Status'),
-                      value: (_filtersFormData['status'] != "")
-                          ? _filtersFormData['status']
-                          : null,
-                      onChanged: (value) {
-                        _filtersFormData['status'] = value;
-                      },
-                      items: userBloc.statusObjForDropdown.map((location) {
-                        return DropdownMenuItem(
-                          child: new Text(location[1]),
-                          value: location[0],
-                        );
-                      }).toList(),
-                    ),
-                  ),
+                  // Container(
+                  //   margin: EdgeInsets.only(bottom: 10.0),
+                  //   child: DropdownButtonFormField(
+                  //     decoration: InputDecoration(
+                  //         border: boxBorder(),
+                  //         contentPadding: EdgeInsets.all(12.0)),
+                  //     style: GoogleFonts.robotoSlab(
+                  //         textStyle: TextStyle(color: Colors.black)),
+                  //     hint: Text('Select Status'),
+                  //     value: (_filtersFormData['status'] != "")
+                  //         ? _filtersFormData['status']
+                  //         : null,
+                  //     onChanged: (value) {
+                  //       _filtersFormData['status'] = value;
+                  //     },
+                  //     items: userBloc.statusObjForDropdown.map((location) {
+                  //       return DropdownMenuItem(
+                  //         child: new Text(location[1]),
+                  //         value: location[0],
+                  //       );
+                  //     }).toList(),
+                  //   ),
+                  // ),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

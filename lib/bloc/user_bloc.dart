@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_crm/model/profile.dart';
 import 'package:flutter_crm/services/crm_services.dart';
-import 'package:http/http.dart';
 
 class UserBloc {
   List<Profile> _activeUsers = [];
@@ -139,6 +138,8 @@ class UserBloc {
     }
     if (user.isAdmin == true) {
       _currentEditUser['is_admin'] = "ADMIN";
+      _currentEditUser['has_marketing_access'] = true;
+      _currentEditUser['has_sales_access'] = true;
     } else {
       _currentEditUser['is_admin'] = "USER";
     }

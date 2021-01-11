@@ -26,7 +26,7 @@ class SquareFloatingActionButton extends StatelessWidget {
         Navigator.pushNamed(context, _route);
       },
       child: Container(
-        width: screenWidth * 0.35,
+        width: screenWidth * 0.4,
         padding: EdgeInsets.symmetric(vertical: 5.0),
         decoration: BoxDecoration(
             color: Colors.red[50],
