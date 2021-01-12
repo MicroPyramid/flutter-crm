@@ -56,12 +56,12 @@ class DocumentBloc {
 
   createDocument(file) async {
     Map _copyOfCurrentEditDocument = Map.from(_currentEditDocument);
-    _copyOfCurrentEditDocument['teams'] = [
-      _copyOfCurrentEditDocument['teams'].map((team) => team.toString())
-    ].toString();
+    _copyOfCurrentEditDocument['teams'] = (_copyOfCurrentEditDocument['teams']
+        .map((team) => team.toString())).toList().toString();
     _copyOfCurrentEditDocument['shared_to'] =
         (_copyOfCurrentEditDocument['shared_to']
             .map((assignedTo) => assignedTo.toString())).toList().toString();
+    print(_copyOfCurrentEditDocument);
     await CrmService()
         .createDocument(_copyOfCurrentEditDocument, file)
         .then((response) {
@@ -70,7 +70,7 @@ class DocumentBloc {
       if (response.statusCode == 200) {
         print('UPLOAD SUCCESSFUL');
       } else {
-        print("${response.reasonPhrase}UPLOAD UNSUCCESSFUL");
+        print("${response.reasonPhrase} UPLOAD UNSUCCESSFUL");
       }
     });
   }

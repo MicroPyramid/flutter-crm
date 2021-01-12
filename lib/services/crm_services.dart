@@ -222,7 +222,6 @@ class CrmService {
 
   Future createDocument(document, PlatformFile file) async {
     await updateHeaders();
-    // var _headers1 = getFormatedHeaders(_headers);
     var uri = Uri.parse(
       baseUrl + 'documents/',
     );
@@ -242,16 +241,6 @@ class CrmService {
       ));
     return await request.send();
   }
-
-  // Future createDocument(document) async {
-  //   updateHeaders();
-  //   // var uri = Uri.parse(
-  //   //   baseUrl + 'documents/',
-  //   // );
-  //   await updateHeaders();
-  //   return await networkService.post(baseUrl + 'documents/',
-  //       headers: getFormatedHeaders(_headers), body: document);
-  // }
 
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
