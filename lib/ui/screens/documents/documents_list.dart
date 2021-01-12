@@ -4,7 +4,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
-import 'package:flutter_crm/bloc/documents_bloc.dart';
+import 'package:flutter_crm/bloc/document_bloc.dart';
 import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/document.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
@@ -184,7 +184,7 @@ class _DocumentsListState extends State<DocumentsList> {
                           ),
                         ),
                         Container(
-                          width: screenWidth * 0.76,
+                          width: screenWidth * 0.74,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -447,7 +447,7 @@ class _DocumentsListState extends State<DocumentsList> {
         ],
       ),
       floatingActionButton: SquareFloatingActionButton(
-          '/create_contact', "Add Document", "Documents"),
+          '/create_document', "Add Document", "Documents"),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }

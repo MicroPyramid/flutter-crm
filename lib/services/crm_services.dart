@@ -1,4 +1,8 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_crm/model/document.dart';
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'network_services.dart';
@@ -206,6 +210,39 @@ class CrmService {
     await updateHeaders();
     return await networkService.get(baseUrl + 'documents/',
         headers: getFormatedHeaders(_headers));
+  }
+
+  getFileSizes(files) {
+    List _fileSizeList = [];
+    files.forEach((file) async {
+      http.Response r = await http.head(file.documentFile);
+      String fileSize = r.headers['content-length'];
+      _fileSizeList.add(fileSize);
+    });
+    return _fileSizeList;
+  }
+
+  Future createDocument(document, PlatformFile file) async {
+    updateHeaders();
+    var uri = Uri.parse(
+      baseUrl + 'documents/',
+    );
+    var request = http.MultipartRequest(
+      'POST',
+      uri,
+    )
+      ..headers.addAll(getFormatedHeaders(_headers))
+      ..fields.addAll({
+        'title': document['title'],
+        'teams': document['teams'],
+        'shared_to': document['shared_to']
+      })
+      ..files.add(await http.MultipartFile.fromPath(
+        'document_file',
+        file.path,
+      ));
+
+    return await request.send();
   }
 
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
