@@ -1,6 +1,7 @@
 import 'package:flutter_crm/model/company.dart';
 import 'package:flutter_crm/model/profile.dart';
 import 'package:flutter_crm/model/team.dart';
+import 'package:intl/intl.dart';
 
 class Document {
   int id;
@@ -38,9 +39,9 @@ class Document {
         ? List<Team>.from(document["teams"].map((team) => Team.fromJson(team)))
         : [];
     this.createdOn = document['created_on'] != null
-        ? document['created_on']
-        // ? DateFormat("dd-MM-yyyy")
-        //     .format(DateFormat("yyyy-MM-dd").parse(document['created_on']))
+        // ? document['created_on']
+        ? DateFormat("dd MMM, yyyy 'at' HH:mm")
+            .format(DateFormat("yyyy-MM-dd").parse(document['created_on']))
         : "";
     this.createdBy = document['created_by'] != null
         ? Profile.fromJson(document['created_by'])

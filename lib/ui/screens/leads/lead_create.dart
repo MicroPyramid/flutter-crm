@@ -741,7 +741,6 @@ class _CreateLeadState extends State<CreateLead> {
                       result = await FilePicker.platform.pickFiles();
                       setState(() {
                         file = result.files.first;
-                        print(file.name);
                       });
                     },
                     child: Container(
@@ -1099,11 +1098,9 @@ class _CreateLeadState extends State<CreateLead> {
                               size: 18.0, color: Colors.green[900]),
                           tagPadding: const EdgeInsets.all(6.0)),
                       onTag: (tag) {
-                        print('onTag ' + tag);
                         leadBloc.currentEditLead['tags'].add(tag);
                       },
                       onDelete: (tag) {
-                        print('onDelete ' + tag);
                         leadBloc.currentEditLead['tags'].remove(tag);
                       },
                     ),

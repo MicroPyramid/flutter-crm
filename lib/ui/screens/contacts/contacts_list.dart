@@ -452,7 +452,7 @@ class _ContactsListState extends State<ContactsList> {
     });
     if (_result['error'] == false) {
       showToast(_result['message']);
-      Navigator.pushReplacementNamed(context, "/sales_contacts");
+      Navigator.of(context).pop();
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {

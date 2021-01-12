@@ -47,8 +47,6 @@ class DocumentBloc {
         data['name'] = "${user.firstName} ${user.lastName}";
         _usersObjforMultiselect.add(data);
       });
-
-      print('fetchDocuments Response >> $res');
     }).catchError((onError) {
       print('fetchDocuments Error >> $onError');
     });
@@ -58,24 +56,22 @@ class DocumentBloc {
 
   createDocument(file) async {
     Map _copyOfCurrentEditDocument = Map.from(_currentEditDocument);
-
     _copyOfCurrentEditDocument['teams'] = [
       _copyOfCurrentEditDocument['teams'].map((team) => team.toString())
     ].toString();
     _copyOfCurrentEditDocument['shared_to'] =
         (_copyOfCurrentEditDocument['shared_to']
             .map((assignedTo) => assignedTo.toString())).toList().toString();
-
     await CrmService()
         .createDocument(_copyOfCurrentEditDocument, file)
         .then((response) {
       // var res = jsonDecode(response.body);
+      print(response);
       if (response.statusCode == 200) {
         print('UPLOAD SUCCESSFUL');
       } else {
         print("${response.reasonPhrase}UPLOAD UNSUCCESSFUL");
       }
-      // print(res);
     });
   }
 

@@ -132,9 +132,9 @@ class _LeadsListState extends State<LeadsList> {
     if (result['error'] == false) {
       showToast(result['message']);
       Navigator.pop(context);
-      setState(() {
-        _leads.removeAt(index);
-      });
+      // setState(() {
+      //   _leads.removeAt(index);
+      // });
     } else if (result['error'] == true) {
       Navigator.pop(context);
     } else {

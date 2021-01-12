@@ -28,12 +28,12 @@ class _SideMenuState extends State<SideMenuDrawer> {
     },
     {
       'title': 'Contacts',
-      'route': '/sales_contacts',
+      'route': '/contacts',
       'icon': 'assets/images/contacts_icon.svg'
     },
     {
       'title': 'Leads',
-      'route': '/leads',
+      'route': '/leads_list',
       'icon': 'assets/images/leads_icon.svg'
     },
     {

@@ -1136,7 +1136,6 @@ class _CreateAccountState extends State<CreateAccount> {
                       result = await FilePicker.platform.pickFiles();
                       setState(() {
                         file = result.files.first;
-                        print(file.name);
                       });
                     },
                     child: Container(

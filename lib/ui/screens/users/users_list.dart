@@ -179,12 +179,6 @@ class _UsersListState extends State<UsersList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    // if (_isFilter &&
-    //     _filtersFormData['name'] == "" &&
-    //     _filtersFormData['city'] == "" &&
-    //     _filtersFormData['tags'] == "") {
-    //   return;
-    // }
     setState(() {
       _isLoading = true;
     });
@@ -379,7 +373,6 @@ class _UsersListState extends State<UsersList> {
                 userBloc.currentUser = _users[index];
                 userBloc.currentUserIndex = index;
                 Navigator.pushNamed(context, '/user_details');
-                print(userBloc.currentUser);
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -543,9 +536,9 @@ class _UsersListState extends State<UsersList> {
       showToast((_result['message'] != null)
           ? _result['message']
           : "Successfully Deleted.");
-      setState(() {
-        _users.removeAt(index);
-      });
+      // setState(() {
+      //   _users.removeAt(index);
+      // });
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {

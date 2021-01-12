@@ -149,7 +149,6 @@ class LeadBloc {
     });
 
     _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
-    print('_copyOfCurrentEditLead');
     await CrmService()
         .editLead(_copyCurrentEditLead, _currentEditLeadId)
         .then((response) async {
@@ -162,7 +161,6 @@ class LeadBloc {
         await fetchLeads();
       }
       result = res;
-      print("editLead Response >> $res");
     }).catchError((onError) {
       print('editLead Error >> $onError');
       result = {"status": "error", "message": "Something went wrong."};
@@ -190,8 +188,6 @@ class LeadBloc {
         _copyCurrentEditLead['country'] = country[0];
       }
     });
-    print('Print before POST');
-    print(_copyCurrentEditLead);
     await CrmService().createLead(_copyCurrentEditLead).then((response) async {
       var res = json.decode(response.body);
       if (res["error"] != null || res["error"] != "") {
@@ -201,7 +197,6 @@ class LeadBloc {
         }
       }
       result = res;
-      print("createLead Response >> $res");
     }).catchError((onError) {
       print('createLead Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
@@ -236,7 +231,6 @@ class LeadBloc {
 
   updateCurrentEditLead(Lead editLead) async {
     _currentEditLeadId = editLead.id.toString();
-    print(_currentEditLeadId);
 
     List teams = [];
     List assignedUsers = [];
@@ -244,12 +238,10 @@ class LeadBloc {
 
     await CrmService().getLeadToUpdate(editLead.id).then((response) {
       var res = json.decode(response.body);
-      print("Update Current Edit Lead Teams, >>");
       teams.clear();
       res['teams'].forEach((team) {
         teams.add(team['id']);
       });
-      print(teams);
     });
 
     editLead.assignedTo.forEach((user) {
@@ -292,8 +284,6 @@ class LeadBloc {
     Map result;
     await CrmService().deleteLead(lead.id).then((response) {
       var res = (json.decode(response.body));
-      print("deleteLead Response >> $res");
-
       result = res;
     }).catchError((onError) {
       print("deleteLead Error >> $onError");

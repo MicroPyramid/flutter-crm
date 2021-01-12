@@ -75,7 +75,7 @@ class _UserDetailsState extends State<UserDetails> {
       showToast((result['message'] != null)
           ? result['message']
           : "Successfully Deleted.");
-      Navigator.pushReplacementNamed(context, "/sales_contacts");
+      Navigator.pushReplacementNamed(context, "/users_list");
     } else if (result['error'] == true) {
       showToast(result);
     } else {

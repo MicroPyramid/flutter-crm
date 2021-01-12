@@ -237,7 +237,6 @@ class _CreateDocumentState extends State<CreateDocument> {
                             ]);
                         setState(() {
                           file = result.files.first;
-                          print(file.name);
                         });
                       },
                       child: Container(

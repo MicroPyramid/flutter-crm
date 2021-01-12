@@ -73,7 +73,7 @@ class _ContactDetailsState extends State<ContactDetails> {
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pushReplacementNamed(context, "/sales_contacts");
+      Navigator.pushReplacementNamed(context, "/contacts");
     } else if (result['error'] == true) {
       showToast(result['message']);
     } else {

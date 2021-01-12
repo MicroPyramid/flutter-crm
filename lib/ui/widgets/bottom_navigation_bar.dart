@@ -76,7 +76,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             onTap: () {
               if (_currentBottomBarIndex != '1') {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/leads', (route) => false);
+                    context, '/leads_list', (route) => false);
                 setState(() {
                   _currentBottomBarIndex = "1";
                 });

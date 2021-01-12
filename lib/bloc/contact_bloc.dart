@@ -127,18 +127,12 @@ class ContactBloc {
         _currentEditContact['address']['country'] = country[1];
       }
     });
-
-    // _currentEditContact['created_on_arrow'] = editContact.createdOnText;
     _currentEditContact['teams'] = teams;
     _currentEditContact['assigned_to'] = assignedUsers;
-
-    print(_currentEditContact);
   }
 
   createContact() async {
     Map result;
-    print(currentEditContact);
-
     currentEditContact['teams'] = (currentEditContact['teams']
         .map((team) => team.toString())).toList().toString();
     currentEditContact['assigned_to'] = (currentEditContact['assigned_to']
@@ -161,8 +155,6 @@ class ContactBloc {
       // 'contact_attachment' : '',
     };
 
-    print(copyOfCurrentEditContact);
-
     await CrmService()
         .createContact(copyOfCurrentEditContact)
         .then((response) async {
@@ -175,7 +167,6 @@ class ContactBloc {
         }
       }
       result = res;
-      print("createContact Response >> \n $res");
     }).catchError((onError) {
       print('createContact Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
@@ -185,7 +176,6 @@ class ContactBloc {
 
   editContact() async {
     Map _result;
-    print(currentEditContact);
     Map copyOfCurrentEditContact = {
       'first_name': currentEditContact['first_name'],
       'last_name': currentEditContact['last_name'],
@@ -212,9 +202,6 @@ class ContactBloc {
         jsonEncode(copyOfCurrentEditContact['teams']);
     copyOfCurrentEditContact['assigned_to'] =
         jsonEncode(copyOfCurrentEditContact['assigned_to']);
-
-    print(copyOfCurrentEditContact);
-
     await CrmService()
         .editContact(copyOfCurrentEditContact, currentEditContactId)
         .then((response) async {
@@ -227,7 +214,6 @@ class ContactBloc {
         await fetchContacts();
       }
       _result = res;
-      print("createLead Response >> $res");
     }).catchError((onError) {
       print('editContact Error >> $onError');
       _result = {"status": "error", "message": "Something went wrong."};
@@ -239,7 +225,6 @@ class ContactBloc {
     Map result;
     await CrmService().deleteContact(contact.id).then((response) async {
       var res = (json.decode(response.body));
-      print('deleteContact Response >> $res');
       await fetchContacts();
       result = res;
     }).catchError((onError) {
@@ -273,7 +258,7 @@ class ContactBloc {
     return _currentContactIndex;
   }
 
-  set currentContactIndex(int currentContactIndex) {
+  set currentContactIndex(currentContactIndex) {
     _currentContactIndex = currentContactIndex;
   }
 

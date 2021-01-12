@@ -27,8 +27,6 @@ class CrmService {
   }
 
   Future<Response> userLogin(headers, body) async {
-    print(headers);
-    print(body);
     return await networkService.post(baseUrl + 'auth/login/',
         body: body, headers: getFormatedHeaders(headers));
   }
@@ -223,7 +221,8 @@ class CrmService {
   }
 
   Future createDocument(document, PlatformFile file) async {
-    updateHeaders();
+    await updateHeaders();
+    // var _headers1 = getFormatedHeaders(_headers);
     var uri = Uri.parse(
       baseUrl + 'documents/',
     );
@@ -241,9 +240,18 @@ class CrmService {
         'document_file',
         file.path,
       ));
-
     return await request.send();
   }
+
+  // Future createDocument(document) async {
+  //   updateHeaders();
+  //   // var uri = Uri.parse(
+  //   //   baseUrl + 'documents/',
+  //   // );
+  //   await updateHeaders();
+  //   return await networkService.post(baseUrl + 'documents/',
+  //       headers: getFormatedHeaders(_headers), body: document);
+  // }
 
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 

@@ -19,7 +19,7 @@ class _MoreOptionsState extends State<MoreOptions> {
   final List _optionsList = [
     {
       'title': 'Contacts',
-      'route': '/sales_contacts',
+      'route': '/contacts',
       'icon': 'assets/images/contacts_icon.svg'
     },
     {

@@ -47,8 +47,6 @@ class UserBloc {
       });
       _statusObjForDropdown = res['status'];
       _rolesObjForDropdown = res['roles'];
-
-      print('fetch Users Response >> $res');
     }).catchError((onError) {
       print('fetchUsers Error >> $onError');
     });
@@ -58,7 +56,6 @@ class UserBloc {
     Map result;
     await CrmService().deleteUser(user.id).then((response) async {
       var res = (json.decode(response.body));
-      print('deleteUser Response >> $res');
       await fetchUsers();
       result = res;
     }).catchError((onError) {
@@ -75,12 +72,8 @@ class UserBloc {
         json.encode(_copyOfCurrentEditUser['has_marketing_access']);
     _copyOfCurrentEditUser['has_sales_access'] =
         json.encode(_copyOfCurrentEditUser['has_sales_access']);
-
     _copyOfCurrentEditUser['role'] = _copyOfCurrentEditUser['is_admin'];
     _copyOfCurrentEditUser['status'] = _copyOfCurrentEditUser['is_active'];
-
-    print(_copyOfCurrentEditUser);
-
     await CrmService()
         .createUser(_copyOfCurrentEditUser)
         .then((response) async {
@@ -92,9 +85,8 @@ class UserBloc {
         }
       }
       _result = res;
-      print("createUser Response >> \n $res");
     }).catchError((onError) {
-      print("createUser Error >> \n $onError");
+      print("createUser Error >> $onError");
       _result = {"status": "error", "message": "Something went wrong."};
     });
     return _result;
@@ -152,12 +144,8 @@ class UserBloc {
         json.encode(_copyOfCurrentEditUser['has_marketing_access']);
     _copyOfCurrentEditUser['has_sales_access'] =
         json.encode(_copyOfCurrentEditUser['has_sales_access']);
-
     _copyOfCurrentEditUser['role'] = _copyOfCurrentEditUser['is_admin'];
     _copyOfCurrentEditUser['status'] = _copyOfCurrentEditUser['is_active'];
-
-    print(_copyOfCurrentEditUser);
-
     await CrmService()
         .editUser(_copyOfCurrentEditUser, _currentEditUserId)
         .then((response) async {
@@ -169,9 +157,8 @@ class UserBloc {
         }
       }
       _result = res;
-      print("editUser Response >> \n $res");
     }).catchError((onError) {
-      print("editUser Error >> \n $onError");
+      print("editUser Error >> $onError");
       _result = {"status": "error", "message": "Something went wrong."};
     });
     return _result;
@@ -197,7 +184,7 @@ class UserBloc {
     return _currentUser;
   }
 
-  set currentUser(Profile user) {
+  set currentUser(user) {
     _currentUser = user;
   }
 
@@ -205,7 +192,7 @@ class UserBloc {
     return _currentUserStatus;
   }
 
-  set currentUserStatus(String status) {
+  set currentUserStatus(status) {
     _currentUserStatus = status;
   }
 
@@ -213,7 +200,7 @@ class UserBloc {
     return _currentUserIndex;
   }
 
-  set currentUserIndex(int index) {
+  set currentUserIndex(index) {
     _currentUserIndex = index;
   }
 

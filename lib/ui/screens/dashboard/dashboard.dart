@@ -46,20 +46,20 @@ class _DashboardState extends State<Dashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CountCard(
-                  color: Color.fromRGBO(44, 113, 255, 1),
-                  lable: "Accounts",
-                  count:
-                      dashboardBloc.dashboardData['accountsCount'].toString(),
-                  icon: 'assets/images/accounts_color.svg',
-                  routeName: "",
-                ),
+                    color: Color.fromRGBO(44, 113, 255, 1),
+                    lable: "Accounts",
+                    count:
+                        dashboardBloc.dashboardData['accountsCount'].toString(),
+                    icon: 'assets/images/accounts_color.svg',
+                    routeName: "/account_list",
+                    index: 2),
                 CountCard(
-                  color: Color.fromRGBO(96, 75, 186, 1),
-                  lable: "Leads",
-                  count: dashboardBloc.dashboardData['leadsCount'].toString(),
-                  icon: 'assets/images/flag.svg',
-                  routeName: "",
-                )
+                    color: Color.fromRGBO(96, 75, 186, 1),
+                    lable: "Leads",
+                    count: dashboardBloc.dashboardData['leadsCount'].toString(),
+                    icon: 'assets/images/flag.svg',
+                    routeName: "/leads_list",
+                    index: 1)
               ],
             ),
           ),
@@ -69,21 +69,21 @@ class _DashboardState extends State<Dashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CountCard(
-                  color: Color.fromRGBO(52, 141, 80, 1),
-                  lable: "Contacts",
-                  count:
-                      dashboardBloc.dashboardData['contactsCount'].toString(),
-                  icon: 'assets/images/identification.svg',
-                  routeName: "",
-                ),
+                    color: Color.fromRGBO(52, 141, 80, 1),
+                    lable: "Contacts",
+                    count:
+                        dashboardBloc.dashboardData['contactsCount'].toString(),
+                    icon: 'assets/images/identification.svg',
+                    routeName: "/contacts",
+                    index: 3),
                 CountCard(
-                  color: Color.fromRGBO(255, 86, 45, 1),
-                  lable: "Opportunities",
-                  count: dashboardBloc.dashboardData['opportunitiesCount']
-                      .toString(),
-                  icon: 'assets/images/opportunities_color.svg',
-                  routeName: "",
-                )
+                    color: Color.fromRGBO(255, 86, 45, 1),
+                    lable: "Opportunities",
+                    count: dashboardBloc.dashboardData['opportunitiesCount']
+                        .toString(),
+                    icon: 'assets/images/opportunities_color.svg',
+                    routeName: "/opportunities",
+                    index: 3)
               ],
             ),
           ),

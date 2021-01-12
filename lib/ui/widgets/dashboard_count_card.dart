@@ -9,12 +9,22 @@ class CountCard extends StatelessWidget {
   final String lable;
   final String count;
   final String routeName;
-  CountCard({this.icon, this.color, this.lable, this.count, this.routeName});
+  final int index;
+  CountCard(
+      {this.icon,
+      this.color,
+      this.lable,
+      this.count,
+      this.routeName,
+      this.index});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        currentBottomNavigationIndex = index.toString();
+        Navigator.pushReplacementNamed(context, routeName);
+      },
       child: Container(
         width: screenWidth * 0.46,
         height: screenHeight * 0.12,

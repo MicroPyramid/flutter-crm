@@ -25,7 +25,6 @@ class AuthBloc {
     Map result;
     await CrmService().validateSubdomain(data).then((response) {
       var res = (json.decode(response.body));
-      print(res);
       if (res['error'] == false) {
         _subDomainName = data['sub_domain'];
         result = res;
@@ -33,7 +32,7 @@ class AuthBloc {
         result = res;
       }
     }).catchError((onError) {
-      print(onError);
+      print("validate domain error>> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
@@ -45,7 +44,6 @@ class AuthBloc {
     await CrmService()
         .userLogin({'company': _subDomainName}, data).then((response) {
       var res = (json.decode(response.body));
-      print(res);
       if (res['error'] == false) {
         _authToken = "JWT " + res['token'];
         _subDomainName = res['subdomin'];
@@ -56,7 +54,7 @@ class AuthBloc {
         result = res;
       }
     }).catchError((onError) {
-      print(onError);
+      print("login error>> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
@@ -66,10 +64,9 @@ class AuthBloc {
     Map result;
     await CrmService().forgotPassword(data).then((response) {
       var res = (json.decode(response.body));
-      print(res);
       result = res;
     }).catchError((onError) {
-      print(onError);
+      print("forgot password Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
@@ -79,7 +76,6 @@ class AuthBloc {
     Map result;
     await CrmService().userRegister(data).then((response) {
       var res = (json.decode(response.body));
-      print(res);
       if (res['error'] == false) {
         _subDomainName = data['sub_domain'];
         result = res;
@@ -87,7 +83,7 @@ class AuthBloc {
         result = res;
       }
     }).catchError((onError) {
-      print(onError);
+      print("register user error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
@@ -96,14 +92,13 @@ class AuthBloc {
   Future getProfileDetails() async {
     await CrmService().getUserProfile().then((response) {
       var res = (json.decode(response.body));
-      print(res);
       if (res['user_obj'] != null) {
         _userProfile = Profile.fromJson(res['user_obj']);
       } else {
         _userProfile = null;
       }
     }).catchError((onError) {
-      print(onError);
+      print("get profile Error >> $onError");
     });
   }
 
@@ -111,10 +106,9 @@ class AuthBloc {
     Map result;
     await CrmService().changePassword(data).then((response) {
       var res = (json.decode(response.body));
-      print(res);
       result = res;
     }).catchError((onError) {
-      print(onError);
+      print("change password Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;

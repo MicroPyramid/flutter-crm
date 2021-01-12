@@ -99,7 +99,7 @@ class _CreateContactState extends State<CreateContact> {
         _errors = null;
       });
       showToast(_result['message']);
-      Navigator.pushReplacementNamed(context, '/sales_contacts');
+      Navigator.pushReplacementNamed(context, '/contacts');
     } else if (_result['error'] == true) {
       setState(() {
         _errors = _result['contact_errors'];
@@ -849,7 +849,6 @@ class _CreateContactState extends State<CreateContact> {
                         result = await FilePicker.platform.pickFiles();
                         setState(() {
                           file = result.files.first;
-                          print(file.name);
                         });
                       },
                       child: Container(

@@ -667,7 +667,6 @@ class _CreateUserState extends State<CreateUser> {
                           .pickFiles(type: FileType.image);
                       setState(() {
                         file = result.files.first;
-                        print(file.name);
                       });
                     },
                     child: Container(

@@ -124,7 +124,7 @@ class _DocumentsListState extends State<DocumentsList> {
                           margin: EdgeInsets.only(right: 10),
                           child: SvgPicture.asset(
                             'assets/images/pdf_icon.svg',
-                            width: screenWidth / 12,
+                            width: screenWidth / 15,
                           ),
                         )
                       ],
@@ -150,14 +150,12 @@ class _DocumentsListState extends State<DocumentsList> {
                           width: screenWidth * 0.60,
                           child: Text(
                             _documents[index].createdOn != null
-                                ? DateFormat.yMMMMd().add_jm().format(
-                                    DateFormat("yyyy-MM-dd")
-                                        .parse(_documents[index].createdOn))
+                                ? _documents[index].createdOn
                                 : "",
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.robotoSlab(
-                              color: bottomNavBarTextColor,
-                              fontSize: screenWidth / 27,
+                              color: Colors.grey[600],
+                              fontSize: screenWidth / 25,
                             ),
                           ),
                         ),
@@ -170,7 +168,7 @@ class _DocumentsListState extends State<DocumentsList> {
                                 child: Icon(
                                   Icons.share,
                                   color: Colors.grey,
-                                  size: 30,
+                                  size: screenWidth / 15,
                                 ),
                               ),
                               Container(
@@ -204,7 +202,7 @@ class _DocumentsListState extends State<DocumentsList> {
                                   ),
                                   Container(
                                     alignment: Alignment.centerLeft,
-                                    width: screenWidth * 0.20,
+                                    width: screenWidth * 0.2,
                                     child: Text(
                                       _documents[index]
                                           .status
@@ -229,7 +227,7 @@ class _DocumentsListState extends State<DocumentsList> {
                                       //     context, '/create_contact');
                                     },
                                     child: Container(
-                                      margin: EdgeInsets.only(right: 10.0),
+                                      margin: EdgeInsets.only(right: 5.0),
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1.0,
@@ -250,7 +248,7 @@ class _DocumentsListState extends State<DocumentsList> {
                                       //     context, _contacts[index], index);
                                     },
                                     child: Container(
-                                      margin: EdgeInsets.only(right: 10.0),
+                                      margin: EdgeInsets.only(right: 5.0),
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1.0,
@@ -360,7 +358,7 @@ class _DocumentsListState extends State<DocumentsList> {
     });
     if (_result['error'] == false) {
       showToast(_result['message']);
-      Navigator.pushReplacementNamed(context, "/sales_contacts");
+      Navigator.pushReplacementNamed(context, "/contacts");
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {

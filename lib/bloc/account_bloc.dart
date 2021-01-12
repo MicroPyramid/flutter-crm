@@ -99,19 +99,14 @@ class AccountBloc {
     });
     _copyCurrentEditAccount['tags'] =
         jsonEncode(_copyCurrentEditAccount['tags']);
-    print(_copyCurrentEditAccount);
     await CrmService()
         .createAccount(_copyCurrentEditAccount)
         .then((response) async {
       var res = json.decode(response.body);
-      if (res["error"] != null) {
-        // cancelCurrentEditAccount();
-        res["error"] = true;
-      } else {
+      if (res["error"] == false) {
         await fetchAccounts();
       }
       result = res;
-      print("createAccount Response >> $res");
     }).catchError((onError) {
       print("createAccount Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
@@ -155,7 +150,6 @@ class AccountBloc {
         await fetchAccounts();
       }
       result = res;
-      print("editAccount Response >> $res");
     }).catchError((onError) {
       print("editAccount Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
@@ -167,7 +161,6 @@ class AccountBloc {
     Map result;
     await CrmService().deleteAccount(account.id).then((response) async {
       var res = (json.decode(response.body));
-      print('deleteAccount Response >> $res');
       await fetchAccounts();
       result = res;
     }).catchError((onError) {
@@ -201,8 +194,6 @@ class AccountBloc {
 
   updateCurrentEditAccount(Account editAccount) {
     _currentEditAccountId = editAccount.id.toString();
-    print('Update Account Entries');
-    print(_currentEditAccountId);
     List contacts = [];
     List teams = [];
     List assignedUsers = [];
