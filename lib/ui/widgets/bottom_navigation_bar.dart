@@ -1,11 +1,8 @@
 import 'dart:core';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class BottomNavigationBarWidget extends StatefulWidget {
   @override
@@ -26,7 +23,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: screenHeight * 0.08,
-      color: Colors.white,
+      //color: Colors.white,
       child: Row(
         children: [
           GestureDetector(
@@ -41,33 +38,25 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
               }
             },
             child: Container(
-              color: _currentBottomBarIndex == "0"
-                  ? bottomNavBarSelectedBGColor
-                  : Colors.white,
-              width: screenWidth * 0.25,
+              decoration: BoxDecoration(
+                  color: _currentBottomBarIndex == "0"
+                      ? bottomNavBarSelectedBGColor
+                      : Colors.white,
+                  borderRadius:
+                      BorderRadius.only(topLeft: Radius.circular(30))),
+              width: screenWidth * 0.20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     child: SvgPicture.asset(
-                      'assets/images/dashboard_icon.svg',
+                      'assets/images/home.svg',
                       width: screenWidth / 15,
                       color: _currentBottomBarIndex == "0"
                           ? bottomNavBarSelectedTextColor
                           : bottomNavBarTextColor,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5.0),
-                    child: Text(
-                      "Dashboard",
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: _currentBottomBarIndex == "0"
-                                  ? bottomNavBarSelectedTextColor
-                                  : bottomNavBarTextColor)),
-                    ),
-                  )
                 ],
               ),
             ),
@@ -76,7 +65,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             onTap: () {
               if (_currentBottomBarIndex != '1') {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/leads', (route) => false);
+                    context, '/accounts_list', (route) => false);
                 setState(() {
                   _currentBottomBarIndex = "1";
                 });
@@ -87,29 +76,49 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
               color: _currentBottomBarIndex == "1"
                   ? bottomNavBarSelectedBGColor
                   : Colors.white,
-              width: screenWidth * 0.25,
+              width: screenWidth * 0.20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     child: SvgPicture.asset(
-                      'assets/images/leads_icon.svg',
-                      width: screenWidth / 15,
+                      'assets/images/accounts.svg',
+                      width: screenWidth / 12,
                       color: _currentBottomBarIndex == "1"
                           ? bottomNavBarSelectedTextColor
                           : bottomNavBarTextColor,
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              // if (_currentBottomBarIndex != '') {
+              //   setState(() {
+              //     _currentBottomBarIndex = "";
+              //   });
+              //   currentBottomNavigationIndex = _currentBottomBarIndex;
+              // }
+            },
+            child: Container(
+              color: _currentBottomBarIndex == ""
+                  ? bottomNavBarSelectedBGColor
+                  : Colors.white,
+              width: screenWidth * 0.20,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Container(
-                    child: Text(
-                      "Leads",
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: _currentBottomBarIndex == "1"
-                                  ? bottomNavBarSelectedTextColor
-                                  : bottomNavBarTextColor)),
+                    child: SvgPicture.asset(
+                      'assets/images/search.svg',
+                      width: screenWidth / 16,
+                      color: _currentBottomBarIndex == ""
+                          ? bottomNavBarSelectedTextColor
+                          : bottomNavBarTextColor,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -118,7 +127,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
             onTap: () {
               if (_currentBottomBarIndex != '2') {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/account_list', (route) => false);
+                    context, '/tasks_list', (route) => false);
                 setState(() {
                   _currentBottomBarIndex = "2";
                 });
@@ -129,30 +138,19 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
               color: _currentBottomBarIndex == "2"
                   ? bottomNavBarSelectedBGColor
                   : Colors.white,
-              width: screenWidth * 0.25,
+              width: screenWidth * 0.20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     child: SvgPicture.asset(
-                      'assets/images/accounts_icon.svg',
-                      width: screenWidth / 15,
+                      'assets/images/tasks.svg',
+                      width: screenWidth / 18,
                       color: _currentBottomBarIndex == "2"
                           ? bottomNavBarSelectedTextColor
                           : bottomNavBarTextColor,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5.0),
-                    child: Text(
-                      "Accounts",
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: _currentBottomBarIndex == "2"
-                                  ? bottomNavBarSelectedTextColor
-                                  : bottomNavBarTextColor)),
-                    ),
-                  )
                 ],
               ),
             ),
@@ -169,33 +167,25 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
               }
             },
             child: Container(
-              color: _currentBottomBarIndex == "3"
-                  ? bottomNavBarSelectedBGColor
-                  : Colors.white,
-              width: screenWidth * 0.25,
+              decoration: BoxDecoration(
+                  color: _currentBottomBarIndex == "3"
+                      ? bottomNavBarSelectedBGColor
+                      : Colors.white,
+                  borderRadius:
+                      BorderRadius.only(topRight: Radius.circular(30))),
+              width: screenWidth * 0.20,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     child: SvgPicture.asset(
-                      'assets/images/menu.svg',
-                      width: screenWidth / 15,
+                      'assets/images/more.svg',
+                      width: screenWidth / 16,
                       color: _currentBottomBarIndex == "3"
                           ? bottomNavBarSelectedTextColor
                           : bottomNavBarTextColor,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5.0),
-                    child: Text(
-                      "More",
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: _currentBottomBarIndex == "3"
-                                  ? bottomNavBarSelectedTextColor
-                                  : bottomNavBarTextColor)),
-                    ),
-                  )
                 ],
               ),
             ),

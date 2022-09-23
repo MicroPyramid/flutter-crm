@@ -1,10 +1,10 @@
 class Company {
-  int id;
-  String name;
+  int? id;
+  String? name;
   dynamic address;
-  String subDomain;
-  int userLimit;
-  String country;
+  String? subDomain;
+  int? userLimit;
+  String? country;
 
   Company(
       {this.id,

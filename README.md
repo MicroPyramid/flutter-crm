@@ -1,2 +1,10 @@
-# flutter-crm
-CRM app developed in flutter for Django-CRM
+# BottleCRM
+
+Free CRM for startups and enterprises.
+
+
+# build
+flutter clean
+flutter pub get
+flutter build appbundle
+flutter build apk

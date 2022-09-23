@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "74115878447",
+    "project_id": "bottle-crm-10074",
+    "storage_bucket": "bottle-crm-10074.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74115878447:android:858fb769df26bb2c5900da",
+        "android_client_info": {
+          "package_name": "com.example.bottle_crm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74115878447-0r10i3hk3mma0u2vaenbsbtvvtud5sv5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8es-uwk_IlZsuHWlEwfiEZfsrENKXRgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74115878447-0r10i3hk3mma0u2vaenbsbtvvtud5sv5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

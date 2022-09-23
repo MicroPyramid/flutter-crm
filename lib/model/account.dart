@@ -1,35 +1,33 @@
-import 'package:flutter_crm/model/company.dart';
-import 'package:flutter_crm/model/contact.dart';
-import 'package:flutter_crm/model/lead.dart';
-import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/model/team.dart';
+import 'package:bottle_crm/model/contact.dart';
+import 'package:bottle_crm/model/lead.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/model/team.dart';
 import 'package:intl/intl.dart';
 
 class Account {
-  int id;
-  String name;
-  String email;
-  String phone;
-  String industry;
-  String billingAddressLine;
-  String billingStreet;
-  String billingCity;
-  String billingState;
-  String billingPostcode;
-  String billingCountry;
-  String website;
-  String description;
-  Profile createdBy;
-  String createdOn;
-  bool isActive;
-  List tags;
-  String status;
-  Lead lead;
-  String contactName;
-  List<Contact> contacts;
-  List<Profile> assignedTo;
-  List<Team> teams;
-  Company company;
+  int? id;
+  String? name;
+  String? email;
+  String? phone;
+  String? industry;
+  String? billingAddressLine;
+  String? billingStreet;
+  String? billingCity;
+  String? billingState;
+  String? billingPostcode;
+  String? billingCountry;
+  String? website;
+  String? description;
+  Profile? createdBy;
+  String? createdOn;
+  bool? isActive;
+  List? tags;
+  String? status;
+  Lead? lead;
+  String? contactName;
+  List<Contact>? contacts;
+  List<Profile>? assignedTo;
+  List<Team>? teams;
 
   Account(
       {this.id,
@@ -54,8 +52,7 @@ class Account {
       this.lead,
       this.contactName,
       this.contacts,
-      this.teams,
-      this.company});
+      this.teams});
 
   Account.fromJson(Map account) {
     this.id = account['id'] != null ? account['id'] : 0;
@@ -104,9 +101,6 @@ class Account {
     this.teams = account["teams"] != null
         ? List<Team>.from(account["teams"].map((x) => Team.fromJson(x)))
         : [];
-    this.company = account['company'] != null
-        ? Company.fromJson(account['company'])
-        : Company();
   }
 
   toJson() {
@@ -133,8 +127,7 @@ class Account {
       'lead': lead,
       'contact_name': contactName,
       'contacts': contacts,
-      'teams': teams,
-      'company': company
+      'teams': teams
     };
   }
 }

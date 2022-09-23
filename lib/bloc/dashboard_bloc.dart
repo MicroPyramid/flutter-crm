@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:flutter_crm/model/account.dart';
-import 'package:flutter_crm/model/opportunities.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:flutter_crm/services/crm_services.dart';
+import 'package:bottle_crm/model/account.dart';
+import 'package:bottle_crm/model/contact.dart';
+import 'package:bottle_crm/model/opportunities.dart';
+import 'package:bottle_crm/services/crm_services.dart';
 
 class DashboardBloc {
   Map _dashboardData = {};
-  // final _dashboardFetcher = PublishSubject<Map>();
-  // Stream<Map> get dashboardDetails => _dashboardFetcher.stream;
 
   Future fetchDashboardDetails() async {
     await CrmService().getDashboardDetails().then((response) {
@@ -15,10 +13,16 @@ class DashboardBloc {
 
       List<Account> _accounts = [];
       List<Opportunity> _opportunities = [];
+      List<Contact> _contacts = [];
 
       res['accounts'].forEach((_account) {
         Account account = Account.fromJson(_account);
         _accounts.add(account);
+      });
+
+      res['contacts'].forEach((_contact) {
+        Contact contact = Contact.fromJson(_contact);
+        _contacts.add(contact);
       });
 
       res['opportunities'].forEach((_opportunity) {
@@ -28,24 +32,20 @@ class DashboardBloc {
 
       _dashboardData['accounts'] = _accounts;
       _dashboardData['opportunities'] = _opportunities;
+      _dashboardData['contacts'] = _contacts;
       _dashboardData['accountsCount'] = res['accounts_count'];
       _dashboardData['contactsCount'] = res['contacts_count'];
       _dashboardData['leadsCount'] = res['leads_count'];
       _dashboardData['opportunitiesCount'] = res['opportunities_count'];
-
-      // _dashboardFetcher.sink.add(_dashboardData);
-    }).catchError((onError) {
-      print("fetchDashboardDetails>> $onError");
     });
+    // .catchError((onError) {
+    //   print("fetchDashboardDetails Error >> $onError");
+    // });
   }
 
   Map get dashboardData {
     return _dashboardData;
   }
-
-  // void dispose() {
-  //   _dashboardFetcher.close();
-  // }
 }
 
 final dashboardBloc = DashboardBloc();

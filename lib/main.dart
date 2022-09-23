@@ -1,82 +1,130 @@
+import 'package:bottle_crm/ui/screens/accounts/accounts_list.dart';
+import 'package:bottle_crm/ui/screens/accounts/account_create.dart';
+import 'package:bottle_crm/ui/screens/accounts/account_details.dart';
+import 'package:bottle_crm/ui/screens/authentication/change_password.dart';
+import 'package:bottle_crm/ui/screens/authentication/companies_List.dart';
+import 'package:bottle_crm/ui/screens/authentication/forgot_password.dart';
+import 'package:bottle_crm/ui/screens/authentication/login.dart';
+import 'package:bottle_crm/splash_screen.dart';
+import 'package:bottle_crm/ui/screens/authentication/profile.dart';
+import 'package:bottle_crm/ui/screens/authentication/register.dart';
+import 'package:bottle_crm/ui/screens/cases/case_create.dart';
+import 'package:bottle_crm/ui/screens/cases/case_details.dart';
+import 'package:bottle_crm/ui/screens/cases/cases_list.dart';
+import 'package:bottle_crm/ui/screens/contacts/contact_create.dart';
+import 'package:bottle_crm/ui/screens/contacts/contact_details.dart';
+import 'package:bottle_crm/ui/screens/contacts/contacts_list.dart';
+import 'package:bottle_crm/ui/screens/dashboard/dashboard.dart';
+import 'package:bottle_crm/ui/screens/documents/documents_list.dart';
+import 'package:bottle_crm/ui/screens/events/event_create.dart';
+import 'package:bottle_crm/ui/screens/events/event_details.dart';
+import 'package:bottle_crm/ui/screens/events/events_list.dart';
+import 'package:bottle_crm/ui/screens/invoices/invoices_list.dart';
+import 'package:bottle_crm/ui/screens/leads/lead_create.dart';
+import 'package:bottle_crm/ui/screens/leads/lead_details.dart';
+import 'package:bottle_crm/ui/screens/leads/leads_list.dart';
+import 'package:bottle_crm/ui/screens/more_options_screen.dart';
+import 'package:bottle_crm/ui/screens/opportunities/opportunitie_create.dart';
+import 'package:bottle_crm/ui/screens/opportunities/opportunitie_details.dart';
+import 'package:bottle_crm/ui/screens/opportunities/opportunities_list.dart';
+import 'package:bottle_crm/ui/screens/settings/settings.dart';
+import 'package:bottle_crm/ui/screens/settings/settings_details.dart';
+import 'package:bottle_crm/ui/screens/settings/settings_userDetails.dart';
+import 'package:bottle_crm/ui/screens/tasks/task_create.dart';
+import 'package:bottle_crm/ui/screens/tasks/task_details.dart';
+import 'package:bottle_crm/ui/screens/tasks/tasks_list.dart';
+import 'package:bottle_crm/ui/screens/teams/team_create.dart';
+import 'package:bottle_crm/ui/screens/teams/team_details.dart';
+import 'package:bottle_crm/ui/screens/teams/teams_list.dart';
+import 'package:bottle_crm/ui/screens/users/user_create.dart';
+import 'package:bottle_crm/ui/screens/users/user_details.dart';
+import 'package:bottle_crm/ui/screens/users/users_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/ui/screens/accounts/account_create.dart';
-import 'package:flutter_crm/ui/screens/accounts/account_details.dart';
-import 'package:flutter_crm/ui/screens/accounts/accounts_list.dart';
-import 'package:flutter_crm/ui/screens/authentication/forgot_password.dart';
-import 'package:flutter_crm/ui/screens/authentication/login.dart';
-import 'package:flutter_crm/ui/screens/authentication/register.dart';
-import 'package:flutter_crm/ui/screens/authentication/sub_domain.dart';
-import 'package:flutter_crm/ui/screens/cases/cases_index.dart';
-import 'package:flutter_crm/ui/screens/contacts/contact_create.dart';
-import 'package:flutter_crm/ui/screens/contacts/contacts_list.dart';
-import 'package:flutter_crm/ui/screens/dashboard/dashboard.dart';
-import 'package:flutter_crm/ui/screens/documents/documents_index.dart';
-import 'package:flutter_crm/ui/screens/events/events_index.dart';
-import 'package:flutter_crm/ui/screens/invoices/invoices_index.dart';
-import 'package:flutter_crm/ui/screens/leads/lead_create.dart';
-import 'package:flutter_crm/ui/screens/leads/lead_details.dart';
-import 'package:flutter_crm/ui/screens/leads/leads_list.dart';
-import 'package:flutter_crm/ui/screens/marketing/campaigns/campaigns_index.dart';
-import 'package:flutter_crm/ui/screens/marketing/contacts/contacts_index.dart';
-import 'package:flutter_crm/ui/screens/marketing/dashboard/dashboard_index.dart';
-import 'package:flutter_crm/ui/screens/marketing/email_templates/email_index.dart';
-import 'package:flutter_crm/ui/screens/more_options_screen.dart';
-import 'package:flutter_crm/ui/screens/opportunities/opportunities_index.dart';
-import 'package:flutter_crm/ui/screens/authentication/change_password.dart';
-import 'package:flutter_crm/ui/screens/authentication/profile_details.dart';
-import 'package:flutter_crm/ui/screens/splash_screen.dart';
-import 'package:flutter_crm/ui/screens/tasks/tasks_index.dart';
-import 'package:flutter_crm/ui/screens/teams/teams_index.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase?.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  //static FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+  // static FirebaseAnalyticsObserver getAnalyticsObserver =
+  //     FirebaseAnalyticsObserver(analytics: _analytics);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //navigatorObservers: [getAnalyticsObserver],
       title: 'bottlecrm',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        buttonTheme:ButtonThemeData(buttonColor:Color.fromRGBO(62, 121, 247, 1)),
           scaffoldBackgroundColor: Color.fromRGBO(236, 238, 244, 1),
-          buttonColor: Color.fromRGBO(223, 83, 42, 1),
-          primarySwatch: Colors.blue,
-          // primaryColor: Color.fromRGBO(29, 132, 150, 1),
-          primaryColor: Colors.white,
-          secondaryHeaderColor: Color.fromRGBO(5, 24, 62, 1),
-          dividerColor: Color.fromRGBO(232, 243, 245, 1)),
+          //buttonColor: Color.fromRGBO(62, 121, 247, 1),
+          primaryColor: Color.fromRGBO(62, 121, 247, 1),
+          secondaryHeaderColor: Color.fromRGBO(112, 121, 128, 1),
+          dividerColor: Color.fromRGBO(69, 85, 96, 1)),
       home: SplashScreen(),
+      onUnknownRoute: (RouteSettings settings) {
+        return MaterialPageRoute<void>(
+          settings: settings,
+          builder: (BuildContext context) => Scaffold(
+              body: Container(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('oops! something went wrong.',
+                    style: TextStyle(fontSize: 20.0))
+              ],
+            ),
+          )),
+        );
+      },
       routes: {
-        '/sub_domain': (BuildContext context) => SubDomain(),
-        '/user_register': (BuildContext context) => UserRegister(),
-        '/user_login': (BuildContext context) => UserLogin(),
+        '/login': (BuildContext context) => Login(),
+        '/register': (BuildContext context) => Register(),
         '/forgot_password': (BuildContext context) => ForgotPassword(),
-        '/dashboard': (BuildContext context) => Dashboard(),
-        '/account_list': (BuildContext context) => AccountsList(),
-        '/account_details': (BuildContext context) => AccountDetails(),
-        '/create_account': (BuildContext context) => CreateAccount(),
-        '/cases': (BuildContext context) => CasesScreen(),
-        '/sales_contacts': (BuildContext context) => ContactsScreen(),
-        '/create_contact': (BuildContext context) => CreateContact(),
-        '/documents': (BuildContext context) => DocumentsScreen(),
-        '/events': (BuildContext context) => EventsScreen(),
-        '/invoices': (BuildContext context) => InvoicesScreen(),
-        '/leads': (BuildContext context) => LeadsList(),
-        '/lead_details': (BuildContext context) => LeadDetails(),
-        '/create_lead': (BuildContext context) => CreateLead(),
-        '/opportunities': (BuildContext context) => OpportunitiesScreen(),
-        '/tasks': (BuildContext context) => TasksScreen(),
-        '/teams': (BuildContext context) => TeamsScreen(),
         '/change_password': (BuildContext context) => ChangePassword(),
-        '/marketing_dashboard': (BuildContext context) => MarketingDashboard(),
-        '/marketing_contacts': (BuildContext context) =>
-            MarketingContactsScreen(),
-        '/email_templates': (BuildContext context) => EmailTemplatesScreen(),
-        '/marketing_campaigns': (BuildContext context) =>
-            MarketingCampaignsScreen(),
-        '/profile_details': (BuildContext context) => ProfileDetails(),
-        '/more_options': (BuildContext context) => MoreOptions()
+        '/profile': (BuildContext context) => Profile(),
+        '/dashboard': (BuildContext context) => Dashboard(),
+        '/more_options': (BuildContext context) => MoreOptions(),
+        '/leads_list': (BuildContext context) => LeadsList(),
+        '/leads_create': (BuildContext context) => CreateLead(),
+        '/lead_details': (BuildContext context) => LeadDetails(),
+        '/accounts_list': (BuildContext context) => AccountsList(),
+        '/account_create': (BuildContext context) => CreateAccount(),
+        '/account_details': (BuildContext context) => AccountDetails(),
+        '/cases_list': (BuildContext context) => CasesList(),
+        '/case_details': (BuildContext context) => CaseDetails(),
+        '/case_create': (BuildContext context) => CreateCase(),
+        '/contacts_list': (BuildContext context) => ContactsList(),
+        '/contact_create': (BuildContext context) => CreateContact(),
+        '/contact_details': (BuildContext context) => ContactDetails(),
+        '/documents_list': (BuildContext context) => DocumentsList(),
+        '/events_list': (BuildContext context) => EventsList(),
+        '/event_details': (BuildContext context) => EventDetails(),
+        '/event_create': (BuildContext context) => CreateEvent(),
+        '/invoices_list': (BuildContext context) => InvoicesList(),
+        '/opportunitie_create': (BuildContext context) => CreateOpportunities(),
+        '/opportunitie_details': (BuildContext context) =>
+            OpportunitiesDetails(),
+        '/opportunities_list': (BuildContext context) => OpportunitiesList(),
+        '/tasks_list': (BuildContext context) => TasksList(),
+        '/task_details': (BuildContext context) => TasskDeails(),
+        '/task_create': (BuildContext context) => CreateTask(),
+        '/teams_list': (BuildContext context) => TeamsList(),
+        '/team_create': (BuildContext context) => CreateTeam(),
+        '/team_details': (BuildContext context) => TeamkDeails(),
+        '/users_list': (BuildContext context) => UsersList(),
+        '/user_create': (BuildContext context) => CreateUser(),
+        '/user_details': (BuildContext context) => UserDetails(),
+        '/companies_List': (BuildContext context) => CompaniesList(),
+        '/settings_List': (BuildContext context) => SettingsList(),
+        '/settings_details': (BuildContext context) => SettingsDeails(),
+        '/settings_userDetails': (BuildContext context) => SettingsUserDetails(),
       },
     );
   }
