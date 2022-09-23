@@ -1,37 +1,53 @@
-import 'package:flutter_crm/model/company.dart';
-import 'package:flutter_crm/model/profile.dart';
+import 'package:bottle_crm/model/company.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:intl/intl.dart';
 
 class Team {
-  int id;
-  String name;
-  String description;
-  List<Profile> users;
-  String createdOn;
-  Profile createdBy;
-  Company company;
-  String createdOnText;
+  int? id;
+  String? name;
+  String? description;
+  List<Profile>? users;
+  String? createdOn;
+  Profile? createdBy;
+  int? createdById;
+  Company? company;
+  int? companyId;
+  String? createdOnText;
 
   Team(
       {this.id,
-        this.name,
-        this.description,
-        this.users,
-        this.createdOn,
-        this.createdBy,
-        this.company,
-        this.createdOnText
-      });
+      this.name,
+      this.description,
+      this.users,
+      this.createdOn,
+      this.createdBy,
+      this.createdById,
+      this.company,
+      this.companyId,
+      this.createdOnText});
 
-  Team.fromJson(Map account) {
-    this.id = account['id'] != null ?account['id'] : 0;
-    this.name = account['name'] != null ?account['name']:"";
-    this.description = account['description'] != null ? account['description'] :"";
-    this.users =  account['users']!= null ?List<Profile>.from(account['users'].map((x) => Profile.fromJson(x))): [];
-    this.createdOn = account['created_on'] != null ?account['created_on']:"";
-    this.createdBy =  account['created_by']!= null ?Profile.fromJson(account['created_by']): Profile();
-    this.company =  account['company']!= null ?Company.fromJson(account['company']) : Company();
-    this.createdOnText = account['created_on_arrow'] != null ?account['created_on_arrow'] :"";
-    }
+  Team.fromJson(Map team) {
+    this.id = team['id'] != null ? team['id'] : 0;
+    this.name = team['name'] != null ? team['name'] : "";
+    this.description = team['description'] != null ? team['description'] : "";
+    this.users = team['users'] != null
+        ? List<Profile>.from(team['users'].map((x) => Profile.fromJson(x)))
+        : [];
+    this.createdOn = team['created_on'] != null
+        ? DateFormat("dd-MM-yyyy")
+            .format(DateFormat("yyyy-MM-dd").parse(team['created_on']))
+        : "";
+    this.createdBy = team['created_by'] != null
+        ? Profile.fromJson(team['created_by'])
+        : Profile();
+    this.createdById =
+        team['created_by'] != null ? team['created_by']['id'] : 0;
+    this.company =
+        team['company'] != null ? Company.fromJson(team['company']) : Company();
+    this.companyId = team['company'] != null ? team['company']['id'] : 0;
+    this.createdOnText =
+        team['created_on_arrow'] != null ? team['created_on_arrow'] : "";
+  }
 
   toJson() {
     return {
@@ -41,8 +57,12 @@ class Team {
       'users': users,
       'created_on': createdOn,
       'created_by': createdBy,
+      'created_by_id': createdById,
       'company': company,
+      'company_id': companyId,
       'created_on_arrow': createdOnText,
     };
   }
+
+  void forEach(Null Function(dynamic _user) param0) {}
 }

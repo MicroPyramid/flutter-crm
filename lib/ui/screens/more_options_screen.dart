@@ -1,13 +1,12 @@
 import 'dart:core';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/bloc/auth_bloc.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MoreOptions extends StatefulWidget {
@@ -19,55 +18,52 @@ class _MoreOptionsState extends State<MoreOptions> {
   final List _optionsList = [
     {
       'title': 'Contacts',
-      'route': '/sales_contacts',
-      'icon': 'assets/images/contacts_icon.svg'
+      'route': '/contacts_list',
+      'icon': 'assets/images/contacts.svg'
     },
     {
       'title': 'Opportunities',
-      'route': '/opportunities',
-      'icon': 'assets/images/opportunities_icon.svg'
+      'route': '/opportunities_list',
+      'icon': 'assets/images/opportunities.svg'
     },
     {
       'title': 'Cases',
-      'route': '/cases',
-      'icon': 'assets/images/cases_icon.svg'
+      'route': '/cases_list',
+      'icon': 'assets/images/cases.svg'
     },
     {
       'title': 'Documents',
-      'route': '/documents',
-      'icon': 'assets/images/documents_icon.svg'
+      'route': '/documents_list',
+      'icon': 'assets/images/documents.svg'
     },
     {
-      'title': 'Tasks',
-      'route': '/tasks',
-      'icon': 'assets/images/tasks_icon.svg'
+      'title': 'Leads',
+      'route': '/leads_list',
+      'icon': 'assets/images/leads.svg'
     },
     {
       'title': 'Invoices',
-      'route': '/invoices',
-      'icon': 'assets/images/invoices_icon.svg'
+      'route': '/invoices_list',
+      'icon': 'assets/images/invoices.svg'
     },
     {
       'title': 'Events',
-      'route': '/events',
-      'icon': 'assets/images/events_icon.svg'
+      'route': '/events_list',
+      'icon': 'assets/images/events.svg'
     },
     {
       'title': 'Teams',
-      'route': '/teams',
-      'icon': 'assets/images/teams_icon.svg'
+      'route': '/teams_list',
+      'icon': 'assets/images/teams.svg'
     },
-  ];
-
-  final List _bottomOptionsList = [
     {
       'title': 'Users',
-      'route': '/sales_contacts',
+      'route': '/users_list',
       'icon': 'assets/images/users.svg'
     },
     {
       'title': 'Settings',
-      'route': '/opportunities',
+      'route': '/settings_List',
       'icon': 'assets/images/settings.svg'
     },
     {
@@ -75,7 +71,7 @@ class _MoreOptionsState extends State<MoreOptions> {
       'route': '/change_password',
       'icon': 'assets/images/change_password.svg'
     },
-    {'title': 'Logout', 'icon': 'assets/images/logout_icon.svg'},
+    {'title': 'Logout', 'icon': 'assets/images/logout.svg'},
   ];
 
   @override
@@ -86,263 +82,199 @@ class _MoreOptionsState extends State<MoreOptions> {
   void showLogoutAlertDialog(BuildContext context) {
     showDialog(
         context: context,
-        child: CupertinoAlertDialog(
-          title: Text(
-            "Logout?",
-            style: GoogleFonts.robotoSlab(
-                color: Theme.of(context).secondaryHeaderColor),
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              "Logout?",
+              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "Are you sure you want to logout?",
+              style: TextStyle(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Cancel")),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('authToken');
+                    prefs.remove('org');
+                    currentBottomNavigationIndex = "0";
+                    await FirebaseAnalytics.instance
+                        .logEvent(name: "User_Logged_Out");
+                    Navigator.pushReplacementNamed(context, "/login");
+                  },
+                  child: Text("Logout")),
+            ],
+          );
+        });
+  }
+
+  buildProfile() {
+    return Container(
+        padding: EdgeInsets.only(left: 20.0, right: 10.0),
+        height: screenHeight * 0.15,
+        decoration: BoxDecoration(
+            color: bottomNavBarSelectedTextColor,
+            ),
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: 10.0),
+                child: authBloc.userProfile!.profileUrl != null &&
+                        authBloc.userProfile!.profileUrl != ""
+                    ? CircleAvatar(
+                        radius: screenWidth / 11.5,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: CircleAvatar(
+                          radius: screenWidth / 12,
+                          backgroundImage:
+                              NetworkImage(authBloc.userProfile!.profileUrl!),
+                          backgroundColor: Colors.white,
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: screenWidth / 12,
+                        child: Text(
+                          authBloc.userProfile!.firstName![0].allInCaps,
+                          style: TextStyle(
+                              fontSize: screenWidth / 11,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor),
+                        ),
+                        backgroundColor: Colors.grey[200],
+                      ),
+              ),
+              Container(
+                width: screenWidth * 0.6,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      authBloc.userProfile!.firstName!.capitalizeFirstofEach(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth / 24,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(height: 3.0),
+                    Text(
+                      authBloc.userProfile!.email!,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth / 26,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(height: 3.0),
+                    Text.rich(TextSpan(children: [
+                      TextSpan(
+                          text: "Permissions: ",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenWidth / 26,
+                              fontWeight: FontWeight.w500)),
+                      TextSpan(
+                          text: authBloc.userProfile!.role!.toLowerCase() ==
+                                  "admin"
+                              ? 'Sales and Marketing'
+                              : authBloc.userProfile!.hasSalesAccess! &&
+                                      authBloc.userProfile!.hasMarketingAccess!
+                                  ? "Sales and Marketing"
+                                  : authBloc.userProfile!.hasSalesAccess! &&
+                                          !authBloc
+                                              .userProfile!.hasMarketingAccess!
+                                      ? "Sales"
+                                      : !authBloc.userProfile!
+                                                  .hasSalesAccess! &&
+                                              authBloc.userProfile!
+                                                  .hasMarketingAccess!
+                                          ? "Marketing"
+                                          : "---",
+                          style: TextStyle(
+                              color: Colors.green,
+                              fontSize: screenWidth / 26,
+                              fontWeight: FontWeight.w500))
+                    ]))
+                  ],
+                ),
+              ),
+              Container(
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/profile');
+                    },
+                    icon: Icon(Icons.arrow_forward_ios,
+                        color: Colors.white, size: screenWidth / 15)),
+              )
+            ],
           ),
-          content: Text(
-            "Are you sure you want to logout?",
-            style: GoogleFonts.robotoSlab(fontSize: 15.0),
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-                isDefaultAction: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-            CupertinoDialogAction(
-                textStyle: TextStyle(color: Colors.red),
-                isDefaultAction: true,
-                onPressed: () async {
-                  Navigator.pop(context);
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.remove('authToken');
-                  prefs.remove('subdomain');
-                  currentBottomNavigationIndex = "0";
-                  Navigator.pushReplacementNamed(context, "/sub_domain");
-                },
-                child: Text(
-                  "Logout",
-                  style: GoogleFonts.robotoSlab(),
-                )),
-          ],
         ));
   }
 
-  Widget _buildMenuItems(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          child: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (overscroll) {
-              overscroll.disallowGlow();
-              return true;
-            },
-            child: ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: _optionsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, _optionsList[index]['route']);
-                  },
-                  child: Container(
-                    child: Row(
-                      children: [
-                        Container(
-                          padding:
-                              EdgeInsets.fromLTRB(screenWidth / 12, 8, 20, 8),
-                          child: SvgPicture.asset(
-                            _optionsList[index]['icon'],
-                            width: screenWidth / 20,
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            _optionsList[index]['title'],
-                            style: GoogleFonts.robotoSlab(
-                                color: Color.fromRGBO(75, 75, 78, 1),
-                                fontSize: screenWidth / 25),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Divider(color: Colors.grey[400]),
-        ),
-        Container(
-          child: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (overscroll) {
-              overscroll.disallowGlow();
-              return true;
-            },
-            child: ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: _bottomOptionsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    if (_bottomOptionsList[index]['title'] == "Logout") {
-                      showLogoutAlertDialog(context);
-                    } else {
-                      Navigator.pushNamed(
-                          context, _bottomOptionsList[index]['route']);
-                    }
-                  },
-                  child: Container(
-                    child: Row(
-                      children: [
-                        Container(
-                          padding:
-                              EdgeInsets.fromLTRB(screenWidth / 12, 8, 20, 8),
-                          child: SvgPicture.asset(
-                            _bottomOptionsList[index]['icon'],
-                            width: screenWidth / 20,
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            _bottomOptionsList[index]['title'],
-                            style: GoogleFonts.robotoSlab(
-                                color: _bottomOptionsList[index]['title'] ==
-                                        "Logout"
-                                    ? Color.fromRGBO(234, 67, 53, 1)
-                                    : Color.fromRGBO(75, 75, 78, 1),
-                                fontSize: screenWidth / 25),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProfileWidget() {
+  buildOptions() {
     return Container(
-      padding: EdgeInsets.all(10.0),
-      child: Row(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 10.0),
-            child: authBloc.userProfile.profileUrl != null &&
-                    authBloc.userProfile.profileUrl != ""
-                ? CircleAvatar(
-                    radius: screenWidth / 15.5,
-                    backgroundColor: Color.fromRGBO(75, 75, 78, 1),
-                    child: CircleAvatar(
-                      radius: screenWidth / 16,
-                      backgroundImage:
-                          NetworkImage(authBloc.userProfile.profileUrl),
-                      backgroundColor: Colors.white,
-                    ),
-                  )
-                : CircleAvatar(
-                    radius: screenWidth / 15,
-                    child: Icon(
-                      Icons.person,
-                      size: screenWidth / 10,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: Theme.of(context).secondaryHeaderColor,
-                  ),
-          ),
-          Container(
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: _optionsList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              if (_optionsList[index]['title'] == "Logout") {
+                showLogoutAlertDialog(context);
+              } else {
+                Navigator.pushNamed(context, _optionsList[index]['route']);
+              }
+            },
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: screenWidth * 0.7,
-                  child: Text(authBloc.userProfile.userName,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 18))),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 3.0),
-                  width: screenWidth * 0.7,
-                  child: Text(authBloc.userProfile.email,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Color.fromRGBO(75, 75, 78, 1),
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 25))),
-                ),
-                Container(
-                    width: screenWidth * 0.7,
-                    child: RichText(
-                      overflow: TextOverflow.ellipsis,
-                      text: TextSpan(
-                        text: 'Permissions: ',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Color.fromRGBO(75, 75, 78, 1),
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: authBloc.userProfile.role.toLowerCase() ==
-                                      "admin"
-                                  ? 'Sales And Marketing'
-                                  : authBloc.userProfile.hasSalesAccess &&
-                                          authBloc
-                                              .userProfile.hasMarketingAccess
-                                      ? "Sales And Marketing"
-                                      : authBloc.userProfile.hasSalesAccess &&
-                                              !authBloc.userProfile
-                                                  .hasMarketingAccess
-                                          ? "Sales"
-                                          : !authBloc.userProfile
-                                                      .hasSalesAccess &&
-                                                  authBloc.userProfile
-                                                      .hasMarketingAccess
-                                              ? "Marketing"
-                                              : "",
-                              style: GoogleFonts.robotoSlab(
-                                  textStyle: TextStyle(
-                                      color: Color.fromRGBO(75, 153, 90, 1),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: screenWidth / 25))),
-                        ],
+                  child: Row(
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.fromLTRB(screenWidth / 12, 8, 20, 8),
+                        child: SvgPicture.asset(
+                          _optionsList[index]['icon'],
+                          width: screenWidth / 18,
+                        ),
                       ),
-                    ))
+                      Container(
+                        child: Text(
+                          _optionsList[index]['title'],
+                          style: TextStyle(
+                              color: _optionsList[index]['title'] == "Logout"
+                                  ? Colors.red
+                                  : Color.fromRGBO(75, 75, 78, 1),
+                              fontSize: screenWidth / 24,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                index == _optionsList.length - 1
+                    ? Container()
+                    : Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Divider(color: Colors.grey[200]))
               ],
             ),
-          ),
-          GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/profile_details');
-              },
-              child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(117, 174, 51, 1),
-                    borderRadius: BorderRadius.all(Radius.circular(2.0)),
-                  ),
-                  alignment: Alignment.center,
-                  width: screenWidth / 15,
-                  height: screenHeight * 0.05,
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                    size: screenWidth / 20,
-                  )))
-        ],
+          );
+        },
       ),
     );
   }
@@ -352,23 +284,30 @@ class _MoreOptionsState extends State<MoreOptions> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'More Options',
-            style: GoogleFonts.robotoSlab(),
-          ),
-          automaticallyImplyLeading: false,
-        ),
-        body: SingleChildScrollView(
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
           child: Container(
-            height: screenHeight * 0.8,
+            decoration: BoxDecoration(color: Color.fromRGBO(73, 128, 255, 1.0)),
             child: Column(
-              children: <Widget>[
-                _buildProfileWidget(),
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
                 Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Divider(color: Colors.grey[400])),
-                Container(child: _buildMenuItems(context))
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  child: Text(
+                    'More Options',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth / 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                buildProfile(),
+                Expanded(
+                    child: Container(
+                  color: Colors.white,
+                  child: buildOptions(),
+                ))
               ],
             ),
           ),

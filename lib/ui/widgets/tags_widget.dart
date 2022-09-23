@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/utils/utils.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:random_color/random_color.dart';
 
 class TagViewWidget extends StatelessWidget {
@@ -22,8 +21,7 @@ class TagViewWidget extends StatelessWidget {
       color: randomColor.randomColor(colorBrightness: ColorBrightness.light),
       child: Text(
         tags[tagIndex]['name'],
-        style: GoogleFonts.robotoSlab(
-            textStyle: TextStyle(color: Colors.white, fontSize: 12.0)),
+        style: TextStyle(color: Colors.white, fontSize: 12.0),
       ),
     );
   }

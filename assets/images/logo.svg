@@ -1,13 +1,81 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="312" height="88.508" viewBox="0 0 312 88.508">
-  <g id="Group_2836" data-name="Group 2836" transform="translate(-0.559 0.526)">
-    <path id="Path_2266" data-name="Path 2266" d="M.559,43.728V81.14c4.388,7.16,21.478,5.774,25.4,4.388s9.468-3.234,13.856-3,133.946,3,147.8,3,24.018-12.7,34.18-14.318,71.59-12.47,73.438-12.47,1.154,2.078,4.158,3.014,3-1.4,4.386-1.506,2.08,1.262,4.62,1.494,3-2.542,4.156-3V28.716c-1.154-.462-1.616-3.232-4.156-3s-3.234,1.6-4.62,1.5S302.4,24.764,299.4,25.7s-2.31,3.014-4.158,3.014S231.961,17.862,221.8,16.246,201.477,1.928,187.621,1.928,44.207,4.7,39.819,4.93s-9.93-1.616-13.856-3S4.947-.844.559,6.316Z" transform="translate(0 1.338)" fill="#082033"/>
-    <path id="Path_2267" data-name="Path 2267" d="M.559,22.27V59.682c4.388,7.16,21.478,5.774,25.4,4.388s9.468-3.234,13.856-3,133.946,3,147.8,3,24.018-12.7,34.18-14.318,71.59-12.47,73.438-12.47,1.154,2.078,4.158,3.014,3-1.4,4.386-1.506,2.08,1.262,4.62,1.494,3-2.542,4.156-3V22.27Z" transform="translate(0 22.796)" fill="#10284b"/>
-    <path id="Path_2268" data-name="Path 2268" d="M178.626,20.053v30.43l-63.02,10.779V9.273Z" transform="translate(115.047 9.799)" fill="#4b995a"/>
-    <path id="Path_2269" data-name="Path 2269" d="M178.626,22.27V37.485l-63.02,10.779V22.27Z" transform="translate(115.047 22.796)" fill="#3d8445"/>
-    <path id="Path_2270" data-name="Path 2270" d="M132.767,1.506V84.561L36.134,82.6V3.471Z" transform="translate(35.575 2.032)" fill="#082033"/>
-    <path id="Path_2271" data-name="Path 2271" d="M132.767,22.319V63.847L36.134,61.882V22.27Z" transform="translate(35.575 22.796)" fill="#10284b"/>
-    <g id="Group_2835" data-name="Group 2835" transform="translate(47.532 -0.526)">
-      <text id="CRM" transform="translate(0 67)" fill="#fff" font-size="64" font-family="RobotoSlab-Bold, Roboto Slab" font-weight="700"><tspan x="0" y="0">CRM</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="224" height="61.623" viewBox="0 0 224 61.623">
+  <defs>
+    <filter id="CRM" x="33.724" y="3.974" width="98" height="55" filterUnits="userSpaceOnUse">
+      <feOffset dx="2" dy="2" input="SourceAlpha"/>
+      <feGaussianBlur result="blur"/>
+      <feFlood flood-opacity="0.078"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_2837" data-name="Group 2837" transform="translate(-0.559 -1.103)">
+    <path id="Path_2266" data-name="Path 2266" d="M.559,31.624v26.86c3.15,5.141,15.42,4.145,18.239,3.15s6.8-2.322,9.948-2.155,96.166,2.155,106.114,2.155,17.244-9.119,24.54-10.28S210.8,42.4,212.124,42.4s.829,1.492,2.985,2.164,2.155-1,3.149-1.081,1.493.906,3.317,1.073,2.155-1.825,2.984-2.155V20.846c-.829-.332-1.16-2.32-2.984-2.155s-2.322,1.152-3.317,1.074-.994-1.756-3.149-1.083-1.658,2.164-2.985,2.164-45.43-7.793-52.725-8.953-14.592-10.28-24.54-10.28S31.9,3.6,28.746,3.769,21.616,2.608,18.8,1.613,3.709-.377.559,4.764Z" transform="translate(0 0.292)" fill="#2b4fa1"/>
+    <path id="Path_2267" data-name="Path 2267" d="M.559,22.27V49.13c3.15,5.141,15.42,4.145,18.239,3.15s6.8-2.322,9.948-2.155S124.912,52.28,134.86,52.28,152.1,43.161,159.4,42s51.4-8.953,52.725-8.953.829,1.492,2.985,2.164,2.155-1,3.149-1.081,1.493.906,3.317,1.073,2.155-1.825,2.984-2.155V22.27Z" transform="translate(0 9.645)" fill="#193b8b"/>
+    <path id="Path_2268" data-name="Path 2268" d="M160.851,17.012V38.859L115.606,46.6V9.273Z" transform="translate(50.149 3.98)" fill="#91b1f8"/>
+    <path id="Path_2269" data-name="Path 2269" d="M160.851,22.27V33.194l-45.245,7.739V22.27Z" transform="translate(50.149 9.645)" fill="#cbdbff"/>
+    <path id="Path_2270" data-name="Path 2270" d="M105.512,1.506V61.135L36.134,59.725V2.917Z" transform="translate(15.507 0.594)" fill="none"/>
+    <path id="Path_2271" data-name="Path 2271" d="M105.512,22.306V52.12L36.134,50.709V22.27Z" transform="translate(15.507 9.645)" fill="none" opacity="0.12"/>
+    <g id="Group_2835" data-name="Group 2835" transform="translate(1.738 2.51)">
+      <g id="Line_Chart6" data-name="Line Chart6" opacity="0.53">
+        <g id="Chart" transform="translate(0 0)">
+          <g id="m1" transform="translate(0 0)">
+            <path id="Path_2272" data-name="Path 2272" d="M0,54.818,12.459,32.891,24.917,37,37.376,54.818,49.835,39.743,62.294,19.186l12.459,23.3,12.459-13.7,12.459-13.7,12.459,4.111,12.459,9.593L137.046,0" transform="translate(1.353 1.58)" fill="none" stroke="#91b1f8" stroke-width="1"/>
+            <g id="Marks">
+              <g id="Ellipse_1" data-name="Ellipse 1" transform="translate(0 55.411)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.179" cy="1.179" r="1.179" stroke="none"/>
+                <circle cx="1.179" cy="1.179" r="0.679" fill="none"/>
+              </g>
+              <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(12.441 33.1)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_3" data-name="Ellipse 3" transform="translate(24.9 37.212)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_4" data-name="Ellipse 4" transform="translate(37.358 55.028)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_5" data-name="Ellipse 5" transform="translate(49.817 39.952)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_6" data-name="Ellipse 6" transform="translate(62.276 19.396)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_7" data-name="Ellipse 7" transform="translate(74.735 42.693)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_8" data-name="Ellipse 8" transform="translate(87.193 28.989)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_9" data-name="Ellipse 9" transform="translate(99.652 15.284)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_10" data-name="Ellipse 10" transform="translate(112.111 19.396)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_11" data-name="Ellipse 11" transform="translate(124.569 28.989)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.37" cy="1.37" r="1.37" stroke="none"/>
+                <circle cx="1.37" cy="1.37" r="0.87" fill="none"/>
+              </g>
+              <g id="Ellipse_12" data-name="Ellipse 12" transform="translate(136.758)" fill="#dae4fc" stroke="#c4d6ff" stroke-width="1">
+                <circle cx="1.768" cy="1.768" r="1.768" stroke="none"/>
+                <circle cx="1.768" cy="1.768" r="1.268" fill="none"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g transform="matrix(1, 0, 0, 1, -1.18, -1.41)" filter="url(#CRM)">
+        <text id="CRM-2" data-name="CRM" transform="translate(33.72 45.97)" fill="#fff" font-size="44" font-family="Roboto-Bold, Roboto" font-weight="700"><tspan x="0" y="0">CRM</tspan></text>
+      </g>
     </g>
   </g>
 </svg>

@@ -1,37 +1,39 @@
-import 'package:flutter_crm/model/profile.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/model/team.dart';
 import 'package:intl/intl.dart';
 
 import 'contact.dart';
 
 class Lead {
-  int id;
-  String title;
-  String firstName;
-  String lastName;
-  String email;
-  String phone;
-  String status;
-  String source;
-  String addressLine;
-  String street;
-  String city;
-  String state;
-  String postcode;
-  String country;
-  String website;
-  String description;
-  List<Profile> assignedTo;
-  String accountName;
-  String opportunityAmount;
-  Profile createdBy;
-  String createdOn;
-  bool isActive;
+  int? id;
+  String? title;
+  String? firstName;
+  String? lastName;
+  String? email;
+  String? phone;
+  String? status;
+  String? source;
+  String? addressLine;
+  String? street;
+  String? city;
+  String? state;
+  String? postcode;
+  String? country;
+  String? website;
+  String? skypeID;
+  String? description;
+  List<Profile>? assignedTo;
+  String? accountName;
+  String? opportunityAmount;
+  Profile? createdBy;
+  String? createdOn;
+  bool? isActive;
   dynamic enqueryType;
-  List tags;
-  List<Contact> contacts;
-  bool createdFromSite;
-  // List<int> teams;
-  int company;
+  List? tags;
+  List<Contact>? contacts;
+  bool? createdFromSite;
+  List<Team>? teams;
+  // Company company;
 
   Lead({
     this.id,
@@ -49,6 +51,7 @@ class Lead {
     this.postcode,
     this.country,
     this.website,
+    this.skypeID,
     this.description,
     this.assignedTo,
     this.accountName,
@@ -60,8 +63,8 @@ class Lead {
     this.tags,
     this.contacts,
     this.createdFromSite,
-    // this.teams,
-    this.company,
+    this.teams,
+    // this.company,
   });
 
   factory Lead.fromJson(Map<String, dynamic> lead) => Lead(
@@ -80,6 +83,7 @@ class Lead {
         postcode: lead["postcode"] != null ? lead["postcode"] : "",
         country: lead["country"] != null ? lead["country"] : "",
         website: lead["website"] != null ? lead["website"] : "",
+        skypeID: lead["skype_ID"] != null ? lead["skype_ID"] : "",
         description: lead["description"] != null ? lead["description"] : "",
         assignedTo: lead["assigned_to"] != null
             ? List<Profile>.from(lead["assigned_to"]
@@ -106,8 +110,11 @@ class Lead {
         createdFromSite: lead["created_from_site"] != null
             ? lead["created_from_site"]
             : false,
-        // teams: List<int>.from(lead["teams"].map((x) => x)),
-        company: lead["company"] != null ? lead["company"] : 0,
+        teams: lead["teams"] != null
+            ? List<Team>.from(lead["teams"].map((x) => Team.fromJson(x)))
+            : [],
+        // teams: lead
+        // company: lead["company"] != null ? lead["company"] : Company(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -126,18 +133,19 @@ class Lead {
         "postcode": postcode,
         "country": country,
         "website": website,
+        "skype_ID":skypeID,
         "description": description,
-        "assigned_to": List<dynamic>.from(assignedTo.map((x) => x.toJson())),
+        "assigned_to": List<dynamic>.from(assignedTo!.map((x) => x.toJson())),
         "account_name": accountName,
         "opportunity_amount": opportunityAmount,
-        "created_by": createdBy.toJson(),
+        "created_by": createdBy!.toJson(),
         "created_on": createdOn,
         "is_active": isActive,
         "enquery_type": enqueryType,
         "tags": tags,
-        "contacts": List<dynamic>.from(contacts.map((x) => x)),
+        "contacts": List<dynamic>.from(contacts!.map((x) => x)),
         "created_from_site": createdFromSite,
         // "teams": List<dynamic>.from(teams.map((x) => x)),
-        "company": company,
+        // "company": company,
       };
 }

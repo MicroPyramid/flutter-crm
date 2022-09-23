@@ -1,11 +1,14 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:bottle_crm/responsive.dart';
+import 'package:bottle_crm/utils/validations.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottleCrm_logo.dart';
-import 'package:flutter_crm/ui/widgets/footer_button.dart';
-import 'package:flutter_crm/utils/utils.dart';
+
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'package:bottle_crm/bloc/auth_bloc.dart';
+import 'package:bottle_crm/utils/utils.dart';
+
+import '../../../utils/utils.dart';
 
 class ForgotPassword extends StatefulWidget {
   ForgotPassword();
@@ -15,193 +18,365 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final GlobalKey<FormState> _forgotPasswordFormKey = GlobalKey<FormState>();
-  String _email;
+  String? _email = '';
   bool _isLoading = false;
-  String _errorMessage;
-  String _successMessage = "";
+  String _errorMessage = '';
 
   @override
   void initState() {
     super.initState();
   }
 
+  OutlineInputBorder boxBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+      borderSide: BorderSide(width: 1, color: Colors.black12),
+    );
+  }
+
   _submitForm() async {
-    if (!_forgotPasswordFormKey.currentState.validate()) {
+    if (!_forgotPasswordFormKey.currentState!.validate()) {
       return;
     }
-    _forgotPasswordFormKey.currentState.save();
+    _forgotPasswordFormKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
     Map result = await authBloc.forgotPassword({'email': _email});
     if (result['error'] == false) {
       setState(() {
-        _errorMessage = null;
-        _successMessage = result['message'];
+        _errorMessage = '';
       });
+      await authBloc.fetchCompanies();
+      await FirebaseAnalytics.instance.logEvent(name: "Forget Password");
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/dashboard', (route) => false);
     } else if (result['error'] == true) {
       setState(() {
-        _errorMessage = result['errors']['non_field_errors'][0];
+        _errorMessage = result['errors'];
       });
     } else {
       setState(() {
-        _errorMessage = null;
+        _errorMessage = '';
       });
-      showErrorMessage(context, 'Something went wrong');
+      showErrorMessage(context, result['message'].toString());
     }
     setState(() {
       _isLoading = false;
     });
   }
 
-  void showErrorMessage(BuildContext context, String errorContent) {
-    Flushbar(
-      backgroundColor: Colors.white,
-      messageText: Text(errorContent,
-          style:
-              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
-      isDismissible: false,
-      mainButton: FlatButton(
-        child: Text('TRY AGAIN',
-            style: GoogleFonts.robotoSlab(
-                textStyle: TextStyle(color: Theme.of(context).accentColor))),
-        onPressed: () {
-          Navigator.of(context).pop(true);
-          _submitForm();
-        },
-      ),
-      duration: Duration(seconds: 10),
-    )..show(context);
+  showErrorMessage(BuildContext context, String message) {
+    return showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text('Alert'),
+              content: Text('Something went wrong'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _submitForm();
+                    },
+                    child: Text('RETRY'))
+              ],
+            ));
   }
 
   Widget forgotPasswordWidget() {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: 10.0, horizontal: screenWidth * 0.05),
-            child: Text('Forgot Password',
-                style: GoogleFonts.robotoSlab(
-                    textStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: screenWidth / 20))),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.05, vertical: 15.0),
-            child: Text(
-                'Please enter your email address below and we will send you information to change your password.',
-                style: GoogleFonts.robotoSlab(
-                    textStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontSize: screenWidth / 27))),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 10.0),
-            child: Form(
-                key: _forgotPasswordFormKey,
-                child: Container(
-                  child: Row(
+    return Responsive(
+        mobile: buildMobileScreen(),
+        tablet: buildTabletScreen(),
+        desktop: Container());
+  }
+
+  buildMobileScreen() {
+    return Column(
+      children: [
+        SizedBox(height: screenHeight * 0.1),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            width: screenWidth,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 50.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Forgot Password',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenWidth / 18),
+                        ),
+                        SvgPicture.asset(
+                          'assets/images/logo.svg',
+                          width: screenWidth * 0.3,
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Form(
+                        key: _forgotPasswordFormKey,
+                        child: Column(
+                          children: [
+                            Container(
+                                child: Text(
+                              'Please enter your email address below and we will send you information to change your password.',
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: screenWidth / 27,
+                                  fontWeight: FontWeight.w600),
+                            )),
+                            SizedBox(height: 10.0),
+                            Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin: EdgeInsets.only(bottom: 5.0),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: '* ',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: screenWidth / 25,
+                                              fontWeight: FontWeight.w500),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text: 'Email ',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: screenWidth / 24,
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                          ],
+                                        ),
+                                      )),
+                                  Container(
+                                    margin:
+                                        EdgeInsets.symmetric(vertical: 10.0),
+                                    child: TextFormField(
+                                      decoration: InputDecoration(
+                                          prefixIcon: Icon(Icons.email_outlined,
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          contentPadding: EdgeInsets.all(12.0),
+                                          enabledBorder: boxBorder(),
+                                          focusedErrorBorder: boxBorder(),
+                                          focusedBorder: boxBorder(),
+                                          errorBorder: boxBorder(),
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          hintStyle: TextStyle(fontSize: 14.0)),
+                                      keyboardType: TextInputType.emailAddress,
+                                      validator: (value) =>FieldValidators.emailFieldValidation(value!),
+                                      onSaved: (value) {
+                                        _email = value;
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            !_isLoading
+                                ? Container(
+                                    width: screenWidth,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          FocusScope.of(context).unfocus();
+                                          _submitForm();
+                                        },
+                                        child: Text(
+                                          'Submit',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth / 22),
+                                        )),
+                                  )
+                                : Container(
+                                    child: CircularProgressIndicator(
+                                        valueColor:
+                                            new AlwaysStoppedAnimation<Color>(
+                                                Color.fromRGBO(
+                                                    62, 121, 247, 1))),
+                                  )
+                          ],
+                        )),
+                  ),
+                  Container(
+                      child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text(
+                        "Back to ",
+                        style: TextStyle(
+                            color: Colors.grey, fontSize: screenWidth / 24),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/login');
+                        },
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      )
+                    ],
+                  ))
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildTabletScreen() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(50.0))),
+      height: screenHeight * 0.9,
+      width: screenWidth,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 50.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Forgot Password',
+                    style: TextStyle(
+                        color: Colors.black54, fontSize: screenWidth / 26),
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/logo.svg',
+                    width: screenWidth * 0.2,
+                  )
+                ],
+              ),
+            ),
+            Container(
+              width: screenWidth * 0.6,
+              child: Form(
+                  key: _forgotPasswordFormKey,
+                  child: Column(
+                    children: [
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        child: TextFormField(
-                          enabled: _successMessage == "" ? true : false,
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.all(12.0),
-                              enabledBorder: boxBorder(),
-                              disabledBorder: boxBorder(),
-                              focusedErrorBorder: boxBorder(),
-                              focusedBorder: boxBorder(),
-                              errorBorder: boxBorder(),
-                              fillColor: _successMessage == ""
-                                  ? Colors.white
-                                  : Colors.grey[300],
-                              filled: true,
-                              errorStyle: GoogleFonts.robotoSlab(),
-                              hintStyle: GoogleFonts.robotoSlab(
-                                  textStyle: TextStyle(fontSize: 14.0)),
-                              hintText: 'Enter Email Address'),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              setState(() {
-                                _errorMessage = null;
-                              });
-                              return 'This field is required.';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _email = value;
-                          },
+                          child: Text(
+                        'Please enter your email address below and we will send you information to change your password.',
+                        style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: screenWidth / 42,
+                            fontWeight: FontWeight.w600),
+                      )),
+                      SizedBox(height: 10.0),
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Email',
+                                style: TextStyle(
+                                    fontSize: screenWidth / 40,
+                                    fontWeight: FontWeight.w500)),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.email_outlined,
+                                        color: Theme.of(context).primaryColor),
+                                    contentPadding: EdgeInsets.all(12.0),
+                                    enabledBorder: boxBorder(),
+                                    focusedErrorBorder: boxBorder(),
+                                    focusedBorder: boxBorder(),
+                                    errorBorder: boxBorder(),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    hintStyle: TextStyle(fontSize: 14.0)),
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    setState(() {
+                                      _errorMessage = '';
+                                    });
+                                    return 'This field is required.';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  _email = value;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      !_isLoading && _successMessage == ""
-                          ? GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                                _submitForm();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(17.0),
-                                margin: EdgeInsets.only(left: 10.0),
-                                decoration: BoxDecoration(
-                                  color: submitButtonColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(3.0)),
-                                ),
-                                width: screenWidth * 0.15,
-                                height: 48.0,
-                                child: SvgPicture.asset(
-                                    'assets/images/arrow_forward.svg'),
-                              ),
+                      SizedBox(height: screenHeight * 0.02),
+                      !_isLoading
+                          ? Container(
+                              width: screenWidth,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
+                                    _submitForm();
+                                  },
+                                  child: Text(
+                                    'Submit',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: screenWidth / 35),
+                                  )),
                             )
-                          : _isLoading
-                              ? Container(
-                                  margin: EdgeInsets.only(left: 10.0),
-                                  width: screenWidth * 0.12,
-                                  height: 40.0,
-                                  child: CircularProgressIndicator(
-                                      valueColor:
-                                          new AlwaysStoppedAnimation<Color>(
-                                              submitButtonColor)),
-                                )
-                              : Container()
+                          : Container(
+                              child: CircularProgressIndicator(
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      Color.fromRGBO(62, 121, 247, 1))),
+                            )
                     ],
-                  ),
-                )),
-          ),
-          _successMessage != ""
-              ? Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: screenWidth * 0.1),
-                  child: Text(_successMessage,
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Colors.green[700],
-                              fontWeight: FontWeight.w600,
-                              fontSize: screenWidth / 24))),
-                )
-              : Container(),
-          _errorMessage != null
-              ? Container(
-                  margin: EdgeInsets.only(top: 10.0, left: screenWidth * 0.06),
-                  alignment: Alignment.centerLeft,
+                  )),
+            ),
+            Container(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Back to ",
+                  style:
+                      TextStyle(color: Colors.grey, fontSize: screenWidth / 40),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
                   child: Text(
-                    _errorMessage,
-                    style: GoogleFonts.robotoSlab(
-                        textStyle:
-                            TextStyle(color: Colors.red[700], fontSize: 12.0)),
+                    'Login',
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: screenWidth / 40),
                   ),
                 )
-              : Container(),
-        ],
+              ],
+            )),
+            SizedBox(height: screenHeight * 0.05)
+          ],
+        ),
       ),
     );
   }
@@ -209,22 +384,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: screenHeight,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                HeaderTextWidget(),
-                forgotPasswordWidget(),
-                FooterBtnWidget(
-                  labelText: "",
-                  buttonLabelText: "Back To Login",
-                  routeName: "/user_login",
-                )
-              ]),
-        ),
-      ),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(73, 128, 255, 1.0)
+          ),
+          child: forgotPasswordWidget()),
     );
   }
 }
