@@ -34,7 +34,6 @@ class _LoginState extends State<Login> {
         setState(() {
           _errorMessage = '';
         });
-        await authBloc.fetchCompanies();
         await FirebaseAnalytics.instance.logEvent(name: "google_login");
         Navigator.pushNamedAndRemoveUntil(
             context, '/companies_List', (route) => false);

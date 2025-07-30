@@ -82,8 +82,13 @@ class AuthBloc {
       // Send token to backend
       await CrmService().googleLogin(idToken).then((response) async {
         var res = (json.decode(response.body));
-        if (response.statusCode == 200 && res['token'] != null) {
-          _authToken = "JWT " + res['token'];
+        print("=== LOGIN RESPONSE DEBUG ===");
+        print("Status Code: ${response.statusCode}");
+        print("Response Body: ${response.body}");
+        print("============================");
+        
+        if (response.statusCode == 200 && res['success'] == true && res['JWTtoken'] != null) {
+          _authToken = "JWT " + res['JWTtoken'];
           preferences.setString("authToken", _authToken!);
           
           // Store user profile data if available
@@ -91,7 +96,16 @@ class AuthBloc {
             _userProfile = Profile.fromJson(res['user']);
           }
           
-          result = {"error": false, "token": res['token'], "user": res['user']};
+          // Store organizations list
+          if (res['organizations'] != null) {
+            _companies.clear();
+            for (var org in res['organizations']) {
+              Organization organization = Organization.fromJson(org);
+              _companies.add(organization);
+            }
+          }
+          
+          result = {"error": false, "token": res['JWTtoken'], "user": res['user'], "organizations": res['organizations']};
         } else {
           result = {"error": true, "message": res['message'] ?? "Login failed"};
         }

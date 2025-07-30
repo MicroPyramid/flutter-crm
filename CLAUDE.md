@@ -114,8 +114,8 @@ Future<List<Entity>> getEntities() async {
 - **OAuth Client**: Android client type with SHA-1 certificate hash
 
 ### API Integration
-- **Endpoint**: `/auth/google-login/`
-- **Method**: POST with `id_token` parameter
+- **Endpoint**: `/auth/google/`
+- **Method**: POST with `idToken` parameter
 - **Flow**: Google OAuth → ID Token → Backend verification → JWT token
 
 ### Environment Configuration

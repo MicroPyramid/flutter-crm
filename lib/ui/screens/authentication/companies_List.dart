@@ -85,8 +85,7 @@ class _CompaniesListState extends State<CompaniesList> {
                                                       .getInstance();
                                               preferences.setString(
                                                   'org',
-                                                  (companies[index].id!)
-                                                      .toString());
+                                                  companies[index].id!);
                                               authBloc.selectedOrganization =
                                                   companies[index];
                                               await fetchRequiredData();
@@ -118,17 +117,46 @@ class _CompaniesListState extends State<CompaniesList> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Container(
-                                                    width: screenWidth * 0.7,
-                                                    child: Text(
-                                                      companies[index].name!,
-                                                      style: TextStyle(
-                                                          color:
-                                                              bottomNavBarSelectedTextColor,
-                                                          fontSize:
-                                                              screenWidth / 24,
-                                                          fontWeight:
-                                                              FontWeight.bold),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          companies[index].name!,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  bottomNavBarSelectedTextColor,
+                                                              fontSize:
+                                                                  screenWidth / 24,
+                                                              fontWeight:
+                                                                  FontWeight.bold),
+                                                        ),
+                                                        SizedBox(height: 4),
+                                                        Container(
+                                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                          decoration: BoxDecoration(
+                                                            color: companies[index].role == 'ADMIN' 
+                                                              ? Colors.blue.withOpacity(0.1)
+                                                              : Colors.grey.withOpacity(0.1),
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            border: Border.all(
+                                                              color: companies[index].role == 'ADMIN' 
+                                                                ? Colors.blue.withOpacity(0.3)
+                                                                : Colors.grey.withOpacity(0.3)
+                                                            )
+                                                          ),
+                                                          child: Text(
+                                                            companies[index].role ?? 'USER',
+                                                            style: TextStyle(
+                                                              color: companies[index].role == 'ADMIN' 
+                                                                ? Colors.blue[700]
+                                                                : Colors.grey[700],
+                                                              fontSize: screenWidth / 32,
+                                                              fontWeight: FontWeight.w500
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                   Container(

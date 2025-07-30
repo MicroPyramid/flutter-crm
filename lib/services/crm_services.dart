@@ -49,10 +49,16 @@ class CrmService {
 
   Future<Response> googleLogin(String idToken) async {
     try {
+      print("=== GOOGLE LOGIN DEBUG ===");
+      print("Base URL: $baseUrl");
+      print("Full URL: ${baseUrl}auth/google/");
+      print("ID Token length: ${idToken.length}");
+      print("==========================");
+      
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
-      return await networkService.post(Uri.parse(baseUrl + 'auth/google'), 
+      return await networkService.post(Uri.parse(baseUrl + 'auth/google/'), 
           headers: headers,
           body: jsonEncode({'idToken': idToken}));
     } on SocketException {
