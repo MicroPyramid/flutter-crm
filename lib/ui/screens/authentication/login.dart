@@ -624,6 +624,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
           decoration: BoxDecoration(color: Color.fromARGB(226, 73, 128, 255)),
