@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "74115878447",
-    "project_id": "bottle-crm-10074",
-    "storage_bucket": "bottle-crm-10074.appspot.com"
+    "project_number": "1072513761792",
+    "project_id": "bottlecrm-io",
+    "storage_bucket": "bottlecrm-io.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:74115878447:android:858fb769df26bb2c5900da",
+        "mobilesdk_app_id": "1:1072513761792:android:aa69724adcb7121fd74ee5",
         "android_client_info": {
           "package_name": "io.bottlecrm"
         }
       },
       "oauth_client": [
         {
-          "client_id": "74115878447-0r10i3hk3mma0u2vaenbsbtvvtud5sv5.apps.googleusercontent.com",
+          "client_id": "1072513761792-raut9sdi00i87j81o4irmiha3fd5pmvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.bottlecrm",
+            "certificate_hash": "67c4be5a9739470b402c1405f181abc7e6cfa7df"
+          }
+        },
+        {
+          "client_id": "1072513761792-e0qm5a5gsghr05elfcm8esjtu2v6d4f3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD8es-uwk_IlZsuHWlEwfiEZfsrENKXRgA"
+          "current_key": "AIzaSyDsA2wgQIw-bVgwODNMIF482gVRn5xdANU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "74115878447-0r10i3hk3mma0u2vaenbsbtvvtud5sv5.apps.googleusercontent.com",
+              "client_id": "1072513761792-e0qm5a5gsghr05elfcm8esjtu2v6d4f3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

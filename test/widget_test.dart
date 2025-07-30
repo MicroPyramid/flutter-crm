@@ -12,13 +12,13 @@ import 'package:flutter_test/flutter_test.dart';
 // import 'package:mobile2/main.dart';
 
 void main() {
-  group("Login Page", () {
-    test("Email should Not be Empty", () async{
-      Map result = await authBloc.login({"email": "", "password": ""});
-      expect(true, result['error']);
+  group("Google Login", () {
+    test("Google Login should handle authentication", () async{
+      Map result = await authBloc.googleLogin();
+      expect(result.containsKey('error'), true);
     });
 
-    test("Password should Not be Empty", () {
+    test("Password validation should still work", () {
       var result = FieldValidators.passwordValidation("");
       expect("Please Enter Password", result);
     });

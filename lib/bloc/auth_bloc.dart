@@ -4,6 +4,7 @@ import 'package:bottle_crm/model/organization.dart';
 import 'package:bottle_crm/model/profile.dart';
 import 'package:bottle_crm/services/crm_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthBloc {
   String? _subDomainName;
@@ -53,12 +54,33 @@ class AuthBloc {
     return result;
   }
 
-  Future login(data) async {
+  Future googleLogin() async {
     try {
       Map result = {};
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
-      await CrmService().userLogin(data).then((response) async {
+      
+      // Initialize Google Sign-In
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
+      
+      // Sign in with Google
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        return {"error": true, "message": "Google sign-in was cancelled"};
+      }
+      
+      // Get authentication details
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+      
+      if (idToken == null) {
+        return {"error": true, "message": "Failed to get Google ID token"};
+      }
+      
+      // Send token to backend
+      await CrmService().googleLogin(idToken).then((response) async {
         var res = (json.decode(response.body));
         if (res['error'] == false) {
           _authToken = "JWT " + res['token'];
@@ -68,11 +90,14 @@ class AuthBloc {
           result = res;
         }
       }).catchError((onError) {
-        print("login error>> $onError");
-        result = {"status": "error", "message": onError};
+        print("google login error>> $onError");
+        result = {"error": true, "message": "Network Error, check your internet"};
       });
       return result;
-    } catch (e) {}
+    } catch (e) {
+      print("google login error>> $e");
+      return {"error": true, "message": "Google login failed. Please try again."};
+    }
   }
 
   Future forgotPassword(data) async {

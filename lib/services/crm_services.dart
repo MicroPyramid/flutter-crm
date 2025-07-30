@@ -7,14 +7,19 @@ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bottle_crm/ui/screens/http_excepion.dart';
+import 'package:bottle_crm/config/api_config.dart';
 
 import 'network_services.dart';
 
 class CrmService {
   NetworkService networkService = NetworkService();
-  // final baseUrl = 'https://bottlecrm.com/api/';
-  final baseUrl = 'https://api.bottle-dev.com/api/';
+  String baseUrl = ApiConfig.getApiUrl();
   Map _headers = {};
+
+  // Method to set custom API URL
+  void setBaseUrl(String url) {
+    baseUrl = url.endsWith('/') ? url : '$url/';
+  }
 
   updateHeaders() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -41,10 +46,10 @@ class CrmService {
     }
   }
 
-  Future<Response> userLogin(body) async {
+  Future<Response> googleLogin(String idToken) async {
     try {
-      return await networkService.post(Uri.parse(baseUrl + 'auth/login/'),
-          body: body);
+      return await networkService.post(Uri.parse(baseUrl + 'auth/google-login/'), 
+          body: {'id_token': idToken});
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } on FormatException {
