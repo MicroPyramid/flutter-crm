@@ -11,16 +11,43 @@ class NetworkService {
 
   NetworkService.internal();
 
+  // Helper method to print long strings in chunks
+  void _printLongString(String title, String content) {
+    const int chunkSize = 800;
+    print(title);
+    if (content.length <= chunkSize) {
+      print(content);
+    } else {
+      for (int i = 0; i < content.length; i += chunkSize) {
+        int endIndex = (i + chunkSize < content.length) ? i + chunkSize : content.length;
+        print("${content.substring(i, endIndex)}");
+      }
+    }
+  }
+
   Future<http.Response> get(var url, {Map<String, String>? headers}) async {
     try {
+      // Log request details
+      print("=== GET REQUEST ===");
+      print("URL: $url");
+      print("Headers: $headers");
+      print("==================");
+      
       return client.get(url, headers: headers).then((http.Response response) {
+        // Log response details
+        print("=== GET RESPONSE ===");
+        print("Status Code: ${response.statusCode}");
+        print("Response Headers: ${response.headers}");
+        _printLongString("Response Body:", response.body);
+        print("===================");
+        
         return handleResponse(response);
       });
     } on SocketException {
-      print("=======socket exceptiom");
+      print("=======Socket Exception");
       throw HttpException("Network Error, check your internet");
     } catch (e) {
-      print("=======ache");
+      print("=======Exception: $e");
       throw HttpException("Something Went Wrong");
     } finally {
       // client.close();
@@ -30,20 +57,34 @@ class NetworkService {
   Future<http.Response> post(Uri url,
       {Map<String, String>? headers, body, encoding}) {
     try {
+      // Log request details
+      print("=== POST REQUEST ===");
+      print("URL: $url");
+      print("Headers: $headers");
+      _printLongString("Body:", body?.toString() ?? "null");
+      print("==================");
+      
       return client
           .post(url, headers: headers, body: body, encoding: encoding)
           .then((http.Response response) {
+        // Log response details
+        print("=== POST RESPONSE ===");
+        print("Status Code: ${response.statusCode}");
+        print("Response Headers: ${response.headers}");
+        _printLongString("Response Body:", response.body);
+        print("====================");
+        
         return handleResponse(response);
       });
     } on FormatException {
-      print("=========Format Excepion");
+      print("=========Format Exception");
       throw HttpException("Server issue");
     } on SocketException {
-      print("=======socket exceptiom");
+      print("=======Socket Exception");
       throw HttpException("Network Error, check your internet");
     } catch (e) {
-      print("=======ache");
-      throw HttpException("Something Went Wrongggg");
+      print("=======Exception: $e");
+      throw HttpException("Something Went Wrong");
     } finally {
       // client.close();
     }
@@ -52,9 +93,23 @@ class NetworkService {
   Future<http.Response> put(Uri url,
       {Map<String, String>? headers, body, encoding}) {
     try {
+      // Log request details
+      print("=== PUT REQUEST ===");
+      print("URL: $url");
+      print("Headers: $headers");
+      _printLongString("Body:", body?.toString() ?? "null");
+      print("==================");
+      
       return client
           .put(url, headers: headers, body: body, encoding: encoding)
           .then((http.Response response) {
+        // Log response details
+        print("=== PUT RESPONSE ===");
+        print("Status Code: ${response.statusCode}");
+        print("Response Headers: ${response.headers}");
+        _printLongString("Response Body:", response.body);
+        print("===================");
+        
         return handleResponse(response);
       });
     } finally {
@@ -64,9 +119,22 @@ class NetworkService {
 
   Future<http.Response> delete(Uri url, {Map<String, String>? headers}) {
     try {
+      // Log request details
+      print("=== DELETE REQUEST ===");
+      print("URL: $url");
+      print("Headers: $headers");
+      print("=====================");
+      
       return client
           .delete(url, headers: headers)
           .then((http.Response response) {
+        // Log response details
+        print("=== DELETE RESPONSE ===");
+        print("Status Code: ${response.statusCode}");
+        print("Response Headers: ${response.headers}");
+        _printLongString("Response Body:", response.body);
+        print("======================");
+        
         return handleResponse(response);
       });
     } finally {

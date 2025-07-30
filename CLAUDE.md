@@ -33,8 +33,8 @@ flutter test             # Run tests
 ### API Layer
 - **Base Service**: `CrmService` in `lib/services/crm_services.dart`
 - **Configuration**: Environment-based API URLs via `lib/config/api_config.dart`
-  - **Development**: `http://localhost:3000/` (debug builds)
-  - **Production**: `https://api.bottlecrm.io/api/` (release builds)
+  - **Development**: `http://localhost:3001/` (debug builds)
+  - **Production**: `https://api.bottlecrm.io/` (release builds)
 - **Authentication**: JWT token-based with SharedPreferences storage
 - **Google OAuth**: Integrated with `google_sign_in` package
 - **Multi-tenancy**: Organization header support

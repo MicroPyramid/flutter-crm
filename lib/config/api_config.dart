@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 class ApiConfig {
   // Environment-based API URLs
-  static const String DEV_API_URL = 'http://localhost:3000/';
-  static const String PROD_API_URL = 'https://api.bottlecrm.io/api/';
+  static const String DEV_API_URL = 'http://localhost:3001/';
+  static const String PROD_API_URL = 'https://api.bottlecrm.io/';
   
   // Available APIs for manual switching
   static const List<String> AVAILABLE_APIS = [

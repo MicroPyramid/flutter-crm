@@ -82,12 +82,18 @@ class AuthBloc {
       // Send token to backend
       await CrmService().googleLogin(idToken).then((response) async {
         var res = (json.decode(response.body));
-        if (res['error'] == false) {
+        if (response.statusCode == 200 && res['token'] != null) {
           _authToken = "JWT " + res['token'];
           preferences.setString("authToken", _authToken!);
-          result = res;
+          
+          // Store user profile data if available
+          if (res['user'] != null) {
+            _userProfile = Profile.fromJson(res['user']);
+          }
+          
+          result = {"error": false, "token": res['token'], "user": res['user']};
         } else {
-          result = res;
+          result = {"error": true, "message": res['message'] ?? "Login failed"};
         }
       }).catchError((onError) {
         print("google login error>> $onError");

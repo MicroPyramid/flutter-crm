@@ -88,8 +88,8 @@ For detailed architecture information, see [CLAUDE.md](CLAUDE.md).
 
 ### API Configuration
 The app uses environment-based API URLs:
-- **Development**: `http://localhost:3000/` (debug builds)
-- **Production**: `https://api.bottlecrm.io/api/` (release builds)
+- **Development**: `http://localhost:3001/` (debug builds)
+- **Production**: `https://api.bottlecrm.io/` (release builds)
 
 ### Authentication
 - **Google OAuth**: Primary authentication method

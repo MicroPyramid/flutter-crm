@@ -1,5 +1,6 @@
 // import 'package:bottle_crm/bloc/setting_bloc.dart';
 // import 'package:bottle_crm/model/document.dart';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -48,8 +49,12 @@ class CrmService {
 
   Future<Response> googleLogin(String idToken) async {
     try {
-      return await networkService.post(Uri.parse(baseUrl + 'auth/google-login/'), 
-          body: {'id_token': idToken});
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+      };
+      return await networkService.post(Uri.parse(baseUrl + 'auth/google'), 
+          headers: headers,
+          body: jsonEncode({'idToken': idToken}));
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } on FormatException {
