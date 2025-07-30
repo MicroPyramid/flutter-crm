@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bottle_crm/ui/screens/http_excepion.dart';
 import 'package:bottle_crm/config/api_config.dart';
 
@@ -15,24 +14,14 @@ import 'network_services.dart';
 class CrmService {
   NetworkService networkService = NetworkService();
   String baseUrl = ApiConfig.getApiUrl();
-  Map _headers = {};
 
   // Method to set custom API URL
   void setBaseUrl(String url) {
     baseUrl = url.endsWith('/') ? url : '$url/';
   }
 
-  updateHeaders() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    _headers['Authorization'] = preferences.getString('authToken');
-    if (preferences.getString('org') != null) {
-      _headers['org'] = preferences.getString('org');
-    }
-  }
-
-  getFormatedHeaders(headers) {
-    return new Map<String, String>.from(headers);
-  }
+  // Header handling now centralized in NetworkService
+  // These methods are deprecated and will be removed
 
   Future<Response> userRegister(data) async {
     try {
@@ -94,9 +83,7 @@ class CrmService {
 
   Future<Response> getUserProfile() async {
     try {
-      await updateHeaders();
-      return await networkService.get(Uri.parse(baseUrl + 'profile/'),
-          headers: await getFormatedHeaders(_headers));
+      return await networkService.get(Uri.parse(baseUrl + 'profile/'));
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -106,10 +93,8 @@ class CrmService {
 
   Future<Response> changePassword(data) async {
     try {
-      await updateHeaders();
       return await networkService.post(
           Uri.parse(baseUrl + 'profile/change-password/'),
-          headers: getFormatedHeaders(_headers),
           body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
@@ -120,10 +105,8 @@ class CrmService {
 
   Future<Response> getCompanies() async {
     try {
-      await updateHeaders();
       return await networkService.get(
-          Uri.parse(baseUrl + 'auth/companies-list/'),
-          headers: await getFormatedHeaders(_headers));
+          Uri.parse(baseUrl + 'auth/companies-list/'));
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -133,9 +116,7 @@ class CrmService {
 
   Future<Response> getDashboardDetails() async {
     try {
-      await updateHeaders();
-      return await networkService.get(Uri.parse(baseUrl + 'dashboard/'),
-          headers: await getFormatedHeaders(_headers));
+      return await networkService.get(Uri.parse(baseUrl + 'dashboard/'));
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -145,12 +126,12 @@ class CrmService {
   ///////////////////// ACCONUTS-SERVICES ////////////////////////////
 
   Future<Response> getAccounts({queryParams, offset}) async {
-    await updateHeaders();
+    
     var url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'accounts/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -162,14 +143,14 @@ class CrmService {
       }
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deleteAccount(id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(Uri.parse(baseUrl + 'accounts/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -180,9 +161,9 @@ class CrmService {
   Future<Response> createAccount(data, File file) async {
     try {
       if (file.path == "") {
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'accounts/'),
-            headers: getFormatedHeaders(_headers), body: data);
+            body: data);
       } else {
         var uri = Uri.parse(
           baseUrl + 'accounts/',
@@ -191,10 +172,10 @@ class CrmService {
           'POST',
           uri,
         )
-          ..headers.addAll(getFormatedHeaders(_headers))
           ..fields.addAll(Map<String, String>.from(data))
           ..files.add(
               await http.MultipartFile.fromPath('document_file', 'assets/images/sentry_logo.png'));
+        await networkService.addAuthHeadersToMultipartRequest(request);
         var response = await request.send();
         return await http.Response.fromStream(response);
       }
@@ -207,9 +188,9 @@ class CrmService {
 
   Future<Response> editAccount(data, id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.put(Uri.parse(baseUrl + 'accounts/$id/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -218,20 +199,20 @@ class CrmService {
   }
 
   Future<Response> getToEditAccount(id) async {
-    await updateHeaders();
-    return await networkService.get(baseUrl + 'accounts/$id/',
-        headers: getFormatedHeaders(_headers));
+    
+    return await networkService.get(Uri.parse(baseUrl + 'accounts/$id/'),
+        );
   }
 
   ///////////////////// CONTACTS-SERVICES ///////////////////////////////
 
   Future<Response> getContacts({queryParams, offset}) async {
-    await updateHeaders();
+    
     var url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'contacts/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -243,15 +224,15 @@ class CrmService {
       }
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> createContact(data, File file) async {
     try {
       if (file.path == "") {
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'contacts/'),
-            headers: getFormatedHeaders(_headers), body: data);
+            body: data);
       } else {
         var uri = Uri.parse(
           baseUrl + 'contacts/',
@@ -259,11 +240,11 @@ class CrmService {
         var request = http.MultipartRequest(
           'POST',
           uri,
-        )
-          ..headers.addAll(getFormatedHeaders(_headers))
-          ..fields.addAll(Map<String, String>.from(data))
-          ..files.add(
-              await http.MultipartFile.fromPath('document_file', file.path));
+        );
+        await networkService.addAuthHeadersToMultipartRequest(request);
+        request.fields.addAll(Map<String, String>.from(data));
+        request.files.add(
+            await http.MultipartFile.fromPath('document_file', file.path));
         var response = await request.send();
         return await http.Response.fromStream(response);
       }
@@ -276,9 +257,9 @@ class CrmService {
 
   Future<Response> editContact(data, id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.put(Uri.parse(baseUrl + 'contacts/$id/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -288,9 +269,9 @@ class CrmService {
 
   Future<Response> deleteContact(id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(Uri.parse(baseUrl + 'contacts/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -301,12 +282,12 @@ class CrmService {
   ///////////////////// LEADS-SERVICES ///////////////////////////////
 
   Future<Response> getLeads({queryParams, offset}) async {
-    await updateHeaders();
+    
     var url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString = Uri(
-        queryParameters: getFormatedHeaders(queryParams),
+        queryParameters: queryParams,
       ).query;
       url = Uri.parse(baseUrl + 'leads/' + '?' + queryString);
       if (offset != null && offset != "") {
@@ -319,34 +300,34 @@ class CrmService {
       }
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> getLeadToUpdate(leadId) async {
-    await updateHeaders();
-    return await networkService.get(baseUrl + 'leads/$leadId/',
-        headers: getFormatedHeaders(_headers));
+    
+    return await networkService.get(Uri.parse(baseUrl + 'leads/$leadId/'),
+        );
   }
 
   Future<Response> createLead(data, File file) async {
     try {
       if (file.path == "") {
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'leads/'),
-            headers: getFormatedHeaders(_headers), body: data);
+            body: data);
       } else {
-        await updateHeaders();
+        
         var uri = Uri.parse(
           baseUrl + 'leads/',
         );
         var request = http.MultipartRequest(
           'POST',
           uri,
-        )
-          ..headers.addAll(getFormatedHeaders(_headers))
-          ..fields.addAll(Map<String, String>.from(data))
-          ..files.add(
-              await http.MultipartFile.fromPath('document_file', file.path));
+        );
+        await networkService.addAuthHeadersToMultipartRequest(request);
+        request.fields.addAll(Map<String, String>.from(data));
+        request.files.add(
+            await http.MultipartFile.fromPath('document_file', file.path));
         var response = await request.send();
         return await http.Response.fromStream(response);
       }
@@ -359,9 +340,9 @@ class CrmService {
 
   Future<Response> editLead(data, id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.put(Uri.parse(baseUrl + 'leads/$id/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -371,9 +352,9 @@ class CrmService {
 
   Future<Response> deleteLead(id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(Uri.parse(baseUrl + 'leads/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -384,24 +365,24 @@ class CrmService {
   ///////////////////// USERS-SERVICES ///////////////////////////////
 
   Future<Response> getUsers({Map? queryParams}) async {
-    await updateHeaders();
+    
     Uri url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'users/' + '?' + queryString);
     } else {
       url = Uri.parse(baseUrl + 'users/');
     }
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deleteUser(id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(Uri.parse(baseUrl + 'users/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -412,22 +393,22 @@ class CrmService {
   Future<Response> createUser(user, File file) async {
     try {
       if (file.path == "") {
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'users/'),
-            headers: getFormatedHeaders(_headers), body: user);
+            body: user);
       } else {
-        await updateHeaders();
+        
         var uri = Uri.parse(
-          baseUrl + 'users//',
+          baseUrl + 'users/',
         );
         var request = http.MultipartRequest(
           'POST',
           uri,
-        )
-          ..headers.addAll(getFormatedHeaders(_headers))
-          ..fields.addAll(Map<String, String>.from(user))
-          ..files.add(
-              await http.MultipartFile.fromPath('document_file', file.path));
+        );
+        await networkService.addAuthHeadersToMultipartRequest(request);
+        request.fields.addAll(Map<String, String>.from(user));
+        request.files.add(
+            await http.MultipartFile.fromPath('document_file', file.path));
         var response = await request.send();
         return await http.Response.fromStream(response);
       }
@@ -440,9 +421,9 @@ class CrmService {
 
   Future<Response> editUser(user, id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.put(Uri.parse(baseUrl + 'users/$id/'),
-          headers: getFormatedHeaders(_headers), body: user);
+          body: user);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -454,25 +435,25 @@ class CrmService {
   ///////////////////// Events-SERVICES ///////////////////////////////
 
   Future<Response> getEvents({Map? queryParams}) async {
-    await updateHeaders();
+    
     Uri url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'events/' + '?' + queryString);
     } else {
       url = Uri.parse(baseUrl + 'events/');
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deleteEvent(id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(Uri.parse(baseUrl + 'events/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -482,9 +463,9 @@ class CrmService {
 
   Future<Response> createEvent(user) async {
     try {
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'events/'),
-            headers: getFormatedHeaders(_headers), body: user);
+            body: user);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -494,9 +475,9 @@ class CrmService {
 
   Future<Response> editEvent(user, id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.put(Uri.parse(baseUrl + 'events/$id/'),
-          headers: getFormatedHeaders(_headers), body: user);
+          body: user);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -507,18 +488,18 @@ class CrmService {
   ///////////////////// DOCUMENTS-SERVICES ///////////////////////////////
 
   Future<Response> getDocuments({queryParams}) async {
-    await updateHeaders();
+    
     String url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString = Uri(
-        queryParameters: getFormatedHeaders(queryParams),
+        queryParameters: queryParams,
       ).query;
       url = baseUrl + 'documents/' + '?' + queryString;
     } else {
       url = baseUrl + 'documents/';
     }
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   getFileSizes(files) {
@@ -538,22 +519,22 @@ class CrmService {
 
   Future createDocument(document, PlatformFile file) async {
     try {
-      await updateHeaders();
+      
       var uri = Uri.parse(
         baseUrl + 'documents/',
       );
       var request = http.MultipartRequest(
         'POST',
         uri,
-      )
-        ..headers.addAll(getFormatedHeaders(_headers))
-        ..fields.addAll({
-          'title': document['title'],
-          'teams': document['teams'],
-          'shared_to': document['shared_to']
-        })
-        ..files.add(
-            await http.MultipartFile.fromPath('document_file', file.path!));
+      );
+      await networkService.addAuthHeadersToMultipartRequest(request);
+      request.fields.addAll({
+        'title': document['title'],
+        'teams': document['teams'],
+        'shared_to': document['shared_to']
+      });
+      request.files.add(
+          await http.MultipartFile.fromPath('document_file', file.path!));
       final response = await request.send();
       return await response.stream.bytesToString();
     } on SocketException {
@@ -564,31 +545,31 @@ class CrmService {
   }
 
   Future editDocument(document, PlatformFile file, id) async {
-    await updateHeaders();
+    
     var uri = Uri.parse(
       baseUrl + 'documents/$id/',
     );
     var request = http.MultipartRequest(
       'PUT',
       uri,
-    )
-      ..headers.addAll(getFormatedHeaders(_headers))
-      ..fields.addAll({
-        'title': document['title'],
-        'teams': document['teams'],
-        'shared_to': document['shared_to'],
-        'status': document['status']
-      })
-      ..files
-          .add(await http.MultipartFile.fromPath('document_file', file.path!));
+    );
+    await networkService.addAuthHeadersToMultipartRequest(request);
+    request.fields.addAll({
+      'title': document['title'],
+      'teams': document['teams'],
+      'shared_to': document['shared_to'],
+      'status': document['status']
+    });
+    request.files
+        .add(await http.MultipartFile.fromPath('document_file', file.path!));
     return await request.send();
   }
 
   Future<Response> deleteDocument(id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(Uri.parse(baseUrl + 'documents/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -599,7 +580,7 @@ class CrmService {
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
   Future<Response> getTeams({queryParams, offset}) async {
-    await updateHeaders();
+    
     Uri url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value.runtimeType != String);
@@ -607,7 +588,7 @@ class CrmService {
       queryParams.removeWhere((key, value) => value == "");
       queryParams.removeWhere((key, value) => value == null);
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'teams/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -619,7 +600,7 @@ class CrmService {
       }
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> createTeam(data) async {
@@ -627,9 +608,9 @@ class CrmService {
       data.removeWhere((key, value) => value == "[]");
       data.removeWhere((key, value) => value == "");
       data.removeWhere((key, value) => value == null);
-      await updateHeaders();
+      
       return await networkService.post(Uri.parse(baseUrl + 'teams/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -638,32 +619,32 @@ class CrmService {
   }
 
   Future<Response> deleteTeam(id) async {
-    await updateHeaders();
+    
     return await networkService.delete(Uri.parse(baseUrl + 'teams/$id/'),
-        headers: getFormatedHeaders(_headers));
+        );
   }
 
   Future<Response> editTeam(
     data,
     id,
   ) async {
-    await updateHeaders();
+    
     data.removeWhere((key, value) => value == "[]");
     data.removeWhere((key, value) => value == "");
     data.removeWhere((key, value) => value == null);
     return await networkService.put(Uri.parse(baseUrl + 'teams/$id/'),
-        headers: getFormatedHeaders(_headers), body: data);
+        body: data);
   }
 
   ///////////////////// OPPORTUNITIES-SERVICES ////////////////////////////
 
   Future<Response> getOpportunities({queryParams, offset}) async {
-    await updateHeaders();
+    
     Uri url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'opportunities/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -675,15 +656,15 @@ class CrmService {
       }
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deletefromModule(moduleName, id) async {
     try {
-      await updateHeaders();
+      
       return await networkService.delete(
           Uri.parse(baseUrl + '$moduleName/$id/'),
-          headers: getFormatedHeaders(_headers));
+          );
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -693,7 +674,7 @@ class CrmService {
 
   // Future createOpportunity(opportunity, [PlatformFile file]) async {
   //   file = null;
-  //   await updateHeaders();
+  //   
   //   var uri = Uri.parse(
   //     baseUrl + 'opportunities/',
   //   );
@@ -701,7 +682,7 @@ class CrmService {
   //     'POST',
   //     uri,
   //   )
-  //     ..headers.addAll(getFormatedHeaders(_headers))
+  //     // Headers automatically added by NetworkService
   //     ..fields.addAll({
   //       'name': opportunity['name'],
   //       'account': opportunity['account'],
@@ -731,22 +712,22 @@ class CrmService {
         data.removeWhere((key, value) => value == "[]");
         data.removeWhere((key, value) => value == "");
         data.removeWhere((key, value) => value == null);
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'opportunities/'),
-            headers: getFormatedHeaders(_headers), body: data);
+            body: data);
       } else {
-        await updateHeaders();
+        
         var uri = Uri.parse(
           baseUrl + 'opportunities/',
         );
         var request = http.MultipartRequest(
           'POST',
           uri,
-        )
-          ..headers.addAll(getFormatedHeaders(_headers))
-          ..fields.addAll(Map<String, String>.from(data))
-          ..files.add(
-              await http.MultipartFile.fromPath('document_file', file.path));
+        );
+        await networkService.addAuthHeadersToMultipartRequest(request);
+        request.fields.addAll(Map<String, String>.from(data));
+        request.files.add(
+            await http.MultipartFile.fromPath('document_file', file.path));
         var response = await request.send();
         return await http.Response.fromStream(response);
       }
@@ -759,12 +740,12 @@ class CrmService {
 
   Future<Response> editOpportunity(data, id, [PlatformFile? file]) async {
     try {
-      await updateHeaders();
+      
       data.removeWhere((key, value) => value == "[]");
       data.removeWhere((key, value) => value == "");
       data.removeWhere((key, value) => value == null);
       return await networkService.put(Uri.parse(baseUrl + 'opportunities/$id/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -773,7 +754,7 @@ class CrmService {
   }
 
   // Future editOpportunity(opportunity, id, [PlatformFile file]) async {
-  //   await updateHeaders();
+  //   
   //   var uri = Uri.parse(
   //     baseUrl + 'opportunities`/$id/',
   //   );
@@ -782,7 +763,7 @@ class CrmService {
   //     'PUT',
   //     uri,
   //   )
-  //     ..headers.addAll(getFormatedHeaders(_headers))
+  //     // Headers automatically added by NetworkService
   //     ..fields.addAll({
   //       'name': opportunity['name'],
   //       'account': opportunity['account'],
@@ -806,11 +787,11 @@ class CrmService {
   ///////////////////// TASKS-SERVICES ///////////////////////////////
 
   Future<Response> getTasks({queryParams, offset}) async {
-    await updateHeaders();
+    
     Uri? url;
     if (queryParams != null) {
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'tasks/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -822,17 +803,17 @@ class CrmService {
       url = Uri.parse(baseUrl + 'tasks/');
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> createTask(data) async {
     try {
-      await updateHeaders();
+      
       data.removeWhere((key, value) => value == "[]");
       data.removeWhere((key, value) => value == "");
       data.removeWhere((key, value) => value == null);
       return await networkService.post(Uri.parse(baseUrl + 'tasks/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -841,29 +822,29 @@ class CrmService {
   }
 
   Future<Response> editTask(data, id) async {
-    await updateHeaders();
+    
     data.removeWhere((key, value) => value == "[]");
     data.removeWhere((key, value) => value == "");
     data.removeWhere((key, value) => value == null);
     return await networkService.put(Uri.parse(baseUrl + 'tasks/$id/'),
-        headers: getFormatedHeaders(_headers), body: data);
+        body: data);
   }
 
   Future<Response> deleteTask(id) async {
-    await updateHeaders();
+    
     return await networkService.delete(Uri.parse(baseUrl + 'tasks/$id/'),
-        headers: getFormatedHeaders(_headers));
+        );
   }
 
   ///////////////////// SETTINGS-SERVICES ///////////////////////////////
 
   Future<Response> getApiSettings({queryParams, offset}) async {
-    await updateHeaders();
+    
     Uri? url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'api-settings/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -875,78 +856,78 @@ class CrmService {
       url = Uri.parse(baseUrl + 'api-settings/');
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   /// CONTACTS
   Future<Response> getSettingsContacts({queryParams}) async {
-    await updateHeaders();
+    
     String url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = baseUrl + 'settings/contacts/' + '?' + queryString;
     } else {
       url = baseUrl + 'settings/contacts/';
     }
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deleteSettingsContacts(id) async {
-    await updateHeaders();
+    
     return await networkService.delete(
         Uri.parse(baseUrl + 'settings/contacts/$id/'),
-        headers: getFormatedHeaders(_headers));
+        );
   }
 
   /// BLOCKED DOMAINS
   Future<Response> getBlockedDomains({queryParams}) async {
-    await updateHeaders();
+    
     String url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = baseUrl + 'settings/block-domains/' + '?' + queryString;
     } else {
       url = baseUrl + 'settings/block-domains/';
     }
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deleteBlockedDomains(id) async {
-    await updateHeaders();
+    
     return await networkService.delete(
         Uri.parse(baseUrl + 'settings/block-domains/$id/'),
-        headers: getFormatedHeaders(_headers));
+        );
   }
 
   /// BLOCKED EMAILS
   Future<Response> getBlockedEmails({queryParams}) async {
-    await updateHeaders();
+    
     String url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = baseUrl + 'settings/block-emails/' + '?' + queryString;
     } else {
       url = baseUrl + 'settings/block-emails/';
     }
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> deleteBlockedEmails(id) async {
-    await updateHeaders();
+    
     return await networkService.delete(
         Uri.parse(baseUrl + 'settings/block-emails/$id/'),
-        headers: getFormatedHeaders(_headers));
+        );
   }
 
   Future<Response> createSetting(data) async {
     try {
-      await updateHeaders();
+      
       data.removeWhere((key, value) => value == "[]");
       data.removeWhere((key, value) => value == "");
       data.removeWhere((key, value) => value == null);
@@ -959,7 +940,7 @@ class CrmService {
       //   _url = '/settings/block-emails';
       // }
       return await networkService.post(Uri.parse(baseUrl + '$_url/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {
@@ -968,7 +949,7 @@ class CrmService {
   }
 
   Future<Response> editSetting(data, id) async {
-    await updateHeaders();
+    
     data.removeWhere((key, value) => value == "[]");
     data.removeWhere((key, value) => value == "");
     data.removeWhere((key, value) => value == null);
@@ -981,13 +962,13 @@ class CrmService {
     //   _url = '/settings/block-emails';
     // }
     return await networkService.put(Uri.parse(baseUrl + '$_url/$id/'),
-        headers: getFormatedHeaders(_headers), body: data);
+        body: data);
   }
 
   ///////////////////// CASES-SERVICES ///////////////////////////////
 
   Future<Response> getCases({queryParams, offset}) async {
-    await updateHeaders();
+    
     Uri url;
     if (queryParams != null) {
       queryParams.removeWhere((key, value) => value == "");
@@ -995,7 +976,7 @@ class CrmService {
       queryParams.removeWhere((key, value) => value == []);
 
       String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+          Uri(queryParameters: Map<String, dynamic>.from(queryParams)).query;
       url = Uri.parse(baseUrl + 'cases/' + '?' + queryString);
       if (offset != null && offset != "") {
         url = Uri.parse(url.toString() + '&offset=$offset');
@@ -1007,7 +988,7 @@ class CrmService {
       }
     }
     print(url);
-    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+    return await networkService.get(url);
   }
 
   Future<Response> createCase(data, File file) async {
@@ -1016,22 +997,22 @@ class CrmService {
         // data.removeWhere((key, value) => value == "[]");
         // data.removeWhere((key, value) => value == "");
         data.removeWhere((key, value) => value == null);
-        await updateHeaders();
+        
         return await networkService.post(Uri.parse(baseUrl + 'cases/'),
-            headers: getFormatedHeaders(_headers), body: data);
+            body: data);
       } else {
-        await updateHeaders();
+        
         var uri = Uri.parse(
           baseUrl + 'leads/',
         );
         var request = http.MultipartRequest(
           'POST',
           uri,
-        )
-          ..headers.addAll(getFormatedHeaders(_headers))
-          ..fields.addAll(Map<String, String>.from(data))
-          ..files.add(
-              await http.MultipartFile.fromPath('document_file', file.path));
+        );
+        await networkService.addAuthHeadersToMultipartRequest(request);
+        request.fields.addAll(Map<String, String>.from(data));
+        request.files.add(
+            await http.MultipartFile.fromPath('document_file', file.path));
         var response = await request.send();
         return await http.Response.fromStream(response);
       }
@@ -1044,12 +1025,12 @@ class CrmService {
 
   Future<Response> editCase(data, id, [PlatformFile? file]) async {
     try {
-      await updateHeaders();
+      
       // data.removeWhere((key, value) => value == "[]");
       // data.removeWhere((key, value) => value == "");
       data.removeWhere((key, value) => value == null);
       return await networkService.put(Uri.parse(baseUrl + 'cases/$id/'),
-          headers: getFormatedHeaders(_headers), body: data);
+          body: data);
     } on SocketException {
       throw HttpException("Network Error, check your internet");
     } catch (e) {

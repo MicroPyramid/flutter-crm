@@ -88,7 +88,7 @@ class AuthBloc {
         print("============================");
         
         if (response.statusCode == 200 && res['success'] == true && res['JWTtoken'] != null) {
-          _authToken = "JWT " + res['JWTtoken'];
+          _authToken = "Bearer " + res['JWTtoken'];
           preferences.setString("authToken", _authToken!);
           
           // Store user profile data if available
@@ -190,6 +190,25 @@ class AuthBloc {
     } catch (e) {
     }
     
+  }
+
+  Future clearAllStoredData() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    
+    // Clear all stored preferences
+    await preferences.remove('authToken');
+    await preferences.remove('org');
+    await preferences.remove('userProfile');
+    await preferences.remove('selectedOrganization');
+    
+    // Clear bloc state variables
+    _authToken = null;
+    _userProfile = null;
+    _companies.clear();
+    _selectedOrganization = null;
+    _subDomainName = null;
+    
+    print("All stored data cleared successfully");
   }
 }
 

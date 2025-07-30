@@ -3,8 +3,10 @@ import 'package:bottle_crm/ui/screens/accounts/account_create.dart';
 import 'package:bottle_crm/ui/screens/accounts/account_details.dart';
 import 'package:bottle_crm/ui/screens/authentication/change_password.dart';
 import 'package:bottle_crm/ui/screens/authentication/companies_List.dart';
+import 'package:bottle_crm/ui/screens/modern/authentication/organization_selection_screen.dart';
 import 'package:bottle_crm/ui/screens/authentication/forgot_password.dart';
 import 'package:bottle_crm/ui/screens/authentication/login.dart';
+import 'package:bottle_crm/ui/screens/modern/authentication/login_screen.dart';
 import 'package:bottle_crm/ui/screens/authentication/profile.dart';
 import 'package:bottle_crm/ui/screens/authentication/register.dart';
 import 'package:bottle_crm/ui/screens/cases/case_create.dart';
@@ -14,6 +16,7 @@ import 'package:bottle_crm/ui/screens/contacts/contact_create.dart';
 import 'package:bottle_crm/ui/screens/contacts/contact_details.dart';
 import 'package:bottle_crm/ui/screens/contacts/contacts_list.dart';
 import 'package:bottle_crm/ui/screens/dashboard/dashboard.dart';
+import 'package:bottle_crm/ui/screens/modern/dashboard_screen.dart';
 import 'package:bottle_crm/ui/screens/documents/documents_list.dart';
 import 'package:bottle_crm/ui/screens/events/event_create.dart';
 import 'package:bottle_crm/ui/screens/events/event_details.dart';
@@ -82,12 +85,14 @@ class MyApp extends StatelessWidget {
         );
       },
       routes: {
-        '/login': (BuildContext context) => Login(),
+        '/login': (BuildContext context) => LoginScreen(), // Modern login
+        '/login_legacy': (BuildContext context) => Login(), // Legacy login
         '/register': (BuildContext context) => Register(),
         '/forgot_password': (BuildContext context) => ForgotPassword(),
         '/change_password': (BuildContext context) => ChangePassword(),
         '/profile': (BuildContext context) => Profile(),
-        '/dashboard': (BuildContext context) => Dashboard(),
+        '/dashboard': (BuildContext context) => ModernDashboardScreen(), // Modern dashboard
+        '/dashboard_legacy': (BuildContext context) => Dashboard(), // Legacy dashboard
         '/more_options': (BuildContext context) => MoreOptions(),
         '/leads_list': (BuildContext context) => LeadsList(),
         '/leads_create': (BuildContext context) => CreateLead(),
@@ -119,7 +124,8 @@ class MyApp extends StatelessWidget {
         '/users_list': (BuildContext context) => UsersList(),
         '/user_create': (BuildContext context) => CreateUser(),
         '/user_details': (BuildContext context) => UserDetails(),
-        '/companies_List': (BuildContext context) => CompaniesList(),
+        '/organization_selection': (BuildContext context) => OrganizationSelectionScreen(), // Modern org selection
+        '/companies_List': (BuildContext context) => CompaniesList(), // Legacy companies list
         '/settings_List': (BuildContext context) => SettingsList(),
         '/settings_details': (BuildContext context) => SettingsDeails(),
         '/settings_userDetails': (BuildContext context) => SettingsUserDetails(),

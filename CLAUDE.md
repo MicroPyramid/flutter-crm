@@ -98,6 +98,30 @@ Future<List<Entity>> getEntities() async {
 - **Background**: `#ECEEF4` (light gray)
 - **Custom Widgets**: Use existing widgets like `DashboardCountCard`, `RecentCardWidget`
 
+## Refactoring Plan
+
+**IMPORTANT**: This project is undergoing incremental refactoring/modernization. Before enhancing any screen:
+
+1. **Check REFACTORING_PLAN.md** for the current status of the screen
+2. **If modernizing a screen**:
+   - Create new version in `lib/ui/screens/modern/` directory
+   - Follow the modern patterns established in completed screens
+   - Update the progress status in REFACTORING_PLAN.md
+   - Keep legacy version as backup until migration is complete
+
+**Current Status**: 9.4% complete (3/32 screens modernized)
+- ✅ Authentication: Login, Organization Selection
+- ✅ Dashboard: Modern responsive dashboard
+- 🔄 Pending: All CRM modules (Accounts, Contacts, Leads, etc.)
+
+**Modern Folder Structure**:
+```
+lib/ui/screens/modern/
+├── authentication/     # Modern auth screens
+├── dashboard_screen.dart
+└── shared/            # Common components
+```
+
 ## Configuration Notes
 
 - **Firebase**: Integrated for analytics (configuration in `android/app/google-services.json`)

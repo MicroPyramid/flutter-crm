@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bottle_crm/ui/screens/http_excepion.dart';
 
 class NetworkService {
@@ -10,6 +11,47 @@ class NetworkService {
   var client = http.Client();
 
   NetworkService.internal();
+
+  // Centralized method to get headers with JWT token and organization
+  Future<Map<String, String>> _getAuthenticatedHeaders([Map<String, String>? additionalHeaders]) async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+    };
+    
+    // Add Bearer token if available
+    final String? authToken = preferences.getString('authToken');
+    if (authToken != null) {
+      // Convert from "JWT <token>" format to "Bearer <token>" format
+      String bearerToken = authToken;
+      if (authToken.startsWith('JWT ')) {
+        bearerToken = authToken.replaceFirst('JWT ', 'Bearer ');
+      } else if (!authToken.startsWith('Bearer ')) {
+        bearerToken = 'Bearer $authToken';
+      }
+      headers['Authorization'] = bearerToken;
+    }
+    
+    // Add organization header if available
+    final String? org = preferences.getString('org');
+    if (org != null) {
+      headers['X-Organization-ID'] = org;
+    }
+    
+    // Merge with any additional headers provided
+    if (additionalHeaders != null) {
+      headers.addAll(additionalHeaders);
+    }
+    
+    return headers;
+  }
+
+  // Helper method to add authenticated headers to MultipartRequest
+  Future<void> addAuthHeadersToMultipartRequest(http.MultipartRequest request) async {
+    final headers = await _getAuthenticatedHeaders();
+    request.headers.addAll(headers);
+  }
 
   // Helper method to print long strings in chunks
   void _printLongString(String title, String content) {
@@ -27,13 +69,16 @@ class NetworkService {
 
   Future<http.Response> get(var url, {Map<String, String>? headers}) async {
     try {
+      // Get authenticated headers (merge with provided headers)
+      Map<String, String> finalHeaders = await _getAuthenticatedHeaders(headers);
+      
       // Log request details
       print("=== GET REQUEST ===");
       print("URL: $url");
-      print("Headers: $headers");
+      print("Headers: $finalHeaders");
       print("==================");
       
-      return client.get(url, headers: headers).then((http.Response response) {
+      return client.get(url, headers: finalHeaders).then((http.Response response) {
         // Log response details
         print("=== GET RESPONSE ===");
         print("Status Code: ${response.statusCode}");
@@ -55,17 +100,20 @@ class NetworkService {
   }
 
   Future<http.Response> post(Uri url,
-      {Map<String, String>? headers, body, encoding}) {
+      {Map<String, String>? headers, body, encoding}) async {
     try {
+      // Get authenticated headers (merge with provided headers)
+      Map<String, String> finalHeaders = await _getAuthenticatedHeaders(headers);
+      
       // Log request details
       print("=== POST REQUEST ===");
       print("URL: $url");
-      print("Headers: $headers");
+      print("Headers: $finalHeaders");
       _printLongString("Body:", body?.toString() ?? "null");
       print("==================");
       
       return client
-          .post(url, headers: headers, body: body, encoding: encoding)
+          .post(url, headers: finalHeaders, body: body, encoding: encoding)
           .then((http.Response response) {
         // Log response details
         print("=== POST RESPONSE ===");
@@ -91,17 +139,20 @@ class NetworkService {
   }
 
   Future<http.Response> put(Uri url,
-      {Map<String, String>? headers, body, encoding}) {
+      {Map<String, String>? headers, body, encoding}) async {
     try {
+      // Get authenticated headers (merge with provided headers)
+      Map<String, String> finalHeaders = await _getAuthenticatedHeaders(headers);
+      
       // Log request details
       print("=== PUT REQUEST ===");
       print("URL: $url");
-      print("Headers: $headers");
+      print("Headers: $finalHeaders");
       _printLongString("Body:", body?.toString() ?? "null");
       print("==================");
       
       return client
-          .put(url, headers: headers, body: body, encoding: encoding)
+          .put(url, headers: finalHeaders, body: body, encoding: encoding)
           .then((http.Response response) {
         // Log response details
         print("=== PUT RESPONSE ===");
@@ -117,16 +168,19 @@ class NetworkService {
     }
   }
 
-  Future<http.Response> delete(Uri url, {Map<String, String>? headers}) {
+  Future<http.Response> delete(Uri url, {Map<String, String>? headers}) async {
     try {
+      // Get authenticated headers (merge with provided headers)
+      Map<String, String> finalHeaders = await _getAuthenticatedHeaders(headers);
+      
       // Log request details
       print("=== DELETE REQUEST ===");
       print("URL: $url");
-      print("Headers: $headers");
+      print("Headers: $finalHeaders");
       print("=====================");
       
       return client
-          .delete(url, headers: headers)
+          .delete(url, headers: finalHeaders)
           .then((http.Response response) {
         // Log response details
         print("=== DELETE RESPONSE ===");

@@ -7,13 +7,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 
-class Login extends StatefulWidget {
-  Login();
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+  
   @override
-  State createState() => _LoginState();
+  State createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String _errorMessage = '';
 
@@ -38,7 +39,7 @@ class _LoginState extends State<Login> {
         });
         await FirebaseAnalytics.instance.logEvent(name: "google_login");
         Navigator.pushNamedAndRemoveUntil(
-            context, '/companies_List', (route) => false);
+            context, '/organization_selection', (route) => false);
       } else {
         setState(() {
           _errorMessage = result['message'] ?? 'Google login failed';

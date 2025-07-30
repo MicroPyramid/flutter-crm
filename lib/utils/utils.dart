@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bottle_crm/bloc/account_bloc.dart';
-import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/bloc/case_bloc.dart';
 import 'package:bottle_crm/bloc/contact_bloc.dart';
 import 'package:bottle_crm/bloc/dashboard_bloc.dart';
@@ -61,7 +60,7 @@ SimpleRandomColor randomColor = SimpleRandomColor();
 
 fetchRequiredData() async {
   print("fetching data ▁ ▂ ▃ ▄ ▅ ▆");
-  await authBloc.getProfileDetails();
+  // Profile data already fetched during login - no need to fetch again
   await dashboardBloc.fetchDashboardDetails();
   await leadBloc.fetchLeads();
   await accountBloc.fetchAccounts();
