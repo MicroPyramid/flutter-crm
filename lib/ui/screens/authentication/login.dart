@@ -8,8 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 
-import '../../../utils/utils.dart';
-
 class Login extends StatefulWidget {
   Login();
   @override
@@ -626,6 +624,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
           decoration: BoxDecoration(color: Color.fromARGB(226, 73, 128, 255)),

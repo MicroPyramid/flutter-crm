@@ -283,7 +283,7 @@ class _CreateOpportunitiesState extends State<CreateOpportunities> {
                                 selectedItem: opportunityBloc
                                     .currentEditOpportunity['account'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isDisabled, isSelected) {
+                                  itemBuilder: (context, item, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -447,7 +447,7 @@ class _CreateOpportunitiesState extends State<CreateOpportunities> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: (filter, infiniteScrollProps) => opportunityBloc.currencyObjforDropDown,
+                                items: opportunityBloc.currencyObjforDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -461,7 +461,7 @@ class _CreateOpportunitiesState extends State<CreateOpportunities> {
                                 selectedItem: opportunityBloc
                                     .currentEditOpportunity['currency'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isDisabled, isSelected) {
+                                  itemBuilder: (context, item, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -506,7 +506,7 @@ class _CreateOpportunitiesState extends State<CreateOpportunities> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: (filter, infiniteScrollProps) => opportunityBloc.stageObjforDropDown,
+                                items: opportunityBloc.stageObjforDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -521,7 +521,7 @@ class _CreateOpportunitiesState extends State<CreateOpportunities> {
                                 selectedItem: opportunityBloc
                                     .currentEditOpportunity['stage'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isDisabled, isSelected) {
+                                  itemBuilder: (context, item, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),

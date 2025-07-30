@@ -6,9 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:bottle_crm/bloc/auth_bloc.dart';
-import 'package:bottle_crm/main.dart';
 import 'package:bottle_crm/utils/validations.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // import 'package:mobile2/main.dart';

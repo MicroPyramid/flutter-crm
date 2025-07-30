@@ -52,9 +52,12 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     child: SvgPicture.asset(
                       'assets/images/home.svg',
                       width: screenWidth / 15,
-                      color: _currentBottomBarIndex == "0"
-                          ? bottomNavBarSelectedTextColor
-                          : bottomNavBarTextColor,
+                      colorFilter: ColorFilter.mode(
+                        _currentBottomBarIndex == "0"
+                            ? bottomNavBarSelectedTextColor
+                            : bottomNavBarTextColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ],
@@ -84,9 +87,12 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     child: SvgPicture.asset(
                       'assets/images/accounts.svg',
                       width: screenWidth / 12,
-                      color: _currentBottomBarIndex == "1"
-                          ? bottomNavBarSelectedTextColor
-                          : bottomNavBarTextColor,
+                      colorFilter: ColorFilter.mode(
+                        _currentBottomBarIndex == "1"
+                            ? bottomNavBarSelectedTextColor
+                            : bottomNavBarTextColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ],
@@ -114,9 +120,12 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     child: SvgPicture.asset(
                       'assets/images/search.svg',
                       width: screenWidth / 16,
-                      color: _currentBottomBarIndex == ""
-                          ? bottomNavBarSelectedTextColor
-                          : bottomNavBarTextColor,
+                      colorFilter: ColorFilter.mode(
+                        _currentBottomBarIndex == ""
+                            ? bottomNavBarSelectedTextColor
+                            : bottomNavBarTextColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ],
@@ -146,9 +155,12 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     child: SvgPicture.asset(
                       'assets/images/tasks.svg',
                       width: screenWidth / 18,
-                      color: _currentBottomBarIndex == "2"
-                          ? bottomNavBarSelectedTextColor
-                          : bottomNavBarTextColor,
+                      colorFilter: ColorFilter.mode(
+                        _currentBottomBarIndex == "2"
+                            ? bottomNavBarSelectedTextColor
+                            : bottomNavBarTextColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ],
@@ -181,9 +193,12 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     child: SvgPicture.asset(
                       'assets/images/more.svg',
                       width: screenWidth / 16,
-                      color: _currentBottomBarIndex == "3"
-                          ? bottomNavBarSelectedTextColor
-                          : bottomNavBarTextColor,
+                      colorFilter: ColorFilter.mode(
+                        _currentBottomBarIndex == "3"
+                            ? bottomNavBarSelectedTextColor
+                            : bottomNavBarTextColor,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ],

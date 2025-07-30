@@ -191,7 +191,7 @@ class _CreateTaskState extends State<CreateTask> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: (filter, infiniteScrollProps) => taskBloc.accountsObjforDropDown,
+                                items: taskBloc.accountsObjforDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -204,7 +204,7 @@ class _CreateTaskState extends State<CreateTask> {
                                 selectedItem:
                                     taskBloc.currentEditTask!['account'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isDisabled, isSelected) {
+                                  itemBuilder: (context, item, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -306,7 +306,7 @@ class _CreateTaskState extends State<CreateTask> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: (filter, infiniteScrollProps) => taskBloc.status!,
+                                items: taskBloc.status!,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -319,7 +319,7 @@ class _CreateTaskState extends State<CreateTask> {
                                 selectedItem:
                                     taskBloc.currentEditTask!['status'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isDisabled, isSelected) {
+                                  itemBuilder: (context, item, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -384,7 +384,7 @@ class _CreateTaskState extends State<CreateTask> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: (filter, infiniteScrollProps) => taskBloc.priorities!,
+                                items: taskBloc.priorities!,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -397,7 +397,7 @@ class _CreateTaskState extends State<CreateTask> {
                                 selectedItem:
                                     taskBloc.currentEditTask!['priority'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isDisabled, isSelected) {
+                                  itemBuilder: (context, item, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),

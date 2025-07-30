@@ -5,7 +5,6 @@ import 'package:bottle_crm/ui/screens/authentication/change_password.dart';
 import 'package:bottle_crm/ui/screens/authentication/companies_List.dart';
 import 'package:bottle_crm/ui/screens/authentication/forgot_password.dart';
 import 'package:bottle_crm/ui/screens/authentication/login.dart';
-import 'package:bottle_crm/splash_screen.dart';
 import 'package:bottle_crm/ui/screens/authentication/profile.dart';
 import 'package:bottle_crm/ui/screens/authentication/register.dart';
 import 'package:bottle_crm/ui/screens/cases/case_create.dart';
@@ -40,12 +39,11 @@ import 'package:bottle_crm/ui/screens/users/user_create.dart';
 import 'package:bottle_crm/ui/screens/users/user_details.dart';
 import 'package:bottle_crm/ui/screens/users/users_list.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase?.initializeApp();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -66,7 +64,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Color.fromRGBO(62, 121, 247, 1),
           secondaryHeaderColor: Color.fromRGBO(112, 121, 128, 1),
           dividerColor: Color.fromRGBO(69, 85, 96, 1)),
-      home: SplashScreen(),
+      home: Login(),
       onUnknownRoute: (RouteSettings settings) {
         return MaterialPageRoute<void>(
           settings: settings,

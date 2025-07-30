@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bottle_crm/utils/utils.dart';
-import 'package:random_color/random_color.dart';
 
 class TagViewWidget extends StatelessWidget {
   final List tags;

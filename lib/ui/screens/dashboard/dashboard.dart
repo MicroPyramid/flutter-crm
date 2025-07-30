@@ -350,11 +350,13 @@ class _DashboardState extends State<Dashboard> {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    return WillPopScope(
-        onWillPop: () {
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/companies_List', (route) => false);
-          return new Future(() => false);
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/companies_List', (route) => false);
+          }
         },
         child: Scaffold(
             resizeToAvoidBottomInset: false,

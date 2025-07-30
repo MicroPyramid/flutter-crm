@@ -4,7 +4,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:bottle_crm/utils/utils.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -23,7 +22,6 @@ class _CreateContactState extends State<CreateContact> {
   final GlobalKey<FormState> _contactFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _addressFormKey = GlobalKey<FormState>();
   TextEditingController _dateController = TextEditingController();
-  TextEditingController fileNameController = new TextEditingController();
   DateTime initialDate = DateTime.now();
   Map _errors = {};
   bool _isLoading = false;
@@ -80,22 +78,6 @@ class _CreateContactState extends State<CreateContact> {
         _dateController.text = DateFormat("yyyy-MM-dd")
             .format(DateFormat("yyyy-MM-dd").parse(selected.toString()));
       });
-  }
-
-  _filePicker() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
-    if (result != null) {
-      file = File(result.files[0].path!);
-      var _filename = file.path.toString();
-      var split = _filename.split('/');
-      Map<int, String> values = {
-        for (int i = 0; i < split.length; i++) i: split[i]
-      };
-      setState(() {
-        fileNameController.text = values[7].toString();
-      });
-    } else {}
   }
 
   buildTopBar() {
@@ -1053,7 +1035,7 @@ class _CreateContactState extends State<CreateContact> {
                           height: 48.0,
                           margin: EdgeInsets.only(bottom: 5.0),
                           child: DropdownSearch<String?>(
-                            items: leadBloc.countries,
+                            items: (filter, infiniteScrollProps) => leadBloc.countries,
                             onChanged: print,
                             onSaved: (selection) {
                               if (selection == null) {
@@ -1067,7 +1049,7 @@ class _CreateContactState extends State<CreateContact> {
                             selectedItem: contactBloc
                                 .currentEditContact['address']['country'],
                             popupProps: PopupProps.bottomSheet(
-                              itemBuilder: (context, item, isSelected) {
+                              itemBuilder: (context, item, isDisabled, isSelected) {
                                 return Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 15.0, vertical: 10.0),
@@ -1109,32 +1091,15 @@ class _CreateContactState extends State<CreateContact> {
         ),
         child: Column(
           children: [
-            quill.QuillToolbar.basic(
+            quill.QuillSimpleToolbar(
               controller: _controller,
-              showAlignmentButtons: true,
-              showBackgroundColorButton: false,
-              showCameraButton: false,
-              showImageButton: false,
-              showVideoButton: false,
-              showDividers: false,
-              showColorButton: false,
-              showUndo: false,
-              showRedo: false,
-              showQuote: false,
-              showClearFormat: false,
-              showIndent: false,
-              showLink: false,
-              showCodeBlock: false,
-              showInlineCode: false,
-              showListCheck: false,
-              showJustifyAlignment: false,
-              showHeaderStyle: false,
+              config: const quill.QuillSimpleToolbarConfig(),
             ),
             Expanded(
               child: Container(
                 child: quill.QuillEditor.basic(
                     controller: _controller,
-                    readOnly: !_isLoading ? false : true),
+                    config: const quill.QuillEditorConfig()),
               ),
             )
           ],
@@ -1143,6 +1108,9 @@ class _CreateContactState extends State<CreateContact> {
 
   @override
   Widget build(BuildContext context) {
+    // Set readOnly property based on loading state
+    _controller.readOnly = _isLoading;
+    
     return Scaffold(
       body: SafeArea(
         child: Container(

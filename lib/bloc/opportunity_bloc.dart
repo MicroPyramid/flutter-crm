@@ -150,12 +150,10 @@ class OpportunityBloc {
 
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
-    if (_copyOfCurrentEditOpportunity != null) {
-      _copyOfCurrentEditOpportunity
-          .removeWhere((key, value) => value.runtimeType != String);
-      _copyOfCurrentEditOpportunity
-          .removeWhere((key, value) => key == "closed_on");
-    }
+    _copyOfCurrentEditOpportunity
+        .removeWhere((key, value) => value.runtimeType != String);
+    _copyOfCurrentEditOpportunity
+        .removeWhere((key, value) => key == "closed_on");
     await CrmService()
         .createOpportunity(_copyOfCurrentEditOpportunity, file!)
         .then((response) async {
@@ -218,12 +216,10 @@ class OpportunityBloc {
           .format(DateFormat("dd-MM-yyyy")
               .parse(_copyOfCurrentEditOpportunity['closed_on']));
 
-    if (_copyOfCurrentEditOpportunity != null) {
-      _copyOfCurrentEditOpportunity
-          .removeWhere((key, value) => value.runtimeType != String);
-      _copyOfCurrentEditOpportunity
-          .removeWhere((key, value) => key == "closed_on");
-    }
+    _copyOfCurrentEditOpportunity
+        .removeWhere((key, value) => value.runtimeType != String);
+    _copyOfCurrentEditOpportunity
+        .removeWhere((key, value) => key == "closed_on");
 
     await CrmService()
         .editOpportunity(

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:74115878447:android:858fb769df26bb2c5900da",
         "android_client_info": {
-          "package_name": "com.example.bottle_crm"
+          "package_name": "io.bottlecrm"
         }
       },
       "oauth_client": [

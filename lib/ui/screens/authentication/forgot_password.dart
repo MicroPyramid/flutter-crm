@@ -8,8 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 
-import '../../../utils/utils.dart';
-
 class ForgotPassword extends StatefulWidget {
   ForgotPassword();
   @override
@@ -20,7 +18,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final GlobalKey<FormState> _forgotPasswordFormKey = GlobalKey<FormState>();
   String? _email = '';
   bool _isLoading = false;
-  String _errorMessage = '';
 
   @override
   void initState() {
@@ -44,21 +41,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     });
     Map result = await authBloc.forgotPassword({'email': _email});
     if (result['error'] == false) {
-      setState(() {
-        _errorMessage = '';
-      });
       await authBloc.fetchCompanies();
       await FirebaseAnalytics.instance.logEvent(name: "Forget Password");
       Navigator.pushNamedAndRemoveUntil(
           context, '/dashboard', (route) => false);
     } else if (result['error'] == true) {
-      setState(() {
-        _errorMessage = result['errors'];
-      });
+      // Handle error case - could show a dialog or snackbar
     } else {
-      setState(() {
-        _errorMessage = '';
-      });
       showErrorMessage(context, result['message'].toString());
     }
     setState(() {
@@ -313,9 +302,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    setState(() {
-                                      _errorMessage = '';
-                                    });
                                     return 'This field is required.';
                                   }
                                   return null;

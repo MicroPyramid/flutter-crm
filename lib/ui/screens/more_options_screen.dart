@@ -281,8 +281,8 @@ class _MoreOptionsState extends State<MoreOptions> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: onWillPop,
+    return PopScope(
+      canPop: true,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(

@@ -6,7 +6,6 @@ import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:bottle_crm/model/organization.dart';
 import 'package:bottle_crm/ui/widgets/loader.dart';
-import '../../../utils/utils.dart';
 
 class CompaniesList extends StatefulWidget {
   CompaniesList();
@@ -29,8 +28,13 @@ class _CompaniesListState extends State<CompaniesList> {
   @override
   Widget build(BuildContext context) {
     Widget loadingIndicator = _isLoading ? Loader() : new Container();
-    return WillPopScope(
-      onWillPop: onWillPop,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          bool shouldPop = await onWillPop();
+          if (shouldPop) Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Stack(

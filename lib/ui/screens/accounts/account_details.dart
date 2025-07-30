@@ -89,7 +89,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                               children: [
                                 SvgPicture.asset(
                                   'assets/images/Icon_edit_color.svg',
-                                  color: Theme.of(context).primaryColor,
+                                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
                                   width: screenWidth / 25,
                                 ),
                                 Container(

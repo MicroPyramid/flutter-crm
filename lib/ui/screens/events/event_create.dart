@@ -12,7 +12,6 @@ import 'package:bottle_crm/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
-import '../../../utils/utils.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
 class CreateEvent extends StatefulWidget {
@@ -718,32 +717,15 @@ class _CreateEventState extends State<CreateEvent> {
         ),
         child: Column(
           children: [
-            quill.QuillToolbar.basic(
+            quill.QuillSimpleToolbar(
               controller: _controller,
-              showAlignmentButtons: true,
-              showBackgroundColorButton: false,
-              showCameraButton: false,
-              showImageButton: false,
-              showVideoButton: false,
-              showDividers: false,
-              showColorButton: false,
-              showUndo: false,
-              showRedo: false,
-              showQuote: false,
-              showClearFormat: false,
-              showIndent: false,
-              showLink: false,
-              showCodeBlock: false,
-              showInlineCode: false,
-              showListCheck: false,
-              showJustifyAlignment: false,
-              showHeaderStyle: false,
+              config: const quill.QuillSimpleToolbarConfig(),
             ),
             Expanded(
               child: Container(
                 child: quill.QuillEditor.basic(
                     controller: _controller,
-                    readOnly: !_isLoading ? false : true),
+                    config: const quill.QuillEditorConfig()),
               ),
             )
           ],
@@ -752,6 +734,9 @@ class _CreateEventState extends State<CreateEvent> {
 
   @override
   Widget build(BuildContext context) {
+    // Set readOnly property based on loading state
+    _controller.readOnly = _isLoading;
+    
     return Scaffold(
       body: SafeArea(
         child: Container(

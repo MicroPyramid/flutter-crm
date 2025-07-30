@@ -3,9 +3,7 @@ import 'package:bottle_crm/model/profile.dart';
 import 'package:intl/intl.dart';
 
 import 'account.dart';
-import 'company.dart';
 import 'contact.dart';
-import 'profile.dart';
 import 'team.dart';
 
 class Task {

@@ -232,10 +232,8 @@ class CaseBloc {
           DateFormat("dd-MM-yyyy").parse(_copyOfCurrentEditCase['closed_on']));
     }
 
-    if (_copyOfCurrentEditCase != null) {
-      _copyOfCurrentEditCase
-          .removeWhere((key, value) => value.runtimeType != String);
-    }
+    _copyOfCurrentEditCase
+        .removeWhere((key, value) => value.runtimeType != String);
 
     await CrmService()
         .editCase(_copyOfCurrentEditCase, _currentEditCaseId, file)
