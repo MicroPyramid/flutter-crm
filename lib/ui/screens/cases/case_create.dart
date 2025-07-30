@@ -13,10 +13,6 @@ import 'package:bottle_crm/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
-import '../../../utils/utils.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
-
-import 'package:file_picker/file_picker.dart';
 
 class CreateCase extends StatefulWidget {
   CreateCase();
@@ -25,7 +21,7 @@ class CreateCase extends StatefulWidget {
 }
 
 class _CreateCaseState extends State<CreateCase> {
-  quill.QuillController _controller = quill.QuillController.basic();
+  TextEditingController _descriptionController = TextEditingController();
   final GlobalKey<FormState> _caseFormKey = GlobalKey<FormState>();
   TextEditingController _dateController = TextEditingController();
   TextEditingController fileNameController = new TextEditingController();
@@ -115,22 +111,6 @@ class _CreateCaseState extends State<CreateCase> {
       borderRadius: BorderRadius.all(Radius.circular(5.0)),
       borderSide: BorderSide(width: 1, color: Colors.black45),
     );
-  }
-
-  _filePicker() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
-    if (result != null) {
-      file = File(result.files[0].path!);
-      var _filename = file!.path.toString();
-      var split = _filename.split('/');
-      Map<int, String> values = {
-        for (int i = 0; i < split.length; i++) i: split[i]
-      };
-      setState(() {
-        fileNameController.text = values[7].toString();
-      });
-    } else {}
   }
 
   EdgeInsets padding() {
@@ -237,7 +217,7 @@ class _CreateCaseState extends State<CreateCase> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: caseBloc.statusObjForDropDown,
+                                items: (filter, infiniteScrollProps) => caseBloc.statusObjForDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -250,7 +230,7 @@ class _CreateCaseState extends State<CreateCase> {
                                 selectedItem:
                                     caseBloc.currentEditCase['status'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isSelected) {
+                                  itemBuilder: (context, item, isDisabled, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -307,7 +287,7 @@ class _CreateCaseState extends State<CreateCase> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: opportunityBloc.accountsObjforDropDown,
+                                items: (filter, infiniteScrollProps) => opportunityBloc.accountsObjforDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -320,7 +300,7 @@ class _CreateCaseState extends State<CreateCase> {
                                 selectedItem:
                                     caseBloc.currentEditCase['account'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isSelected) {
+                                  itemBuilder: (context, item, isDisabled, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -385,7 +365,7 @@ class _CreateCaseState extends State<CreateCase> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: caseBloc.priorityObjForDropDown,
+                                items: (filter, infiniteScrollProps) => caseBloc.priorityObjForDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -398,7 +378,7 @@ class _CreateCaseState extends State<CreateCase> {
                                 selectedItem:
                                     caseBloc.currentEditCase['priority'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isSelected) {
+                                  itemBuilder: (context, item, isDisabled, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -450,7 +430,7 @@ class _CreateCaseState extends State<CreateCase> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: caseBloc.typeOfCaseObjForDropDown,
+                                items: (filter, infiniteScrollProps) => caseBloc.typeOfCaseObjForDropDown,
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -464,7 +444,7 @@ class _CreateCaseState extends State<CreateCase> {
                                 selectedItem:
                                     caseBloc.currentEditCase['type_of_case'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isSelected) {
+                                  itemBuilder: (context, item, isDisabled, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -698,37 +678,17 @@ class _CreateCaseState extends State<CreateCase> {
           ),
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
         ),
-        child: Column(
-          children: [
-            quill.QuillToolbar.basic(
-              controller: _controller,
-              showAlignmentButtons: true,
-              showBackgroundColorButton: false,
-              showCameraButton: false,
-              showImageButton: false,
-              showVideoButton: false,
-              showDividers: false,
-              showColorButton: false,
-              showUndo: false,
-              showRedo: false,
-              showQuote: false,
-              showClearFormat: false,
-              showIndent: false,
-              showLink: false,
-              showCodeBlock: false,
-              showInlineCode: false,
-              showListCheck: false,
-              showJustifyAlignment: false,
-              showHeaderStyle: false,
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          child: TextFormField(
+            controller: _descriptionController,
+            maxLines: 10,
+            decoration: InputDecoration(
+              hintText: 'Enter description...',
+              border: OutlineInputBorder(),
             ),
-            Expanded(
-              child: Container(
-                child: quill.QuillEditor.basic(
-                    controller: _controller,
-                    readOnly: !_isLoading ? false : true),
-              ),
-            )
-          ],
+            enabled: !_isLoading,
+          ),
         ));
   }
 

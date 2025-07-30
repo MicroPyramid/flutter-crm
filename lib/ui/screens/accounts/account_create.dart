@@ -24,6 +24,7 @@ class CreateAccount extends StatefulWidget {
 class _CreateAccountState extends State<CreateAccount> {
   int _currentTabIndex = 0;
   quill.QuillController _controller = quill.QuillController.basic();
+  TextEditingController _descriptionController = TextEditingController();
   GlobalKey<FormState> _accountFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> _addressFormKey = GlobalKey<FormState>();
   TextEditingController fileNameController = new TextEditingController();
@@ -416,7 +417,7 @@ class _CreateAccountState extends State<CreateAccount> {
                               height: 48.0,
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: DropdownSearch<String?>(
-                                items: leadBloc.leadsTitles,
+                                items: (filter, infiniteScrollProps) => leadBloc.leadsTitles.cast<String>(),
                                 onChanged: print,
                                 onSaved: (selection) {
                                   if (selection == null) {
@@ -429,7 +430,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                 selectedItem:
                                     accountBloc.currentEditAccount['lead'],
                                 popupProps: PopupProps.bottomSheet(
-                                  itemBuilder: (context, item, isSelected) {
+                                  itemBuilder: (context, item, isDisabled, isSelected) {
                                     return Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 15.0, vertical: 10.0),
@@ -665,108 +666,17 @@ class _CreateAccountState extends State<CreateAccount> {
                               style: buildLableTextStyle(),
                             ),
                             SizedBox(height: screenHeight / 70),
-                            TextFieldTags(
-                              textfieldTagsController: _tagsController,
-                              initialTags: accountBloc.tags,
-                              letterCase: LetterCase.normal,
-                              textSeparators: [],
-                              validator: (String tag) {
-                                if (tag == 'php') {
-                                  return 'No, please just no';
-                                } else if (_tagsController.getTags!
-                                    .contains(tag)) {
-                                  return 'you already entered that';
-                                }
-                                return null;
-                              },
-                              inputfieldBuilder: (context, tec, fn, error,
-                                  onChanged, onSubmitted) {
-                                return ((context, sc, tags, onTagDelete) {
-                                  return TextField(
-                                    controller: tec,
-                                    focusNode: fn,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      border: buildBorder(Colors.black54),
-                                      focusedBorder:
-                                          buildBorder(Colors.black54),
-                                      errorBorder: buildBorder(Colors.black54),
-                                      helperStyle: const TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                      hintText: _tagsController.hasTags
-                                          ? ''
-                                          : "Enter tag...",
-                                      prefixIconConstraints: BoxConstraints(
-                                          maxWidth: screenWidth * 0.74),
-                                      prefixIcon: tags.isNotEmpty
-                                          ? SingleChildScrollView(
-                                              controller: sc,
-                                              scrollDirection: Axis.horizontal,
-                                              child: Row(
-                                                  children:
-                                                      tags.map((String tag) {
-                                                return Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(20.0),
-                                                    ),
-                                                    color: Color.fromARGB(
-                                                        255, 74, 137, 92),
-                                                  ),
-                                                  margin: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 5.0),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 10.0,
-                                                      vertical: 5.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      InkWell(
-                                                        child: Text(
-                                                          tag,
-                                                          style:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                        ),
-                                                        onTap: () {
-                                                          //print("$tag selected");
-                                                        },
-                                                      ),
-                                                      const SizedBox(
-                                                          width: 4.0),
-                                                      InkWell(
-                                                        child: const Icon(
-                                                          Icons.cancel,
-                                                          size: 14.0,
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              233,
-                                                              233,
-                                                              233),
-                                                        ),
-                                                        onTap: () {
-                                                          onTagDelete(tag);
-                                                        },
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }).toList()),
-                                            )
-                                          : null,
-                                    ),
-                                    onChanged: onChanged,
-                                    onSubmitted: onSubmitted,
-                                  );
-                                });
+                            TextFormField(
+                              decoration: InputDecoration(
+                                isDense: true,
+                                border: buildBorder(Colors.black54),
+                                focusedBorder: buildBorder(Colors.black54),
+                                errorBorder: buildBorder(Colors.black54),
+                                hintText: "Enter tags separated by comma...",
+                              ),
+                              maxLines: 2,
+                              onChanged: (value) {
+                                // TODO: Handle tags parsing
                               },
                             ),
                           ])),
@@ -1066,7 +976,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           height: 48.0,
                           margin: EdgeInsets.only(bottom: 5.0),
                           child: DropdownSearch<String?>(
-                            items: leadBloc.countries,
+                            items: (filter, infiniteScrollProps) => leadBloc.countries,
                             onChanged: print,
                             onSaved: (selection) {
                               if (selection == null) {
@@ -1081,7 +991,7 @@ class _CreateAccountState extends State<CreateAccount> {
                             selectedItem: accountBloc
                                 .currentEditAccount['billing_country'],
                             popupProps: PopupProps.bottomSheet(
-                              itemBuilder: (context, item, isSelected) {
+                              itemBuilder: (context, item, isDisabled, isSelected) {
                                 return Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 15.0, vertical: 10.0),
@@ -1188,32 +1098,16 @@ class _CreateAccountState extends State<CreateAccount> {
         ),
         child: Column(
           children: [
-            quill.QuillToolbar.basic(
-              controller: _controller,
-              showAlignmentButtons: true,
-              showBackgroundColorButton: false,
-              showCameraButton: false,
-              showImageButton: false,
-              showVideoButton: false,
-              //showDividers: false,
-              showColorButton: false,
-              // showUndo: false,
-              //showRedo: false,
-              showQuote: false,
-              showClearFormat: false,
-              showIndent: false,
-              showLink: false,
-              showCodeBlock: false,
-              showInlineCode: false,
-              showListCheck: false,
-              //showJustifyAlignment: false,
-              showHeaderStyle: false,
-            ),
-            Expanded(
-              child: Container(
-                child: quill.QuillEditor.basic(
-                    controller: _controller,
-                    readOnly: !_isLoading ? false : true),
+            Container(
+              padding: EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: _descriptionController,
+                maxLines: 10,
+                decoration: InputDecoration(
+                  hintText: 'Enter description...',
+                  border: OutlineInputBorder(),
+                ),
+                enabled: !_isLoading,
               ),
             )
           ],

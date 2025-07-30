@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bottle_crm/bloc/account_bloc.dart';
 import 'package:bottle_crm/bloc/auth_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:bottle_crm/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:random_color/random_color.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 var screenWidth;
@@ -30,7 +30,34 @@ Color submitButtonColor = Color.fromRGBO(75, 153, 90, 1);
 Color bottomNavBarSelectedBGColor = Color.fromRGBO(219, 232, 249, 1);
 Color bottomNavBarSelectedTextColor = Color.fromRGBO(15, 36, 62, 1);
 
-RandomColor randomColor = RandomColor();
+// Simple random color generator to replace RandomColor package
+class SimpleRandomColor {
+  static final Random _random = Random();
+  
+  Color randomColor({ColorBrightness? colorBrightness}) {
+    if (colorBrightness == ColorBrightness.light) {
+      // Generate lighter colors
+      return Color.fromRGBO(
+        _random.nextInt(128) + 128, // 128-255
+        _random.nextInt(128) + 128, // 128-255
+        _random.nextInt(128) + 128, // 128-255
+        1.0,
+      );
+    } else {
+      // Generate any random color
+      return Color.fromRGBO(
+        _random.nextInt(256),
+        _random.nextInt(256),
+        _random.nextInt(256),
+        1.0,
+      );
+    }
+  }
+}
+
+enum ColorBrightness { light, dark }
+
+SimpleRandomColor randomColor = SimpleRandomColor();
 
 fetchRequiredData() async {
   print("fetching data ▁ ▂ ▃ ▄ ▅ ▆");

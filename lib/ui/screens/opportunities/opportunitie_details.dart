@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:bottle_crm/ui/widgets/tags_widget.dart';
-import 'package:random_color/random_color.dart';
-import '../../../utils/utils.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 
 class OpportunitiesDetails extends StatefulWidget {
@@ -91,7 +89,7 @@ class _OpportunitiesDetailsState extends State<OpportunitiesDetails> {
                               children: [
                                 SvgPicture.asset(
                                   'assets/images/Icon_edit_color.svg',
-                                  color: Theme.of(context).primaryColor,
+                                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
                                   width: screenWidth / 25,
                                 ),
                                 Container(

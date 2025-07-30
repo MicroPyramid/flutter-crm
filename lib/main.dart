@@ -40,12 +40,11 @@ import 'package:bottle_crm/ui/screens/users/user_create.dart';
 import 'package:bottle_crm/ui/screens/users/user_details.dart';
 import 'package:bottle_crm/ui/screens/users/users_list.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase?.initializeApp();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 

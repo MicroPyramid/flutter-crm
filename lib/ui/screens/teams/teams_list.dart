@@ -279,8 +279,8 @@ class _TeamsListState extends State<TeamsList> {
                     children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Theme.of(context).primaryColor,
+                            backgroundColor: Colors.white,
+                            foregroundColor: Theme.of(context).primaryColor,
                           ),
                           onPressed: () {
                             setState(() {
@@ -303,8 +303,8 @@ class _TeamsListState extends State<TeamsList> {
                       SizedBox(width: 20.0),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            onPrimary: Colors.white,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: Colors.white,
                           ),
                           onPressed: () {
                             FocusScope.of(context).unfocus();

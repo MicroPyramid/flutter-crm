@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:bottle_crm/bloc/lead_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:random_color/random_color.dart';
 
 class LeadDetails extends StatefulWidget {
   LeadDetails();
@@ -88,7 +87,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                               children: [
                                 SvgPicture.asset(
                                   'assets/images/Icon_edit_color.svg',
-                                  color: Theme.of(context).primaryColor,
+                                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
                                   width: screenWidth / 25,
                                 ),
                                 Container(

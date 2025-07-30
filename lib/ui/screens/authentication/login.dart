@@ -8,8 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 
-import '../../../utils/utils.dart';
-
 class Login extends StatefulWidget {
   Login();
   @override

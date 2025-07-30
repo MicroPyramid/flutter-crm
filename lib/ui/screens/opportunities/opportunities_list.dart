@@ -10,7 +10,6 @@ import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
-import 'package:random_color/random_color.dart';
 
 class OpportunitiesList extends StatefulWidget {
   OpportunitiesList();
@@ -389,8 +388,8 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                     children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Theme.of(context).primaryColor,
+                            backgroundColor: Colors.white,
+                            foregroundColor: Theme.of(context).primaryColor,
                           ),
                           onPressed: () {
                             setState(() {
@@ -415,8 +414,8 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                       SizedBox(width: 20.0),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            onPrimary: Colors.white,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: Colors.white,
                           ),
                           onPressed: () {
                             FocusScope.of(context).unfocus();

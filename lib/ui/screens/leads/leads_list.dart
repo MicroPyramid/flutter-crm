@@ -11,7 +11,6 @@ import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
-import 'package:random_color/random_color.dart';
 
 class LeadsList extends StatefulWidget {
   LeadsList();
@@ -343,8 +342,8 @@ class _LeadsListState extends State<LeadsList> {
                     children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Theme.of(context).primaryColor,
+                            backgroundColor: Colors.white,
+                            foregroundColor: Theme.of(context).primaryColor,
                           ),
                           onPressed: () {
                             setState(() {
@@ -369,8 +368,8 @@ class _LeadsListState extends State<LeadsList> {
                       SizedBox(width: 20.0),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            onPrimary: Colors.white,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: Colors.white,
                           ),
                           onPressed: () {
                             FocusScope.of(context).unfocus();

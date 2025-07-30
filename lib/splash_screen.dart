@@ -26,9 +26,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   checkInternet() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    var connectivityResults = await (Connectivity().checkConnectivity());
+    
+    // Check if any connection type is available (mobile, wifi, or ethernet)
+    bool hasConnection = connectivityResults.any((result) => 
+        result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi ||
+        result == ConnectivityResult.ethernet);
+    
+    if (hasConnection) {
       if (preferences.getString('authToken') != null &&
           preferences.getString('authToken') != "") {
         await authBloc.fetchCompanies();

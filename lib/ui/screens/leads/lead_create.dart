@@ -248,6 +248,7 @@ class _CreateLeadState extends State<CreateLead> {
                                       if (value!.isEmpty) {
                                         return 'This field is required.';
                                       }
+                                      return null;
                                     }),
                               ),
                               _errors['website'] != null
@@ -334,7 +335,7 @@ class _CreateLeadState extends State<CreateLead> {
                                 height: screenHeight / 17,
                                 margin: EdgeInsets.only(bottom: 5.0),
                                 child: DropdownSearch<String?>(
-                                  items: leadBloc.status,
+                                  items: (filter, infiniteScrollProps) => leadBloc.status,
                                   onChanged: print,
                                   onSaved: (selection) {
                                     if (selection == null) {
@@ -347,7 +348,7 @@ class _CreateLeadState extends State<CreateLead> {
                                   selectedItem:
                                       leadBloc.currentEditLead['status'],
                                   popupProps: PopupProps.bottomSheet(
-                                    itemBuilder: (context, item, isSelected) {
+                                    itemBuilder: (context, item, isDisabled, isSelected) {
                                       return Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 15.0, vertical: 10.0),
@@ -392,7 +393,7 @@ class _CreateLeadState extends State<CreateLead> {
                                   height: screenHeight / 17,
                                   child: Stack(children: [
                                     DropdownSearch<String?>(
-                                      items: leadBloc.source,
+                                      items: (filter, infiniteScrollProps) => leadBloc.source,
                                       onChanged: print,
                                       onSaved: (selection) {
                                         if (selection == null) {
@@ -407,7 +408,7 @@ class _CreateLeadState extends State<CreateLead> {
                                           leadBloc.currentEditLead['source'],
                                       popupProps: PopupProps.bottomSheet(
                                         itemBuilder:
-                                            (context, item, isSelected) {
+                                            (context, item, isDisabled, isSelected) {
                                           return Container(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 15.0,
@@ -565,7 +566,7 @@ class _CreateLeadState extends State<CreateLead> {
                                   height: screenHeight / 17,
                                   child: Stack(children: [
                                     DropdownSearch<String?>(
-                                      items: leadBloc.industry,
+                                      items: (filter, infiniteScrollProps) => leadBloc.industry,
                                       onChanged: print,
                                       onSaved: (selection) {
                                         if (selection == null) {
@@ -580,7 +581,7 @@ class _CreateLeadState extends State<CreateLead> {
                                           leadBloc.currentEditLead['industry'],
                                       popupProps: PopupProps.bottomSheet(
                                         itemBuilder:
-                                            (context, item, isSelected) {
+                                            (context, item, isDisabled, isSelected) {
                                           return Container(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 15.0,
@@ -1235,7 +1236,7 @@ class _CreateLeadState extends State<CreateLead> {
                               height: screenHeight / 17,
                               child: Stack(children: [
                                 DropdownSearch<String?>(
-                                  items: leadBloc.countries,
+                                  items: (filter, infiniteScrollProps) => leadBloc.countries,
                                   onChanged: print,
                                   onSaved: (selection) {
                                     if (selection == null) {
@@ -1248,7 +1249,7 @@ class _CreateLeadState extends State<CreateLead> {
                                   selectedItem:
                                       leadBloc.currentEditLead['country'],
                                   popupProps: PopupProps.bottomSheet(
-                                    itemBuilder: (context, item, isSelected) {
+                                    itemBuilder: (context, item, isDisabled, isSelected) {
                                       return Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 15.0, vertical: 10.0),
@@ -1298,32 +1299,15 @@ class _CreateLeadState extends State<CreateLead> {
         child: 
         Column(
           children: [
-            quill.QuillToolbar.basic(
+            quill.QuillSimpleToolbar(
               controller: _controller,
-              showAlignmentButtons: true,
-              showBackgroundColorButton: false,
-              showCameraButton: false,
-              showImageButton: false,
-              showVideoButton: false,
-              showDividers: false,
-              showColorButton: false,
-              showUndo: false,
-              showRedo: false,
-              showQuote: false,
-              showClearFormat: false,
-              showIndent: false,
-              showLink: false,
-              showCodeBlock: false,
-              showInlineCode: false,
-              showListCheck: false,
-              showJustifyAlignment: false,
-              showHeaderStyle: false,
+              config: const quill.QuillSimpleToolbarConfig(),
             ),
             Expanded(
               child: Container(
                 child: quill.QuillEditor.basic(
                     controller: _controller,
-                    readOnly: !_isLoading ? false : true),
+                    config: const quill.QuillEditorConfig()),
               ),
             )
           ],
@@ -1334,6 +1318,9 @@ class _CreateLeadState extends State<CreateLead> {
 
   @override
   Widget build(BuildContext context) {
+    // Set readOnly property based on loading state
+    _controller.readOnly = _isLoading;
+    
     return Scaffold(
       body: SafeArea(
         child: Container(

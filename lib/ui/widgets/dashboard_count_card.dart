@@ -38,7 +38,7 @@ class CountCard extends StatelessWidget {
               radius: screenWidth / 14,
               child: SvgPicture.asset(
                 icon!,
-                color: Colors.blueGrey[800],
+                colorFilter: ColorFilter.mode(Colors.blueGrey[800]!, BlendMode.srcIn),
                 width: screenWidth / 12,
               ),
               backgroundColor: Colors.white,
