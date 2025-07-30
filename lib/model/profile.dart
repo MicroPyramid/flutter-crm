@@ -27,24 +27,47 @@ class Profile {
       this.isStaff});
 
   Profile.fromJson(Map profile) {
-    this.id = profile['user_details']['id'] != null
-        ? profile['user_details']['id']
-        : 0;
+    // Handle both old format (with user_details) and new format (flat structure)
+    if (profile['user_details'] != null) {
+      // Old format
+      this.id = profile['user_details']['id'] != null
+          ? profile['user_details']['id']
+          : 0;
+      this.email = profile['user_details']['email'] != null
+          ? profile['user_details']['email']
+          : "";
+      this.firstName = profile['user_details']['first_name'] != null
+          ? profile['user_details']['first_name']
+          : "";
+      this.lastName = profile['user_details']['last_name'] != null
+          ? profile['user_details']['last_name']
+          : "";
+      this.profileUrl = profile['user_details']['profile_pic'] != null
+          ? profile['user_details']['profile_pic']
+          : "";
+    } else {
+      // New format (flat structure from Google login)
+      this.id = profile['id'] != null ? profile['id'].hashCode : 0;
+      this.email = profile['email'] != null ? profile['email'] : "";
+      
+      // Parse name into firstName and lastName
+      if (profile['name'] != null) {
+        List<String> nameParts = profile['name'].toString().split(' ');
+        this.firstName = nameParts.isNotEmpty ? nameParts.first : "";
+        this.lastName = nameParts.length > 1 ? nameParts.skip(1).join(' ') : "";
+      } else {
+        this.firstName = "";
+        this.lastName = "";
+      }
+      
+      this.profileUrl = profile['profileImage'] != null
+          ? profile['profileImage']
+          : "";
+    }
+
+    // Common fields
     this.role = profile['role'] != null ? profile['role'] : "";
-    this.profileUrl = profile['user_details']['profile_pic'] != null
-        ? profile['user_details']['profile_pic']
-        : "";
-    this.dateOfJoin =
-        profile['date_of_joining'] != null ? profile['date_of_joining'] : "";
-    this.email = profile['user_details']['email'] != null
-        ? profile['user_details']['email']
-        : "";
-    this.firstName = profile['user_details']['first_name'] != null
-        ? profile['user_details']['first_name']
-        : "";
-    this.lastName = profile['user_details']['last_name'] != null
-        ? profile['user_details']['last_name']
-        : "";
+    this.dateOfJoin = profile['date_of_joining'] != null ? profile['date_of_joining'] : "";
     this.hasMarketingAccess = profile['has_marketing_access'] != null
         ? profile['has_marketing_access']
         : false;
