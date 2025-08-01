@@ -5,9 +5,12 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -26,15 +29,9 @@
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.packages
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
-.vscode
-
-# Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -46,3 +43,71 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase & Security Sensitive Files
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+ios/firebase_app_id_file.json
+
+# Environment & Configuration Files  
+.env
+.env.local
+.env.production
+.env.development
+config.json
+secrets.json
+
+# API Keys & Credentials
+**/api_keys.dart
+**/secrets.dart
+**/credentials.json
+**/service-account-key.json
+
+# Keystore Files (Android signing)
+*.keystore
+*.jks
+key.properties
+android/key.properties
+
+# iOS Signing & Certificates
+ios/Runner/GoogleService-Info.plist
+ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Pods/
+ios/.symlinks/
+*.mobileprovision
+*.p12
+*.cer
+
+# Local Development
+local.properties
+android/local.properties
+
+# Claude AI Assistant
+.claude/
+*.claude.json
+
+# IDE & Editor
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# OS Generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Log Files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
