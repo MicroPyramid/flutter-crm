@@ -1,162 +1,137 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# BottleCRM - Claude Context
 
 ## Project Overview
+- **Name**: BottleCRM
+- **Platform**: Flutter
+- **Version**: 1.0.0+1
+- **Flutter SDK**: ^3.8.1
+- **Design System**: Material Design
+- **Icons**: Material Icons
+- **Architecture**: Modern Flutter best practices
 
-BottleCRM Mobile is a Flutter-based CRM application for startups and enterprises. The app follows a modular architecture with consistent patterns across CRM entities (Accounts, Contacts, Leads, Opportunities, Cases, Tasks, Events, Documents, Teams, Users, Invoices).
+## Project Structure
+- `/lib/` - Main Dart source code
+- `/assets/` - Application assets (images, icons, fonts)
+- `/android/` - Android-specific configuration
+- `/ios/` - iOS-specific configuration
+- `/web/` - Web platform configuration
+- `/test/` - Unit and widget tests
 
-## Build & Development Commands
+## Development Guidelines
 
+### Design & UI/UX
+- Follow Material Design 3 principles
+- Implement modern UI/UX best practices
+- Maintain consistency across all screens
+- Use responsive design for different screen sizes
+
+#### Card & List Styling Guidelines
+- **Flat Design**: Use flat, minimal card styling similar to Asana/Jira
+- **No Shadows**: Avoid Card elevation/shadows; use Container with borders instead
+- **AppBar Styling**: Keep AppBars transparent/white (no backgroundColor: inversePrimary)
+- **List Items**: Use bottom borders (Colors.grey.shade200) for item separation
+- **Dashboard Cards**: White background with subtle grey borders and 8px border radius
+- **Task Cards**: Add left border with priority color (3px width) for visual hierarchy
+- **Consistent Spacing**: Use 4px vertical margins for list items, 16px horizontal margins
+
+#### Color Guidelines
+- **Borders**: Use Colors.grey.shade200 for subtle separators
+- **Priority Colors**: Green (low), Orange (medium), Red (high), Purple (urgent)
+- **Status Colors**: Blue (new), Orange (contacted), Green (qualified), Red (lost)
+- **Backgrounds**: White containers with minimal border styling
+
+### Code Standards
+- Follow Dart/Flutter naming conventions
+- Use descriptive variable and function names
+- Implement proper error handling
+- Write clean, maintainable code
+- Add appropriate comments for complex logic
+
+### File & Folder Structure
+- Organize files by feature/module
+- Use proper naming conventions (snake_case for files)
+- Keep related files grouped together
+- Maintain clear separation of concerns
+
+### Dependencies
+- **Core**: Flutter SDK, Cupertino Icons
+- **Development**: Flutter Test, Flutter Lints, Flutter Launcher Icons
+- **Linting**: Enabled via analysis_options.yaml
+
+## Common Commands
 ```bash
-# Clean and prepare
-flutter clean
+# Install dependencies
 flutter pub get
 
+# Run the app
+flutter run
+
+# Run tests
+flutter test
+
 # Build for release
-flutter build appbundle  # Android App Bundle for Play Store
-flutter build apk        # Android APK
+flutter build apk --release
+flutter build ios --release
 
-# Development
-flutter run              # Run in debug mode
-flutter test             # Run tests
+# Generate icons
+flutter pub run flutter_launcher_icons:main
+
+# Analyze code
+flutter analyze
+
+# Format code
+dart format .
 ```
 
-## Architecture Overview
+## Key Features to Implement
+- CRM functionality (contacts, leads, deals)
+- User authentication and authorization
+- Data synchronization
+- Offline capability
+- Modern dashboard with analytics
+- Mobile-optimized user interface
 
-### State Management
-- **Pattern**: Custom BLoC-like pattern with singleton instances
-- **Location**: `lib/bloc/` directory
-- **Key Blocs**: `authBloc`, `dashboardBloc`, and module-specific blocs
-- **Access**: Global singleton instances (e.g., `AuthBloc().getInstance()`)
+## Testing Strategy
+- Unit tests for business logic
+- Widget tests for UI components
+- Integration tests for user flows
+- Use flutter_test framework
 
-### API Layer
-- **Base Service**: `CrmService` in `lib/services/crm_services.dart`
-- **Configuration**: Environment-based API URLs via `lib/config/api_config.dart`
-  - **Development**: `http://localhost:3001/` (debug builds)
-  - **Production**: `https://api.bottlecrm.io/` (release builds)
-- **Authentication**: JWT token-based with SharedPreferences storage
-- **Google OAuth**: Integrated with `google_sign_in` package
-- **Multi-tenancy**: Organization header support
+## API Architecture
+- **Centralized URLs**: All API endpoints defined in `lib/config/api_config.dart`
+- **HTTP Service**: Unified REST client in `lib/services/api_service.dart`
+- **Authentication**: Google Sign-In + JWT tokens via `lib/services/auth_service.dart`
+- **Models**: Type-safe API response models in `lib/models/api_models.dart`
+- **Usage Examples**: See `lib/services/example_usage.dart` for implementation patterns
 
-### Navigation
-- **Pattern**: Named routes defined in `main.dart`
-- **Home Screen**: Login screen (no splash screen)
-- **Bottom Navigation**: 5 tabs for main app sections
-
-### Module Structure
-Each CRM module follows a consistent pattern:
-```
-lib/ui/screens/{module}/
-├── {module}_list.dart    # List/index view
-├── {module}_create.dart  # Create new entity
-└── {module}_details.dart # View/edit entity
-```
-
-Available modules: accounts, contacts, leads, opportunities, cases, tasks, events, documents, teams, users, invoices
-
-### Responsive Design
-- **Helper**: `lib/responsive.dart`
-- **Breakpoints**: Mobile (<650px), Tablet (650-1100px), Desktop (>1100px)
-- **Usage**: `Responsive.isMobile(context)`, `Responsive.isTablet(context)`, `Responsive.isDesktop(context)`
-
-## Key Files & Directories
-
-- **Entry Point**: `lib/main.dart` - Contains all route definitions and app configuration
-- **Models**: `lib/model/` - Dart classes for CRM entities
-- **Services**: `lib/services/` - API communication and network layer
-- **Configuration**: `lib/config/` - API URLs and environment configuration
-- **Widgets**: `lib/ui/widgets/` - Reusable UI components
-- **Utils**: `lib/utils/` - Validation helpers and utilities
-- **Assets**: `assets/images/` - SVG icons and images for each module
-
-## Development Patterns
-
-### Adding New Routes
-Add routes to the `routes` map in `main.dart`:
+### API Usage Pattern
 ```dart
-'/new-screen': (context) => NewScreen(),
-```
+// Get data from API
+final response = await ApiService().get(ApiConfig.contacts);
+if (response.success) {
+  final contacts = response.data!.map((json) => Contact.fromJson(json)).toList();
+}
 
-### Creating New Modules
-1. Create model in `lib/model/`
-2. Create bloc in `lib/bloc/`
-3. Create screens following the pattern: `{module}_list.dart`, `{module}_create.dart`, `{module}_details.dart`
-4. Add API methods to `CrmService`
-5. Add routes in `main.dart`
-
-### API Integration
-Extend `CrmService` class with new methods. Use the established pattern:
-```dart
-Future<List<Entity>> getEntities() async {
-  // Implementation follows existing pattern
+// Authentication check
+if (AuthService().isLoggedIn) {
+  // Make authenticated requests
 }
 ```
 
-### UI Styling
-- **Primary Color**: `#3E79F7` (blue)
-- **Background**: `#ECEEF4` (light gray)
-- **Custom Widgets**: Use existing widgets like `DashboardCountCard`, `RecentCardWidget`
+## Dependencies Added
+- `http: ^1.1.0` - HTTP client for API calls
+- `google_sign_in: ^6.1.5` - Google authentication
+- `shared_preferences: ^2.2.2` - Local storage for tokens
+- `jwt_decoder: ^2.0.1` - JWT token handling
 
-## Refactoring Plan
-
-**IMPORTANT**: This project is undergoing incremental refactoring/modernization. Before enhancing any screen:
-
-1. **Check REFACTORING_PLAN.md** for the current status of the screen
-2. **If modernizing a screen**:
-   - Create new version in `lib/ui/screens/modern/` directory
-   - Follow the modern patterns established in completed screens
-   - Update the progress status in REFACTORING_PLAN.md
-   - Keep legacy version as backup until migration is complete
-
-**Current Status**: 9.4% complete (3/32 screens modernized)
-- ✅ Authentication: Login, Organization Selection
-- ✅ Dashboard: Modern responsive dashboard
-- 🔄 Pending: All CRM modules (Accounts, Contacts, Leads, etc.)
-
-**Modern Folder Structure**:
-```
-lib/ui/screens/modern/
-├── authentication/     # Modern auth screens
-├── dashboard_screen.dart
-└── shared/            # Common components
-```
-
-## Configuration Notes
-
-- **Firebase**: Integrated for analytics (configuration in `android/app/google-services.json`)
-- **Android**: Min SDK 23, Target SDK 35
-- **iOS**: Deployment target 11.0
-- **Dependencies**: Key packages include `flutter_svg`, `http`, `shared_preferences`, `firebase_core`, `connectivity_plus`, `file_picker`, `flutter_quill`, `google_sign_in`
-
-## Google Sign-In Configuration
-
-### Android Setup
-- **SHA-1 Fingerprint**: `67:C4:BE:5A:97:39:47:0B:40:2C:14:05:F1:81:AB:C7:E6:CF:A7:DF`
-- **Package Name**: `io.bottlecrm`
-- **Google Services**: Configured in `android/app/google-services.json`
-- **OAuth Client**: Android client type with SHA-1 certificate hash
-
-### API Integration
-- **Endpoint**: `/auth/google/`
-- **Method**: POST with `idToken` parameter
-- **Flow**: Google OAuth → ID Token → Backend verification → JWT token
-
-### Environment Configuration
-Use `ApiConfig` class to manage different API URLs:
-```dart
-// Check current environment
-ApiConfig.getCurrentEnvironment(); // "Development" or "Production"
-
-// Get current API URL
-ApiConfig.getApiUrl(); 
-
-// Override API URL (optional)
-ApiConfig.setApiUrl('https://custom-api.com/api/');
-```
-
-## Testing
-
-- **Location**: `test/` directory
-- **Focus**: Authentication and validation testing
-- **Command**: `flutter test`
+## Notes for AI Assistant
+- Always use centralized API URLs from `ApiConfig`
+- All REST requests must go through `ApiService`
+- Handle authentication automatically via `AuthService`
+- Use type-safe models for all API responses
+- Follow Material Design guidelines
+- Maintain consistent code style across the project
+- Implement proper state management
+- Consider mobile-first design principles
+- Ensure accessibility compliance
+- Use Flutter best practices for performance
