@@ -306,8 +306,6 @@ class SomeService {
 4. **Local Storage**: Critical data cached in SharedPreferences
 5. **Error Handling**: Service level → UI feedback → User notification
 
-For detailed architectural guidelines, see [CLAUDE.md](CLAUDE.md) and [.github/copilot-instructions.md](.github/copilot-instructions.md).
-
 ## ⚙️ Configuration
 
 ### API Configuration
@@ -545,7 +543,6 @@ SOFTWARE.
 
 ## 🌟 Support
 
-- ** Documentation**: [CLAUDE.md](CLAUDE.md) for detailed architecture information
 - **🐛 Issues**: [GitHub Issues](https://github.com/your-username/bottlecrm_mobile_v2/issues) for bug reports
 - **💬 Discussions**: [GitHub Discussions](https://github.com/your-username/bottlecrm_mobile_v2/discussions) for questions
 - **🔥 Firebase Setup**: [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for Firebase configuration
